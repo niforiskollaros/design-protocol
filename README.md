@@ -2,6 +2,11 @@
 
 A complete design workflow system for Claude Code. Takes you from vague requirements to polished, reviewed implementations with **state management**, **implementation generation**, and **goal-backward verification**.
 
+[![NPM Version](https://img.shields.io/npm/v/design-shit-properly?style=flat-square&logo=npm&logoColor=white&label=NPM&color=cb0000)](https://www.npmjs.com/package/design-shit-properly)
+[![Downloads](https://img.shields.io/npm/dm/design-shit-properly?style=flat-square&logo=npm&logoColor=white&label=Downloads&color=cb0000)](https://www.npmjs.com/package/design-shit-properly)
+[![GitHub Stars](https://img.shields.io/github/stars/SignalOrg/design-shit-properly?style=flat-square&logo=github&logoColor=white&label=Stars&color=6e5494)](https://github.com/SignalOrg/design-shit-properly)
+[![License](https://img.shields.io/npm/l/design-shit-properly?style=flat-square&label=License&color=444444)](https://github.com/SignalOrg/design-shit-properly/blob/main/LICENSE)
+
 ```
 /dsp:start → /ux-jesus → /ux → /dsp:execute → /ui → /dsp:execute → /design-engineer → /dsp:verify
                                (wireframe)          (polished)
