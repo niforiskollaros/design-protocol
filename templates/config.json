@@ -1,0 +1,55 @@
+{
+  "version": "2.1",
+  "created": "",
+  "project_name": "",
+  "workflow": {
+    "current_phase": 0,
+    "phases_completed": [],
+    "workflow_status": "not_started",
+    "executions": {
+      "wireframe": {
+        "completed": false,
+        "timestamp": null,
+        "output_dir": null
+      },
+      "polished": {
+        "completed": false,
+        "timestamp": null,
+        "output_dir": null
+      }
+    }
+  },
+  "settings": {
+    "depth": "standard",
+    "challenge_mode": "heavy"
+  },
+  "phases": {
+    "discovery": {
+      "enabled": true,
+      "challenge_mode": "heavy",
+      "depth": "standard"
+    },
+    "ux": {
+      "enabled": true,
+      "include_accessibility": true,
+      "include_all_states": true
+    },
+    "ui": {
+      "enabled": true,
+      "include_b2b": false,
+      "include_data_viz": false,
+      "grid_system": "8px"
+    },
+    "review": {
+      "enabled": true,
+      "severity_threshold": "moderate",
+      "include_spec_alignment": true
+    }
+  },
+  "optional_phases": {
+    "research": {
+      "enabled": false,
+      "methods": []
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "design-shit-properly",
+  "version": "2.1.0",
+  "description": "Design Shit Properly - A complete design workflow system for Claude Code with state management, implementation generation, and goal-backward verification.",
+  "main": "bin/install.js",
+  "bin": {
+    "design-shit-properly": "bin/install.js",
+    "dsp": "bin/install.js"
+  },
+  "scripts": {
+    "postinstall": "node bin/install.js --auto",
+    "test": "node bin/install.js --help"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "anthropic",
+    "design",
+    "ux",
+    "ui",
+    "workflow",
+    "accessibility",
+    "wcag",
+    "design-system",
+    "code-review",
+    "a11y",
+    "figma",
+    "tailwind",
+    "shadcn",
+    "react",
+    "design-engineer",
+    "spec-driven",
+    "wireframe",
+    "prototype"
+  ],
+  "author": "niforis.kollaros <kollaros.n@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SignalOrg/design-shit-properly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SignalOrg/design-shit-properly/issues"
+  },
+  "homepage": "https://github.com/SignalOrg/design-shit-properly#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "commands/",
+    "agents/",
+    "templates/",
+    "README.md",
+    "CLAUDE.md"
+  ]
+}
