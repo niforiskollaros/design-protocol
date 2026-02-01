@@ -21,6 +21,14 @@ npx design-shit-properly --local      # Install to ./.claude/ (current project)
 npx design-shit-properly --uninstall  # Remove DSP
 ```
 
+### Updating
+
+```bash
+npx design-shit-properly --check-update  # Check for updates
+npx design-shit-properly --update        # Update to latest version
+npx design-shit-properly@latest          # Or install latest directly
+```
+
 ## What's New in v2.1
 
 - **Implementation Generation** - `/dsp:execute` creates working React components
