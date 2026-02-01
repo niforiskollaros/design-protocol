@@ -3,8 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const { execSync } = require('child_process');
 
-const VERSION = '2.1.0';
+const VERSION = '2.1.1';
+const PACKAGE_NAME = 'design-shit-properly';
 const PACKAGE_DIR = path.join(__dirname, '..');
 
 // ANSI colors
@@ -120,6 +122,68 @@ async function prompt(question) {
   });
 }
 
+function getLatestVersion() {
+  try {
+    const result = execSync(`npm view ${PACKAGE_NAME} version`, { encoding: 'utf8' });
+    return result.trim();
+  } catch (err) {
+    return null;
+  }
+}
+
+function compareVersions(v1, v2) {
+  const parts1 = v1.split('.').map(Number);
+  const parts2 = v2.split('.').map(Number);
+
+  for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+    const p1 = parts1[i] || 0;
+    const p2 = parts2[i] || 0;
+    if (p1 > p2) return 1;
+    if (p1 < p2) return -1;
+  }
+  return 0;
+}
+
+async function checkForUpdate() {
+  log('\nChecking for updates...', 'dim');
+
+  const latest = getLatestVersion();
+  if (!latest) {
+    logError('Could not check for updates. Are you online?');
+    return false;
+  }
+
+  const comparison = compareVersions(latest, VERSION);
+
+  if (comparison > 0) {
+    log(`\n${c.yellow}Update available!${c.reset} ${VERSION} → ${c.green}${latest}${c.reset}\n`);
+    return latest;
+  } else if (comparison === 0) {
+    log(`\n${c.green}✓${c.reset} You have the latest version (${VERSION})\n`);
+    return false;
+  } else {
+    log(`\n${c.green}✓${c.reset} You have a newer version (${VERSION}) than npm (${latest})\n`);
+    return false;
+  }
+}
+
+async function performUpdate(location) {
+  log(`\nUpdating DSP...`, 'bright');
+
+  try {
+    // Run npx with latest version
+    log('Downloading latest version...', 'dim');
+    execSync(`npx ${PACKAGE_NAME}@latest --${location} --auto`, {
+      stdio: 'inherit',
+      encoding: 'utf8'
+    });
+    return true;
+  } catch (err) {
+    logError(`Update failed: ${err.message}`);
+    return false;
+  }
+}
+
 async function main() {
   const args = process.argv.slice(2);
 
@@ -128,6 +192,8 @@ async function main() {
   const isLocal = args.includes('--local') || args.includes('-l');
   const isAuto = args.includes('--auto');
   const isUninstall = args.includes('--uninstall') || args.includes('-u');
+  const isUpdate = args.includes('--update') || args.includes('--upgrade');
+  const isCheckUpdate = args.includes('--check-update');
   const isHelp = args.includes('--help') || args.includes('-h');
   const showVersion = args.includes('--version') || args.includes('-v');
 
@@ -146,6 +212,8 @@ Options:
   --global, -g     Install to ~/.claude/ (all projects)
   --local, -l      Install to ./.claude/ (current project only)
   --auto           Non-interactive install (default: global)
+  --update         Update to the latest version
+  --check-update   Check if updates are available
   --uninstall, -u  Remove DSP from specified location
   --version, -v    Show version number
   --help, -h       Show this help message
@@ -154,6 +222,7 @@ Examples:
   npx design-shit-properly              # Interactive installation
   npx design-shit-properly --global     # Install globally
   npx design-shit-properly --local      # Install to current project
+  npx design-shit-properly --update     # Update to latest version
   npx design-shit-properly -g -u        # Uninstall from global
 
 ${c.bright}What Gets Installed:${c.reset}
@@ -164,6 +233,29 @@ ${c.bright}What Gets Installed:${c.reset}
 ${c.bright}Workflow:${c.reset}
   /dsp:start → /ux-jesus → /ux → /dsp:execute → /ui → /dsp:execute → /design-engineer → /dsp:verify
 `);
+    process.exit(0);
+  }
+
+  // Check for updates only
+  if (isCheckUpdate) {
+    printBanner();
+    await checkForUpdate();
+    process.exit(0);
+  }
+
+  // Update mode
+  if (isUpdate) {
+    printBanner();
+    const latest = await checkForUpdate();
+    if (latest) {
+      const location = isLocal ? 'local' : 'global';
+      const answer = await prompt(`Update to v${latest}? [Y/n]: `);
+      if (answer !== 'n' && answer !== 'no') {
+        await performUpdate(location);
+      } else {
+        log('Update cancelled.', 'yellow');
+      }
+    }
     process.exit(0);
   }
 
