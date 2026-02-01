@@ -5,7 +5,7 @@ const path = require('path');
 const readline = require('readline');
 const { execSync } = require('child_process');
 
-const VERSION = '2.1.3';
+const VERSION = '2.1.4';
 const PACKAGE_NAME = 'design-shit-properly';
 const PACKAGE_DIR = path.join(__dirname, '..');
 
