@@ -1,6 +1,6 @@
 {
   "name": "design-shit-properly",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Design Shit Properly - A complete design workflow system for Claude Code with state management, implementation generation, and goal-backward verification.",
   "main": "bin/install.js",
   "bin": {

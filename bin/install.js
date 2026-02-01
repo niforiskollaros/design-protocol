@@ -5,7 +5,7 @@ const path = require('path');
 const readline = require('readline');
 const { execSync } = require('child_process');
 
-const VERSION = '2.1.2';
+const VERSION = '2.1.3';
 const PACKAGE_NAME = 'design-shit-properly';
 const PACKAGE_DIR = path.join(__dirname, '..');
 
@@ -43,17 +43,8 @@ function logError(msg) {
 }
 
 function printBanner() {
-  console.log(`
-${c.magenta}${c.bright}
-  ____  ____  ____    ____   _
- |  _ \\/ ___||  _ \\  |___ \\ / |
- | | | \\___ \\| |_) |   __) || |
- | |_| |___) |  __/   / __/ | |
- |____/|____/|_|     |_____|_|_|
-${c.reset}
-${c.cyan}Design Shit Properly${c.reset} ${c.dim}v${VERSION}${c.reset}
-${c.dim}Complete design workflow for Claude Code${c.reset}
-`);
+  console.log(`\n${c.magenta}${c.bright}  DSP ${c.reset}${c.cyan}Design Shit Properly${c.reset} ${c.dim}v${VERSION}${c.reset}`);
+  console.log(`${c.dim}  Complete design workflow for Claude Code${c.reset}\n`);
 }
 
 function getClaudeDir(location) {
