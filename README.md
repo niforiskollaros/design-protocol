@@ -93,13 +93,13 @@ DSP 2.1 generates working code at two checkpoints:
 - Validates flow before visual polish
 - Minimal styling (gray palette)
 - Full functionality
-- Output: `src/components/{feature}/`
+- Output: Auto-detected component directory
 
 ### Polished Mode (After UI)
 - Production-ready components
 - Full Tailwind + shadcn/ui
 - Design tokens applied
-- Output: `src/components/{feature}/`
+- Output: Auto-detected component directory
 
 ```
 UX Decisions → /dsp:execute → Test Flow → UI Spec → /dsp:execute → Final Component
@@ -153,6 +153,59 @@ All skills detect `.design/config.json`:
 
 - **Workflow mode** - Full context, state updates, structured handoffs
 - **Standalone mode** - Independent operation, inline output
+
+## Troubleshooting
+
+### Skills not found after install
+
+Restart Claude Code after installing. DSP skills are loaded on startup.
+
+```bash
+# Verify files were installed
+ls ~/.claude/skills/    # Should show: ux-jesus, ux, ui, design-engineer, ux-research
+ls ~/.claude/commands/  # Should show: dsp-*.md files
+```
+
+If files are missing, re-run the installer:
+```bash
+npx design-shit-properly@latest --global
+```
+
+### `.design/` already exists
+
+If `/dsp:start` finds an existing project, it will ask if you want to continue or start fresh. To manually archive:
+
+```bash
+mv .design .design-backup-$(date +%Y%m%d)
+```
+
+### Permission errors during install
+
+```bash
+# Check ~/.claude/ ownership
+ls -la ~/.claude/
+
+# If owned by root, fix it
+sudo chown -R $(whoami) ~/.claude/
+```
+
+### `/dsp:execute` can't find components directory
+
+The execute command auto-detects your project structure by reading `package.json`. If detection fails, it will ask you where to place components. Make sure you run the command from your project root.
+
+### Dev server not detected
+
+`/dsp:execute` looks for a running dev server on common ports (3000, 5173, 8080). If yours uses a different port, the command will provide the preview URL for manual access. Just run your dev server separately.
+
+### shadcn/ui not detected (polished mode)
+
+The command checks for `components.json` and `@/components/ui/`. If you haven't installed shadcn yet:
+
+```bash
+npx shadcn@latest init
+```
+
+Or tell the command to generate without shadcn — it will use plain Tailwind instead.
 
 ## Requirements
 

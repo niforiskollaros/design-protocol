@@ -1,5 +1,5 @@
 ---
-name: ui-excellence
+name: ui
 description: Apply visual design principles and B2B/enterprise UI patterns to create polished, professional interfaces. Trigger with "/ui" or when designing dashboards, data-dense interfaces, complex tables, enterprise applications. Phase 3 of DSP workflow.
 ---
 
@@ -139,7 +139,7 @@ When in workflow mode, produce structured output:
 ```yaml
 ---
 phase: ui
-skill: ui-excellence
+skill: ui
 completed: YYYY-MM-DDTHH:MM:SSZ
 context_loaded:
   - DISCOVERY.md
@@ -481,3 +481,23 @@ Respects these settings from `.design/config.json`:
 
 When `includeB2B: true`, automatically apply B2B/enterprise patterns.
 When `includeDataViz: true`, include data visualization guidance.
+
+---
+
+## Workflow Navigation
+
+```
+                                                                                              ┌─────────┐
+/dsp:start    →    /ux-jesus    →    /ux    →    /dsp:execute    →                           │ YOU ARE  │    →    /dsp:execute    →    /design-engineer    →    /dsp:verify
+                    Phase 1          Phase 2      (wireframe)                                  │  HERE   │         (polished)          Phase 4
+                                                                                              │ Phase 3 │
+                                                                                              └─────────┘
+```
+
+| | |
+|---|---|
+| **Previous** | `/dsp:execute` — Wireframe implementation |
+| **Current** | `/ui` — Visual design & tokens (Phase 3) |
+| **Next** | `/dsp:execute` — Generate polished implementation |
+| **Related** | `/dsp:discuss` — Capture context before this phase |
+| | `/dsp:back` — Return to UX if flows need changes |

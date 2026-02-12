@@ -25,12 +25,43 @@ Start one with: /dsp:start
 Or run skills standalone: /ux-jesus, /ux, /ui, /design-engineer
 ```
 
-### Step 2: Load State Files
+### Step 2: Load and Validate State Files
 
 Read these files:
 - `.design/config.json` — Settings and workflow metadata
 - `.design/STATE.md` — Current position and context
 - `.design/PROJECT.md` — Project overview
+
+**Validate config.json** after reading:
+
+Required fields — if any are missing, warn the user and offer to repair:
+- `version` — must be a string (e.g., `"2.1"`)
+- `workflow.current_phase` — must be a number 0-4
+- `workflow.phases_completed` — must be an array
+- `workflow.workflow_status` — must be one of: `not_started`, `in_progress`, `blocked`, `complete`, `gaps`
+- `phases` — must be an object with `discovery`, `ux`, `ui`, `review` keys
+
+If JSON parsing fails entirely:
+```
+⚠ .design/config.json is corrupted or not valid JSON.
+
+Options:
+1. Rebuild from phase files (I'll scan .design/phases/ for completed work)
+2. Reset to defaults (keeps your phase output files intact)
+```
+
+If fields are missing but JSON is valid:
+```
+⚠ config.json is missing required fields: {list}
+  Adding defaults for missing fields...
+```
+Then fill in the missing fields with defaults from the config template and write the repaired file.
+
+**Cross-validate state consistency:**
+- If `phases_completed` includes a phase but the output file is missing, flag it:
+  `⚠ Phase "ux" marked complete but UX-DECISIONS.md not found`
+- If a phase output file exists but the phase isn't in `phases_completed`, flag it:
+  `⚠ DISCOVERY.md exists but discovery not marked complete — marking it now`
 
 ### Step 3: Calculate Progress
 
@@ -134,3 +165,14 @@ From `config.json`:
 - If STATE.md is corrupted, offer to rebuild from phase files
 - If phase files are missing but marked complete, flag inconsistency
 - Always show what commands are available regardless of state
+
+---
+
+## Workflow Navigation
+
+| | |
+|---|---|
+| **This command** | `/dsp:progress` — View workflow status |
+| **Useful anytime** | Works at any point in the workflow |
+| **Related** | `/dsp:start` — Initialize if no workflow found |
+| | `/dsp:verify` — Detailed quality check at end of workflow |

@@ -449,3 +449,23 @@ When `severityThreshold: "critical"`, only report critical issues.
 When `severityThreshold: "serious"`, report critical + serious.
 When `severityThreshold: "moderate"`, report all issues (default).
 When `includeSpecAlignment: true`, include spec alignment section (workflow mode).
+
+---
+
+## Workflow Navigation
+
+```
+/dsp:start    →    /ux-jesus    →    /ux    →    /dsp:execute    →    /ui    →    /dsp:execute    →    ┌─────────┐    →    /dsp:verify
+                    Phase 1          Phase 2      (wireframe)          Phase 3      (polished)          │ YOU ARE  │
+                                                                                                        │  HERE   │
+                                                                                                        │ Phase 4 │
+                                                                                                        └─────────┘
+```
+
+| | |
+|---|---|
+| **Previous** | `/dsp:execute` — Polished implementation |
+| **Current** | `/design-engineer` — Code review & a11y (Phase 4) |
+| **Next** | `/dsp:verify` — Goal-backward verification |
+| **Related** | `/dsp:back` — Return to UI if visual issues found |
+| | `/dsp:discuss` — Capture review focus areas first |

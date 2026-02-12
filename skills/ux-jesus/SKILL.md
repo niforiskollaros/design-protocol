@@ -457,3 +457,24 @@ Respects these settings from `.design/config.json`:
   }
 }
 ```
+
+---
+
+## Workflow Navigation
+
+```
+                    ┌─────────┐
+/dsp:start    →    │ YOU ARE  │    →    /ux          →    /dsp:execute    →    /ui    →    /dsp:execute    →    /design-engineer    →    /dsp:verify
+                    │  HERE   │         Phase 2            (wireframe)          Phase 3      (polished)          Phase 4
+                    │ Phase 1 │
+                    └─────────┘
+```
+
+| | |
+|---|---|
+| **Previous** | `/dsp:start` — Initialize project |
+| **Current** | `/ux-jesus` — Discovery & requirements (Phase 1) |
+| **Next** | `/ux` — UX principles & states (Phase 2) |
+| **Related** | `/dsp:discuss` — Capture context before this phase |
+| | `/dsp:skip` — Skip discovery if requirements are clear |
+| | `/ux-research` — Branch into user research |

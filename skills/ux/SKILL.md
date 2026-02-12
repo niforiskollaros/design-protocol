@@ -1,5 +1,5 @@
 ---
-name: ux-design-excellence
+name: ux
 description: Apply UX/UI design principles for intuitive, accessible interfaces. Use with "/ux", UX review, usability improvements, or user-centered design. Phase 2 of DSP workflow.
 ---
 
@@ -162,7 +162,7 @@ When in workflow mode, produce structured output:
 ```yaml
 ---
 phase: ux
-skill: ux-design-excellence
+skill: ux
 completed: YYYY-MM-DDTHH:MM:SSZ
 context_loaded:
   - DISCOVERY.md
@@ -392,3 +392,23 @@ Respects these settings from `.design/config.json`:
 
 When `includeAccessibility: true`, always include accessibility requirements section.
 When `includeAllStates: true`, require full state matrix for all components.
+
+---
+
+## Workflow Navigation
+
+```
+                                         ┌─────────┐
+/dsp:start    →    /ux-jesus    →       │ YOU ARE  │    →    /dsp:execute    →    /ui    →    /dsp:execute    →    /design-engineer    →    /dsp:verify
+                    Phase 1              │  HERE   │         (wireframe)          Phase 3      (polished)          Phase 4
+                                         │ Phase 2 │
+                                         └─────────┘
+```
+
+| | |
+|---|---|
+| **Previous** | `/ux-jesus` — Discovery & requirements (Phase 1) |
+| **Current** | `/ux` — UX principles & states (Phase 2) |
+| **Next** | `/dsp:execute` — Generate wireframe implementation |
+| **Related** | `/dsp:discuss` — Capture context before this phase |
+| | `/dsp:back` — Return to discovery if requirements changed |

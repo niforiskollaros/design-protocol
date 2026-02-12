@@ -207,3 +207,15 @@ Maximum versions to keep: 3 (oldest auto-deleted)
 - Skills should check STATE.md to see if they're running as a redo
 - If redoing, skill can offer to show diff from previous version
 - Later phases should be flagged as "may need update" in progress view
+
+---
+
+## Workflow Navigation
+
+| | |
+|---|---|
+| **This command** | `/dsp:back` — Return to previous phase |
+| **Use when** | New information invalidates earlier decisions |
+| **Returns to** | The previous phase (or a specific phase if specified) |
+| **Then run** | The phase skill for that phase to redo it |
+| **Related** | `/dsp:skip` — Skip forward if redo isn't needed after all |

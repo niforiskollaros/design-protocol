@@ -18,7 +18,14 @@ You are generating a working implementation from DSP workflow outputs. This comm
 
 ### Step 1: Detect Current Phase
 
-Read `.design/config.json`:
+Read `.design/config.json` and validate before proceeding:
+
+**Validate:** Ensure the file is valid JSON and has `workflow.phases_completed` (array). If config is missing or corrupted, show:
+```
+⚠ Cannot read .design/config.json — run /dsp:start to initialize or /dsp:progress to repair.
+```
+
+Then determine execution mode:
 
 ```javascript
 const { workflow } = config;
@@ -57,9 +64,48 @@ From UI-SPEC.md (polished mode), also extract:
 - Animation specifications
 - shadcn/ui component mappings
 
-### Step 4: Generate Component Structure
+### Step 4: Detect Project Structure
 
-**Output location:** `src/components/{feature-name}/`
+Before generating code, detect the user's project setup. Do NOT assume any specific framework or directory structure.
+
+**Detect component directory:**
+1. Check for existing component directories in this order:
+   - `src/components/` — Most common (Next.js, Vite, CRA)
+   - `app/components/` — Remix, some Next.js setups
+   - `components/` — Root-level components
+   - Any directory already containing `.tsx` or `.jsx` files
+2. If none found, ask the user: "Where should I put the generated components?"
+
+**Detect framework:**
+1. Read `package.json` to identify:
+   - **Next.js** — Has `next` in dependencies → uses App Router (`src/app/`) or Pages Router (`pages/`)
+   - **Remix** — Has `@remix-run/react` → uses `app/routes/`
+   - **Vite/CRA** — Has `vite` or `react-scripts` → no file-based routing
+   - **Other** — Ask the user about their setup
+2. Check for `next.config.*`, `vite.config.*`, `remix.config.*` to confirm
+
+**Detect dev server:**
+1. Read `package.json` scripts for the dev command (`dev`, `start`, `serve`)
+2. Check common ports: 3000, 5173, 8080, 4321
+3. Do NOT assume port 3000
+
+**Detect shadcn/ui (polished mode):**
+1. Check for `components.json` (shadcn config file)
+2. Check for `@/components/ui/` directory
+3. If not found, warn: "shadcn/ui not detected. Install it first, or I can generate without it."
+
+Store detected values for use in generation:
+```
+componentDir: [detected path]
+framework: [next-app | next-pages | remix | vite | unknown]
+devCommand: [detected command]
+devPort: [detected port]
+hasShadcn: [true | false]
+```
+
+### Step 5: Generate Component Structure
+
+**Output location:** `{componentDir}/{feature-name}/`
 
 **Naming convention:**
 - Feature folder: kebab-case (e.g., `team-invite-modal`)
@@ -68,7 +114,7 @@ From UI-SPEC.md (polished mode), also extract:
 
 **Standard structure:**
 ```
-src/components/{feature-name}/
+{componentDir}/{feature-name}/
 ├── index.ts                    # Barrel export
 ├── {feature-name}.tsx          # Main container component
 ├── {sub-component-1}.tsx       # Sub-component
@@ -77,7 +123,7 @@ src/components/{feature-name}/
 └── use-{feature-name}.ts       # Custom hook (if needed)
 ```
 
-### Step 5: Generate Code
+### Step 6: Generate Code
 
 #### Wireframe Mode
 
@@ -266,15 +312,18 @@ export function EmailInput({ onAdd, disabled }: EmailInputProps) {
 }
 ```
 
-### Step 6: Generate Preview Page
+### Step 7: Generate Preview Page
 
-Create a preview page to view the component in browser:
+Create a preview page to view the component in browser. The location and format depend on the detected framework:
 
-**Location:** `src/app/preview/{feature-name}/page.tsx`
+**Next.js (App Router):** `src/app/preview/{feature-name}/page.tsx` or `app/preview/{feature-name}/page.tsx`
+**Next.js (Pages Router):** `pages/preview/{feature-name}.tsx`
+**Remix:** `app/routes/preview.{feature-name}.tsx`
+**Vite/CRA/Other:** `src/pages/preview-{feature-name}.tsx` (add route manually)
 
-**Structure:**
+**Structure (adapt imports to detected componentDir):**
 ```tsx
-import { {MainComponent} } from '@/components/{feature-name}';
+import { {MainComponent} } from '{relative-import-to-component}';
 
 export default function Preview{FeatureName}Page() {
   return (
@@ -293,14 +342,14 @@ export default function Preview{FeatureName}Page() {
 }
 ```
 
-### Step 7: Open in Browser
+### Step 8: Open in Browser
 
 Use Playwright to open the preview:
 
 ```typescript
-// Open browser to preview page
+// Open browser to preview page using detected port
 await mcp__playwright__browser_navigate({
-  url: 'http://localhost:3000/preview/{feature-name}'
+  url: 'http://localhost:{devPort}/preview/{feature-name}'
 });
 
 // Take snapshot to verify rendering
@@ -308,11 +357,11 @@ await mcp__playwright__browser_snapshot({});
 ```
 
 **If dev server not running:**
-1. Check if Next.js dev server is running on port 3000
-2. If not, inform user: "Start dev server with `npm run dev` to preview"
+1. Check if a dev server is running on the detected port
+2. If not, inform user: "Start dev server with `{devCommand}` to preview"
 3. Provide the preview URL for manual access
 
-### Step 8: Update State
+### Step 9: Update State
 
 Update `.design/STATE.md`:
 ```markdown
@@ -321,7 +370,7 @@ Update `.design/STATE.md`:
 - **Action:** Generated {wireframe|polished} implementation
 - **Mode:** {Wireframe|Polished}
 - **Components:** {count} files generated
-- **Preview:** src/app/preview/{feature-name}/page.tsx
+- **Preview:** {preview-page-path}
 ```
 
 Update `.design/config.json`:
@@ -385,7 +434,7 @@ Update `.design/config.json`:
 | No UX phase complete | "Run /ux first to define components and interactions" |
 | Missing UX-DECISIONS.md | "UX-DECISIONS.md not found. Run /ux to generate it." |
 | Missing UI-SPEC.md (polished) | "UI-SPEC.md not found. Run /ui first, or use wireframe mode." |
-| src/ directory doesn't exist | Create it, or ask user for preferred location |
+| Component directory not found | Ask user for preferred location (see Step 4 detection) |
 | Component files already exist | Ask: "Overwrite existing files?" with diff preview |
 | shadcn not installed (polished) | Warn and offer to generate without shadcn, or provide install command |
 
@@ -402,7 +451,7 @@ DSP EXECUTE: {Feature Name} — {Wireframe|Polished}
 
 Generated {N} components:
 
-src/components/{feature-name}/
+{componentDir}/{feature-name}/
 ├── index.ts                 ✓ created
 ├── {feature-name}.tsx       ✓ created (main component)
 ├── {component-1}.tsx        ✓ created
@@ -410,18 +459,18 @@ src/components/{feature-name}/
 └── ...
 
 Preview page:
-└── src/app/preview/{feature-name}/page.tsx  ✓ created
+└── {preview-page-path}  ✓ created
 
 NEXT STEPS
 ────────────────────────────────────────────────────────────────────────────────
 {If wireframe}
-→ Run `npm run dev` and visit http://localhost:3000/preview/{feature-name}
+→ Run `{devCommand}` and visit http://localhost:{devPort}/preview/{feature-name}
 → Test interactions and validate UX flow
 → When satisfied, run /ui to design visual specs
 → Then /dsp:execute again for polished implementation
 
 {If polished}
-→ Run `npm run dev` and visit http://localhost:3000/preview/{feature-name}
+→ Run `{devCommand}` and visit http://localhost:{devPort}/preview/{feature-name}
 → Verify visual design matches UI-SPEC.md
 → When satisfied, run /design-engineer for code review
 → Then /dsp:verify to complete workflow
@@ -450,3 +499,15 @@ After generating, verify:
 - [ ] Keyboard navigation functional
 - [ ] (Polished) Visual design matches spec
 - [ ] (Polished) Animations are smooth
+
+---
+
+## Workflow Navigation
+
+| | |
+|---|---|
+| **This command** | `/dsp:execute` — Generate implementation |
+| **Wireframe mode** | Runs after `/ux` (Phase 2) → next: `/ui` (Phase 3) |
+| **Polished mode** | Runs after `/ui` (Phase 3) → next: `/design-engineer` (Phase 4) |
+| **Related** | `/dsp:progress` — Check which mode will run |
+| | `/dsp:back` — Return to previous phase if output needs changes |

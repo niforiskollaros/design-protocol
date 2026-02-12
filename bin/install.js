@@ -5,9 +5,10 @@ const path = require('path');
 const readline = require('readline');
 const { execSync } = require('child_process');
 
-const VERSION = '2.1.4';
+const VERSION = '2.2.0';
 const PACKAGE_NAME = 'design-shit-properly';
 const PACKAGE_DIR = path.join(__dirname, '..');
+let VERBOSE = false;
 
 // ANSI colors
 const c = {
@@ -42,6 +43,10 @@ function logError(msg) {
   console.log(`  ${c.red}✗${c.reset} ${msg}`);
 }
 
+function logVerbose(msg) {
+  if (VERBOSE) console.log(`  ${c.dim}  → ${msg}${c.reset}`);
+}
+
 function printBanner() {
   console.log(`\n${c.magenta}${c.bright}  DSP ${c.reset}${c.cyan}Design Shit Properly${c.reset} ${c.dim}v${VERSION}${c.reset}`);
   console.log(`${c.dim}  Complete design workflow for Claude Code${c.reset}\n`);
@@ -57,28 +62,55 @@ function getClaudeDir(location) {
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+    logVerbose(`mkdir ${dir}`);
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+    } catch (err) {
+      if (err.code === 'EACCES') {
+        throw new Error(`Permission denied creating directory: ${dir}\n  Try running with sudo or check folder permissions.`);
+      }
+      throw new Error(`Failed to create directory: ${dir}\n  ${err.message}`);
+    }
   }
 }
 
-function copyRecursive(src, dest, indent = '  ') {
-  if (!fs.existsSync(src)) return 0;
+const MAX_COPY_DEPTH = 10;
+const SKIP_ENTRIES = new Set(['.git', '.DS_Store', '.env', 'node_modules', '.next']);
 
-  const stats = fs.statSync(src);
+function copyRecursive(src, dest, depth = 0) {
+  if (!fs.existsSync(src)) return 0;
+  if (depth > MAX_COPY_DEPTH) {
+    logError(`Skipping deeply nested path (>${MAX_COPY_DEPTH} levels): ${src}`);
+    return 0;
+  }
+
+  // Skip symlinks — only copy real files
+  const lstats = fs.lstatSync(src);
+  if (lstats.isSymbolicLink()) return 0;
+
   let count = 0;
 
-  if (stats.isDirectory()) {
+  if (lstats.isDirectory()) {
     ensureDir(dest);
     const files = fs.readdirSync(src);
     for (const file of files) {
+      if (SKIP_ENTRIES.has(file)) continue;
       count += copyRecursive(
         path.join(src, file),
         path.join(dest, file),
-        indent
+        depth + 1
       );
     }
   } else {
-    fs.copyFileSync(src, dest);
+    try {
+      fs.copyFileSync(src, dest);
+      logVerbose(`${path.basename(src)}`);
+    } catch (err) {
+      if (err.code === 'EACCES') {
+        throw new Error(`Permission denied writing file: ${dest}`);
+      }
+      throw new Error(`Failed to copy ${path.basename(src)} → ${dest}\n  ${err.message}`);
+    }
     count = 1;
   }
   return count;
@@ -187,6 +219,7 @@ async function main() {
   const isCheckUpdate = args.includes('--check-update');
   const isHelp = args.includes('--help') || args.includes('-h');
   const showVersion = args.includes('--version') || args.includes('-v');
+  VERBOSE = args.includes('--verbose');
 
   if (showVersion) {
     console.log(`dsp v${VERSION}`);
@@ -206,6 +239,7 @@ Options:
   --update         Update to the latest version
   --check-update   Check if updates are available
   --uninstall, -u  Remove DSP from specified location
+  --verbose        Show detailed output for troubleshooting
   --version, -v    Show version number
   --help, -h       Show this help message
 
@@ -271,58 +305,74 @@ ${c.bright}Workflow:${c.reset}
   const commandsDir = path.join(claudeDir, 'commands');
   const agentsDir = path.join(claudeDir, 'agents');
 
-  // Uninstall
-  if (isUninstall) {
-    log(`\nUninstalling from ${location} location...`, 'yellow');
-    log(`Target: ${claudeDir}`, 'dim');
-
-    let removed = 0;
-
-    // Remove skills
-    const skillNames = ['ux-jesus', 'ux-excellence', 'ui-excellence', 'design-engineer', 'ux-research'];
-    for (const name of skillNames) {
-      const skillPath = path.join(skillsDir, name);
-      if (fs.existsSync(skillPath)) {
-        fs.rmSync(skillPath, { recursive: true, force: true });
-        logSuccess(`Removed skill: ${name}`);
-        removed++;
-      }
-    }
-
-    // Remove commands
-    const commandFiles = fs.readdirSync(PACKAGE_DIR + '/commands').filter(f => f.endsWith('.md'));
-    for (const file of commandFiles) {
-      const cmdPath = path.join(commandsDir, file);
-      if (fs.existsSync(cmdPath)) {
-        fs.unlinkSync(cmdPath);
-        logSuccess(`Removed command: ${file}`);
-        removed++;
-      }
-    }
-
-    // Remove agents
-    const agentFiles = fs.readdirSync(PACKAGE_DIR + '/agents').filter(f => f.endsWith('.md'));
-    for (const file of agentFiles) {
-      const agentPath = path.join(agentsDir, file);
-      if (fs.existsSync(agentPath)) {
-        fs.unlinkSync(agentPath);
-        logSuccess(`Removed agent: ${file}`);
-        removed++;
-      }
-    }
-
-    if (removed > 0) {
-      log(`\n${c.green}DSP uninstalled successfully!${c.reset}\n`);
-    } else {
-      log(`\n${c.yellow}No DSP installation found at ${claudeDir}${c.reset}\n`);
-    }
-    process.exit(0);
+  if (VERBOSE) {
+    log('', 'dim');
+    log('  Resolved paths:', 'dim');
+    log(`    PACKAGE_DIR:     ${PACKAGE_DIR}`, 'dim');
+    log(`    claudeDir:       ${claudeDir}`, 'dim');
+    log(`    CLAUDE_CONFIG_DIR: ${process.env.CLAUDE_CONFIG_DIR || '(not set)'}`, 'dim');
+    log(`    HOME:            ${process.env.HOME || process.env.USERPROFILE}`, 'dim');
+    log('', 'dim');
   }
 
-  // Install
+  if (isUninstall) {
+    await runUninstall(location, { skillsDir, commandsDir, agentsDir, claudeDir });
+  } else {
+    await runInstall(location, { skillsDir, commandsDir, agentsDir, claudeDir }, isAuto);
+  }
+}
+
+// ─── Uninstall ────────────────────────────────────────────────────────────────
+
+async function runUninstall(location, dirs) {
+  log(`\nUninstalling from ${location} location...`, 'yellow');
+  log(`Target: ${dirs.claudeDir}`, 'dim');
+
+  let removed = 0;
+
+  const skillNames = ['ux-jesus', 'ux', 'ui', 'design-engineer', 'ux-research'];
+  for (const name of skillNames) {
+    const skillPath = path.join(dirs.skillsDir, name);
+    if (fs.existsSync(skillPath)) {
+      fs.rmSync(skillPath, { recursive: true, force: true });
+      logSuccess(`Removed skill: ${name}`);
+      removed++;
+    }
+  }
+
+  const commandFiles = fs.readdirSync(path.join(PACKAGE_DIR, 'commands')).filter(f => f.endsWith('.md'));
+  for (const file of commandFiles) {
+    const cmdPath = path.join(dirs.commandsDir, file);
+    if (fs.existsSync(cmdPath)) {
+      fs.unlinkSync(cmdPath);
+      logSuccess(`Removed command: ${file}`);
+      removed++;
+    }
+  }
+
+  const agentFiles = fs.readdirSync(path.join(PACKAGE_DIR, 'agents')).filter(f => f.endsWith('.md'));
+  for (const file of agentFiles) {
+    const agentPath = path.join(dirs.agentsDir, file);
+    if (fs.existsSync(agentPath)) {
+      fs.unlinkSync(agentPath);
+      logSuccess(`Removed agent: ${file}`);
+      removed++;
+    }
+  }
+
+  if (removed > 0) {
+    log(`\n${c.green}DSP uninstalled successfully!${c.reset}\n`);
+  } else {
+    log(`\n${c.yellow}No DSP installation found at ${dirs.claudeDir}${c.reset}\n`);
+  }
+}
+
+// ─── Install ──────────────────────────────────────────────────────────────────
+
+async function runInstall(location, dirs, isAuto) {
   const totalSteps = 4;
   log(`\nInstalling to ${location} location...`, 'bright');
-  log(`Target: ${claudeDir}\n`, 'dim');
+  log(`Target: ${dirs.claudeDir}\n`, 'dim');
 
   // Step 1: Skills
   logStep(1, totalSteps, 'Installing skills...');
@@ -333,9 +383,8 @@ ${c.bright}Workflow:${c.reset}
 
   for (const skill of skillDirs) {
     const src = path.join(srcSkills, skill);
-    const dest = path.join(skillsDir, skill);
+    const dest = path.join(dirs.skillsDir, skill);
 
-    // Check for existing
     if (fs.existsSync(dest) && !isAuto) {
       const answer = await prompt(`  Overwrite ${skill}? [y/N]: `);
       if (answer !== 'y' && answer !== 'yes') {
@@ -351,45 +400,44 @@ ${c.bright}Workflow:${c.reset}
 
   // Step 2: Commands
   logStep(2, totalSteps, 'Installing commands...');
-  ensureDir(commandsDir);
+  ensureDir(dirs.commandsDir);
   const srcCommands = path.join(PACKAGE_DIR, 'commands');
   const commandFiles = fs.readdirSync(srcCommands).filter(f => f.endsWith('.md'));
 
   for (const file of commandFiles) {
-    const src = path.join(srcCommands, file);
-    const dest = path.join(commandsDir, file);
-    fs.copyFileSync(src, dest);
+    fs.copyFileSync(path.join(srcCommands, file), path.join(dirs.commandsDir, file));
     logSuccess(file.replace('.md', ''));
   }
 
   // Step 3: Agents
   logStep(3, totalSteps, 'Installing agents...');
-  ensureDir(agentsDir);
+  ensureDir(dirs.agentsDir);
   const srcAgents = path.join(PACKAGE_DIR, 'agents');
   const agentFiles = fs.readdirSync(srcAgents).filter(f => f.endsWith('.md'));
 
   for (const file of agentFiles) {
-    const src = path.join(srcAgents, file);
-    const dest = path.join(agentsDir, file);
-    fs.copyFileSync(src, dest);
+    fs.copyFileSync(path.join(srcAgents, file), path.join(dirs.agentsDir, file));
     logSuccess(file.replace('.md', ''));
   }
 
   // Step 4: Summary
   logStep(4, totalSteps, 'Installation complete!');
+  printSummary(
+    { skills: skillDirs.length, commands: commandFiles.length, agents: agentFiles.length },
+    dirs
+  );
+}
 
-  // Count what was installed
-  const skillCount = skillDirs.length;
-  const cmdCount = commandFiles.length;
-  const agentCount = agentFiles.length;
+// ─── Summary ──────────────────────────────────────────────────────────────────
 
+function printSummary(counts, dirs) {
   console.log(`
 ${c.green}${c.bright}DSP ${VERSION} installed successfully!${c.reset}
 
 ${c.bright}Installed:${c.reset}
-  ${c.cyan}${skillCount}${c.reset} skills      → ${skillsDir}
-  ${c.cyan}${cmdCount}${c.reset} commands   → ${commandsDir}
-  ${c.cyan}${agentCount}${c.reset} agents     → ${agentsDir}
+  ${c.cyan}${counts.skills}${c.reset} skills      → ${dirs.skillsDir}
+  ${c.cyan}${counts.commands}${c.reset} commands   → ${dirs.commandsDir}
+  ${c.cyan}${counts.agents}${c.reset} agents     → ${dirs.agentsDir}
 
 ${c.bright}Quick Start:${c.reset}
   ${c.cyan}/dsp:start${c.reset}       Start a new design workflow

@@ -516,3 +516,25 @@ Respects these settings from `.design/config.json`:
 ```
 
 When enabled, research outputs are tracked in the workflow state.
+
+---
+
+## Workflow Navigation
+
+```
+/dsp:start    →    /ux-jesus    →    /ux    →    /dsp:execute    →    /ui    →    /dsp:execute    →    /design-engineer    →    /dsp:verify
+                    Phase 1   ↘      Phase 2      (wireframe)          Phase 3      (polished)          Phase 4
+                               ┌─────────────┐
+                               │   YOU ARE    │
+                               │    HERE      │
+                               │ (optional)   │
+                               └─────────────┘
+```
+
+| | |
+|---|---|
+| **Branches from** | `/ux-jesus` — Discovery (most common) or any phase |
+| **Current** | `/ux-research` — Research planning & synthesis (optional) |
+| **Returns to** | The phase that triggered research |
+| **Related** | `/dsp:discuss` — Capture research questions before starting |
+| | `/ux-jesus` — Re-run discovery if research changes assumptions |

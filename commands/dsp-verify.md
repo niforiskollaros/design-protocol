@@ -193,3 +193,15 @@ Update `.design/config.json`:
 ## Agent Integration
 
 This command can spawn the `dsp-verifier` agent for deeper analysis if needed.
+
+---
+
+## Workflow Navigation
+
+| | |
+|---|---|
+| **This command** | `/dsp:verify` — Goal-backward verification |
+| **Previous** | `/design-engineer` — Code review (Phase 4) |
+| **If gaps found** | `/dsp:back` — Return to the phase that needs fixing |
+| **If passed** | Workflow complete — ready for handoff |
+| **Related** | `/dsp:progress` — Quick status overview |

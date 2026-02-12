@@ -172,3 +172,15 @@ To undo a skip:
 1. `/dsp:back` returns to the skipped phase
 2. Running the phase skill will generate the output
 3. Phase status changes from "skipped" to "completed"
+
+---
+
+## Workflow Navigation
+
+| | |
+|---|---|
+| **This command** | `/dsp:skip` — Skip current phase |
+| **Use when** | Phase output already exists or isn't needed |
+| **Advances to** | The next phase in sequence |
+| **Undo with** | `/dsp:back` — Return to the skipped phase |
+| **Related** | `/dsp:progress` — See current phase and what was skipped |
