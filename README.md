@@ -34,13 +34,14 @@ npx design-shit-properly --update        # Update to latest version
 npx design-shit-properly@latest          # Or install latest directly
 ```
 
-## What's New in v2.1
+## What's New in v2.2
 
-- **Implementation Generation** - `/dsp:execute` creates working React components
-- **Two-Stage Execution** - Wireframe (after UX) + Polished (after UI)
-- **Goal-Backward Verification** - `/dsp:verify` checks truths, artifacts, and wiring
-- **Full State Management** - Persistent workflow state in `.design/`
-- **5 Specialized Skills** - ux-jesus, ux, ui, design-engineer, ux-research
+- **Project auto-detection** — `/dsp:execute` detects your framework, component directory, and dev server instead of assuming Next.js
+- **State validation** — Commands validate `config.json` on load and offer to repair corrupted state
+- **47-test suite** — Automated checks run before every publish (version sync, file integrity, no hardcoded paths)
+- **`--verbose` flag** — Troubleshoot installs with `npx design-shit-properly --verbose`
+- **Workflow navigation** — Every skill and command shows where you are in the pipeline and what comes next
+- **Installer hardening** — Symlink protection, depth limits, clear error messages with file-level context
 
 ## Quick Start
 
@@ -87,7 +88,7 @@ npx design-shit-properly@latest          # Or install latest directly
 
 ## Implementation Generation
 
-DSP 2.1 generates working code at two checkpoints:
+DSP generates working code at two checkpoints:
 
 ### Wireframe Mode (After UX)
 - Validates flow before visual polish
