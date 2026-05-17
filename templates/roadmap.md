@@ -17,7 +17,7 @@ Discovery ──► UX ──► UI ──► Review
 
 **Goal:** Transform vague requirements into a bulletproof design brief
 
-**Skill:** `/ux-jesus`
+**Skill:** `/dp:discovery`
 
 **Inputs:**
 - Initial requirements or feature request
@@ -46,7 +46,7 @@ Discovery ──► UX ──► UI ──► Review
 
 **Goal:** Apply usability principles to create intuitive user flows and interactions
 
-**Skill:** `/ux`
+**Skill:** `/dp:ux`
 
 **Inputs:**
 - Discovery brief (DISCOVERY.md)
@@ -74,7 +74,7 @@ Discovery ──► UX ──► UI ──► Review
 
 **Goal:** Apply visual design principles to create polished, professional interface specs
 
-**Skill:** `/ui`
+**Skill:** `/dp:ui`
 
 **Inputs:**
 - Discovery brief (DISCOVERY.md)
@@ -102,7 +102,7 @@ Discovery ──► UX ──► UI ──► Review
 
 **Goal:** Audit implementation for quality, accessibility, and spec alignment
 
-**Skill:** `/design-engineer`
+**Skill:** `/dp:eng_review`
 
 **Inputs:**
 - All previous phase documents
@@ -128,7 +128,7 @@ Discovery ──► UX ──► UI ──► Review
 
 **Goal:** Validate assumptions and gather user insights
 
-**Skill:** `/ux-research`
+**Skill:** `/dp:research`
 
 **When to Include:**
 - Significant unknowns in discovery

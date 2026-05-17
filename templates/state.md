@@ -1,4 +1,4 @@
-# DSP Workflow State
+# DP Workflow State
 
 > Last Updated: [TIMESTAMP]
 
@@ -89,19 +89,19 @@ Progress: [░░░░░░░░░░] 0%
 
 ## Quick Commands
 
-- `/dsp:progress` — View this state summary
-- `/dsp:execute` — Generate implementation (wireframe or polished)
-- `/dsp:discuss` — Capture decisions before running a phase
-- `/dsp:skip` — Skip current phase
-- `/dsp:back` — Go back to previous phase
-- `/dsp:verify` — Check deliverables
+- `/dp:progress` — View this state summary
+- `/dp:execute` — Generate implementation (wireframe or polished)
+- `/dp:discuss` — Capture decisions before running a phase
+- `/dp:skip` — Skip current phase
+- `/dp:back` — Go back to previous phase
+- `/dp:verify` — Check deliverables
 
 ## Phase Commands
 
-- `/ux-jesus` — Run discovery (Phase 1)
-- `/ux` — Run usability (Phase 2)
-- `/dsp:execute` — Generate wireframe (after Phase 2)
-- `/ui` — Run visual design (Phase 3)
-- `/dsp:execute` — Generate polished (after Phase 3)
-- `/design-engineer` — Run review (Phase 4)
-- `/ux-research` — Run research (optional)
+- `/dp:discovery` — Run discovery (Phase 1)
+- `/dp:ux` — Run usability (Phase 2)
+- `/dp:execute` — Generate wireframe (after Phase 2)
+- `/dp:ui` — Run visual design (Phase 3)
+- `/dp:execute` — Generate polished (after Phase 3)
+- `/dp:eng_review` — Run review (Phase 4)
+- `/dp:research` — Run research (optional)

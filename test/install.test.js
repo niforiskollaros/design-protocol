@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * DSP Installer Test Suite
+ * DP Installer Test Suite
  *
  * Zero dependencies — uses Node.js built-in assert.
  * Compatible with Node 14+.
@@ -57,7 +57,7 @@ function parseFrontmatter(content) {
 
 // ─── Tests ──────────────────────────────────────────────────────────────────
 
-console.log('\n\x1b[1mDSP Test Suite\x1b[0m\n');
+console.log('\n\x1b[1mDP Test Suite\x1b[0m\n');
 
 // ── Version sync ────────────────────────────────────────────────────────────
 
@@ -80,12 +80,12 @@ test('version follows semver format', () => {
 
 console.log('\n\x1b[36mSource Files\x1b[0m');
 
-const expectedSkills = ['ux-jesus', 'ux', 'ui', 'design-engineer', 'ux-research'];
+const expectedSkills = ['dp-discovery', 'dp-prd', 'dp-journey', 'dp-roadmap', 'dp-ux', 'dp-color', 'dp-ui', 'dp-eng_review', 'dp-research', 'dp-storytell'];
 const expectedCommands = [
-  'dsp-start', 'dsp-progress', 'dsp-execute', 'dsp-verify',
-  'dsp-discuss', 'dsp-skip', 'dsp-back'
+  'dp-start', 'dp-progress', 'dp-execute', 'dp-verify',
+  'dp-discuss', 'dp-skip', 'dp-back'
 ];
-const expectedAgents = ['dsp-researcher', 'dsp-verifier'];
+const expectedAgents = ['dp-researcher', 'dp-verifier'];
 const expectedTemplates = ['config.json', 'state.md', 'project.md', 'requirements.md', 'roadmap.md', 'context.md'];
 
 expectedSkills.forEach(skill => {

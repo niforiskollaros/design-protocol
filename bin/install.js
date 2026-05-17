@@ -6,7 +6,7 @@ const readline = require('readline');
 const { execSync } = require('child_process');
 
 const VERSION = '2.2.1';
-const PACKAGE_NAME = 'design-shit-properly';
+const PACKAGE_NAME = 'design-protocol';
 const PACKAGE_DIR = path.join(__dirname, '..');
 let VERBOSE = false;
 
@@ -48,7 +48,7 @@ function logVerbose(msg) {
 }
 
 function printBanner() {
-  console.log(`\n${c.magenta}${c.bright}  DSP ${c.reset}${c.cyan}Design Shit Properly${c.reset} ${c.dim}v${VERSION}${c.reset}`);
+  console.log(`\n${c.magenta}${c.bright}  DP ${c.reset}${c.cyan}Design Protocol${c.reset} ${c.dim}v${VERSION}${c.reset}`);
   console.log(`${c.dim}  Complete design workflow for Claude Code${c.reset}\n`);
 }
 
@@ -191,7 +191,7 @@ async function checkForUpdate() {
 }
 
 async function performUpdate(location) {
-  log(`\nUpdating DSP...`, 'bright');
+  log(`\nUpdating DP...`, 'bright');
 
   try {
     // Run npx with latest version
@@ -222,15 +222,15 @@ async function main() {
   VERBOSE = args.includes('--verbose');
 
   if (showVersion) {
-    console.log(`dsp v${VERSION}`);
+    console.log(`dp v${VERSION}`);
     process.exit(0);
   }
 
   if (isHelp) {
     console.log(`
-${c.bright}DSP - Design Shit Properly v${VERSION}${c.reset}
+${c.bright}DP - Design Protocol v${VERSION}${c.reset}
 
-Usage: npx design-shit-properly [options]
+Usage: npx design-protocol [options]
 
 Options:
   --global, -g     Install to ~/.claude/ (all projects)
@@ -238,25 +238,25 @@ Options:
   --auto           Non-interactive install (default: global)
   --update         Update to the latest version
   --check-update   Check if updates are available
-  --uninstall, -u  Remove DSP from specified location
+  --uninstall, -u  Remove DP from specified location
   --verbose        Show detailed output for troubleshooting
   --version, -v    Show version number
   --help, -h       Show this help message
 
 Examples:
-  npx design-shit-properly              # Interactive installation
-  npx design-shit-properly --global     # Install globally
-  npx design-shit-properly --local      # Install to current project
-  npx design-shit-properly --update     # Update to latest version
-  npx design-shit-properly -g -u        # Uninstall from global
+  npx design-protocol              # Interactive installation
+  npx design-protocol --global     # Install globally
+  npx design-protocol --local      # Install to current project
+  npx design-protocol --update     # Update to latest version
+  npx design-protocol -g -u        # Uninstall from global
 
 ${c.bright}What Gets Installed:${c.reset}
-  ~/.claude/skills/      5 design skills (ux-jesus, ux, ui, design-engineer, ux-research)
-  ~/.claude/commands/    7 workflow commands (dsp:start, dsp:execute, etc.)
+  ~/.claude/skills/      10 design skills (dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell)
+  ~/.claude/commands/    7 workflow commands (dp:start, dp:execute, etc.)
   ~/.claude/agents/      2 specialized agents
 
 ${c.bright}Workflow:${c.reset}
-  /dsp:start → /ux-jesus → /ux → /dsp:execute → /ui → /dsp:execute → /design-engineer → /dsp:verify
+  /dp:start → /dp:discovery → /dp:ux → /dp:execute → /dp:ui → /dp:execute → /dp:eng_review → /dp:verify
 `);
     process.exit(0);
   }
@@ -293,7 +293,7 @@ ${c.bright}Workflow:${c.reset}
   } else if (isLocal) {
     location = 'local';
   } else {
-    log('\nWhere would you like to install DSP?\n', 'bright');
+    log('\nWhere would you like to install DP?\n', 'bright');
     console.log('  1. Global (~/.claude/) - Available in all projects');
     console.log('  2. Local  (./.claude/) - Current project only\n');
     const answer = await prompt('Choose [1/2] (default: 1): ');
@@ -330,7 +330,7 @@ async function runUninstall(location, dirs) {
 
   let removed = 0;
 
-  const skillNames = ['ux-jesus', 'ux', 'ui', 'design-engineer', 'ux-research'];
+  const skillNames = ['dp-discovery', 'dp-prd', 'dp-journey', 'dp-roadmap', 'dp-ux', 'dp-color', 'dp-ui', 'dp-eng_review', 'dp-research', 'dp-storytell'];
   for (const name of skillNames) {
     const skillPath = path.join(dirs.skillsDir, name);
     if (fs.existsSync(skillPath)) {
@@ -361,9 +361,9 @@ async function runUninstall(location, dirs) {
   }
 
   if (removed > 0) {
-    log(`\n${c.green}DSP uninstalled successfully!${c.reset}\n`);
+    log(`\n${c.green}DP uninstalled successfully!${c.reset}\n`);
   } else {
-    log(`\n${c.yellow}No DSP installation found at ${dirs.claudeDir}${c.reset}\n`);
+    log(`\n${c.yellow}No DP installation found at ${dirs.claudeDir}${c.reset}\n`);
   }
 }
 
@@ -432,7 +432,7 @@ async function runInstall(location, dirs, isAuto) {
 
 function printSummary(counts, dirs) {
   console.log(`
-${c.green}${c.bright}DSP ${VERSION} installed successfully!${c.reset}
+${c.green}${c.bright}DP ${VERSION} installed successfully!${c.reset}
 
 ${c.bright}Installed:${c.reset}
   ${c.cyan}${counts.skills}${c.reset} skills      → ${dirs.skillsDir}
@@ -440,20 +440,20 @@ ${c.bright}Installed:${c.reset}
   ${c.cyan}${counts.agents}${c.reset} agents     → ${dirs.agentsDir}
 
 ${c.bright}Quick Start:${c.reset}
-  ${c.cyan}/dsp:start${c.reset}       Start a new design workflow
-  ${c.cyan}/dsp:progress${c.reset}    Check workflow status
-  ${c.cyan}/dsp:execute${c.reset}     Generate implementation
+  ${c.cyan}/dp:start${c.reset}       Start a new design workflow
+  ${c.cyan}/dp:progress${c.reset}    Check workflow status
+  ${c.cyan}/dp:execute${c.reset}     Generate implementation
 
 ${c.bright}Design Skills:${c.reset}
-  ${c.cyan}/ux-jesus${c.reset}        Discovery & requirements
-  ${c.cyan}/ux${c.reset}              UX principles & states
-  ${c.cyan}/ui${c.reset}              Visual design & tokens
-  ${c.cyan}/design-engineer${c.reset} Code review & a11y
+  ${c.cyan}/dp:discovery${c.reset}        Discovery & requirements
+  ${c.cyan}/dp:ux${c.reset}              UX principles & states
+  ${c.cyan}/dp:ui${c.reset}              Visual design & tokens
+  ${c.cyan}/dp:eng_review${c.reset} Code review & a11y
 
 ${c.bright}Workflow:${c.reset}
   Discovery → UX → ${c.yellow}Execute(wireframe)${c.reset} → UI → ${c.yellow}Execute(polished)${c.reset} → Review
 
-${c.dim}Restart Claude Code to load DSP.${c.reset}
+${c.dim}Restart Claude Code to load DP.${c.reset}
 `);
 }
 

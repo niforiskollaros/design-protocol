@@ -1,11 +1,11 @@
 {
-  "name": "design-shit-properly",
+  "name": "design-protocol",
   "version": "2.2.1",
-  "description": "Design Shit Properly - A complete design workflow system for Claude Code with state management, implementation generation, and goal-backward verification.",
+  "description": "Design Protocol - A complete design workflow system for Claude Code with state management, implementation generation, and goal-backward verification.",
   "main": "bin/install.js",
   "bin": {
-    "design-shit-properly": "bin/install.js",
-    "dsp": "bin/install.js"
+    "design-protocol": "bin/install.js",
+    "dp": "bin/install.js"
   },
   "scripts": {
     "test": "node test/install.test.js",
@@ -38,12 +38,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SignalOrg/design-shit-properly.git"
+    "url": "git+https://github.com/SignalOrg/design-protocol.git"
   },
   "bugs": {
-    "url": "https://github.com/SignalOrg/design-shit-properly/issues"
+    "url": "https://github.com/SignalOrg/design-protocol/issues"
   },
-  "homepage": "https://github.com/SignalOrg/design-shit-properly#readme",
+  "homepage": "https://github.com/SignalOrg/design-protocol#readme",
   "engines": {
     "node": ">=14.0.0"
   },
