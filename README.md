@@ -4,8 +4,8 @@ A complete design workflow system for Claude Code. Takes you from vague requirem
 
 [![NPM Version](https://img.shields.io/npm/v/design-protocol?style=flat-square&logo=npm&logoColor=white&label=NPM&color=cb0000)](https://www.npmjs.com/package/design-protocol)
 [![Downloads](https://img.shields.io/npm/dm/design-protocol?style=flat-square&logo=npm&logoColor=white&label=Downloads&color=cb0000)](https://www.npmjs.com/package/design-protocol)
-[![GitHub Stars](https://img.shields.io/github/stars/SignalOrg/design-protocol?style=flat-square&logo=github&logoColor=white&label=Stars&color=6e5494)](https://github.com/SignalOrg/design-protocol)
-[![License](https://img.shields.io/npm/l/design-protocol?style=flat-square&label=License&color=444444)](https://github.com/SignalOrg/design-protocol/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/niforiskollaros/design-protocol?style=flat-square&logo=github&logoColor=white&label=Stars&color=6e5494)](https://github.com/niforiskollaros/design-protocol)
+[![License](https://img.shields.io/npm/l/design-protocol?style=flat-square&label=License&color=444444)](https://github.com/niforiskollaros/design-protocol/blob/main/LICENSE)
 
 ```
 /dp:start → /dp:discovery → /dp:ux → /dp:execute → /dp:ui → /dp:execute → /dp:eng_review → /dp:verify
