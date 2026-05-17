@@ -5,7 +5,7 @@ const path = require('path');
 const readline = require('readline');
 const { execSync } = require('child_process');
 
-const VERSION = '2.2.1';
+const VERSION = '1.0.0';
 const PACKAGE_NAME = 'design-protocol';
 const PACKAGE_DIR = path.join(__dirname, '..');
 let VERBOSE = false;
