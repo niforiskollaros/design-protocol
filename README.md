@@ -34,15 +34,6 @@ npx design-protocol --update        # Update to latest version
 npx design-protocol@latest          # Or install latest directly
 ```
 
-## What's New in v2.2
-
-- **Project auto-detection** — `/dp:execute` detects your framework, component directory, and dev server instead of assuming Next.js
-- **State validation** — Commands validate `config.json` on load and offer to repair corrupted state
-- **47-test suite** — Automated checks run before every publish (version sync, file integrity, no hardcoded paths)
-- **`--verbose` flag** — Troubleshoot installs with `npx design-protocol --verbose`
-- **Workflow navigation** — Every skill and command shows where you are in the pipeline and what comes next
-- **Installer hardening** — Symlink protection, depth limits, clear error messages with file-level context
-
 ## Quick Start
 
 ```
