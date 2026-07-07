@@ -5,7 +5,7 @@ const path = require('path');
 const readline = require('readline');
 const { execSync } = require('child_process');
 
-const VERSION = '1.0.0';
+const VERSION = require('../package.json').version;
 const PACKAGE_NAME = 'design-protocol';
 const PACKAGE_DIR = path.join(__dirname, '..');
 let VERBOSE = false;
@@ -54,8 +54,12 @@ function printBanner() {
 
 function getClaudeDir(location) {
   if (location === 'global') {
+    if (process.env.CLAUDE_CONFIG_DIR) return process.env.CLAUDE_CONFIG_DIR;
     const homeDir = process.env.HOME || process.env.USERPROFILE;
-    return process.env.CLAUDE_CONFIG_DIR || path.join(homeDir, '.claude');
+    if (!homeDir) {
+      throw new Error('Cannot determine home directory: neither HOME nor USERPROFILE is set.\n  Set CLAUDE_CONFIG_DIR to your Claude config directory and retry.');
+    }
+    return path.join(homeDir, '.claude');
   }
   return path.join(process.cwd(), '.claude');
 }
@@ -155,8 +159,11 @@ function getLatestVersion() {
 }
 
 function compareVersions(v1, v2) {
-  const parts1 = v1.split('.').map(Number);
-  const parts2 = v2.split('.').map(Number);
+  // Split off pre-release tags (e.g. "1.0.0-beta.1")
+  const [base1, pre1] = v1.split('-');
+  const [base2, pre2] = v2.split('-');
+  const parts1 = base1.split('.').map(Number);
+  const parts2 = base2.split('.').map(Number);
 
   for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
     const p1 = parts1[i] || 0;
@@ -164,6 +171,10 @@ function compareVersions(v1, v2) {
     if (p1 > p2) return 1;
     if (p1 < p2) return -1;
   }
+  // Same base version: a pre-release sorts before the release
+  if (pre1 && !pre2) return -1;
+  if (!pre1 && pre2) return 1;
+  if (pre1 && pre2) return pre1 < pre2 ? -1 : pre1 > pre2 ? 1 : 0;
   return 0;
 }
 
@@ -252,7 +263,7 @@ Examples:
 
 ${c.bright}What Gets Installed:${c.reset}
   ~/.claude/skills/      10 design skills (dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell)
-  ~/.claude/commands/    7 workflow commands (dp:start, dp:execute, etc.)
+  ~/.claude/commands/    12 workflow commands (dp:start, dp:execute, dp:prd, dp:journey, dp:roadmap, dp:color, dp:storytell, etc.)
   ~/.claude/agents/      2 specialized agents
 
 ${c.bright}Workflow:${c.reset}

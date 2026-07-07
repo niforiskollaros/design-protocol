@@ -42,6 +42,8 @@ This skill is an optional sub-phase (Phase 1.5c) placed between Discovery and UX
 
 ### Detecting Workflow Mode
 
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
 At the start of any `/dp:roadmap` invocation:
 
 1. **Check for `.design/config.json`**
@@ -163,25 +165,14 @@ This is the central distinction in NNGroup's framework.
 
 Pick one format at the start. Can be mixed but discuss tradeoffs first.
 
-### 1. Now / Next / Future (theme-based)
-The canonical NNGroup format. Three time columns × theme rows.
+| Type | Structure | Use when |
+|---|---|---|
+| **1. Now / Next / Future** (theme-based) | Three time columns × theme rows (canonical NNGroup) | Communicating direction cross-functionally; timelines uncertain |
+| **2. Outcome-based** | Themes nest under outcome metrics | Org has clear outcome targets; work tied to measurable shifts |
+| **3. Theme-based** (no horizons) | Themes ranked by priority, no time columns | Velocity is highly variable or timing can't be predicted |
+| **4. Lean / low-fidelity** | Stripped-down sticky-note version | Early-stage workshops; polish would slow alignment |
 
-**Use when:** Communicating direction across a cross-functional audience, especially when timelines are uncertain.
-
-### 2. Outcome-based
-Organized by outcome metrics (e.g., "Reduce onboarding drop-off 20%"). Themes nest under outcomes.
-
-**Use when:** The org has clear outcome targets and wants to tie work to measurable shifts.
-
-### 3. Theme-based (without horizons)
-Just themes ranked by priority, no time columns. Used when the team commits to themes but doesn't pre-allocate timing.
-
-**Use when:** The team's velocity is highly variable or timing can't be predicted.
-
-### 4. Lean / low-fidelity
-A stripped-down sticky-note version. Used in early-stage workshops or when the roadmap is a living conversation, not a document.
-
-**Use when:** Roadmapping is happening in a workshop and polish would slow alignment.
+See `references/roadmap-structures.md` for full templates per type, audience-specific variants (exec deck, team view, stakeholder one-pager), and visualization formats.
 
 ---
 
@@ -235,43 +226,12 @@ Collect raw material from:
 
 ## Workshop Formats
 
-The skill supports two NNGroup workshop structures. Pick based on how much time and research is available.
+The skill supports two NNGroup workshop structures. Pick based on how much time and research is available:
 
-### Format A — Single 3-Hour Workshop
-Assumes inputs are already gathered. Good when research exists.
+- **Format A — Single 3-Hour Workshop:** assumes inputs are already gathered. Good when research exists.
+- **Format B — Two Workshops + Research:** better when inputs are thin and more research is needed between sessions.
 
-| Time | Activity |
-|---|---|
-| 25 min | Introduction — icebreaker + "Roadmap hopes & fears" exercise |
-| 15 min | Read-out — present context and input-collection methods |
-| 45 min | Distill themes — small groups read inputs, individual post-up, converge, name themes, playback |
-| 20 min | Break |
-| 30 min | Affinity diagramming — large group converges cluster insights |
-| 45 min | Prioritization — criteria, scoring, playback |
-
-**Post-workshop:** visualize and share within 48 hours.
-
-### Format B — Two Workshops + Research
-Better when inputs are thin and more research is needed.
-
-**Workshop 1 (1 hour):**
-| Time | Activity |
-|---|---|
-| 5 min | Intro + roadmap definition |
-| 15 min | Hopes & fears — individual then cluster |
-| 30 min | Strategy collection from stakeholders, small groups identify insights + cluster |
-| 10 min | Open questions — flag research gaps |
-
-**Between workshops:** research team closes open questions (competitive, user, stakeholder interviews).
-
-**Workshop 2 (2 hours):**
-| Time | Activity |
-|---|---|
-| 15 min | Intro + research recap |
-| 30 min | Distill themes — individual post-up, converge, playback |
-| 15 min | Break |
-| 30 min | Affinity diagramming |
-| 30 min | Prioritization |
+See `references/roadmap-workshops.md` for full facilitation agendas for both formats, plus key exercises (hopes & fears, affinity diagramming, dot voting, strategy-collection interviews), stakeholder mapping, and revisit cadence.
 
 ---
 
@@ -279,61 +239,19 @@ Better when inputs are thin and more research is needed.
 
 A theme should read as a problem statement with a beneficiary and a desired outcome — not as a feature list.
 
-### The pattern
+**The pattern:**
 > *"For [beneficiary], [need] so that [business objective]."*
 
-### Examples
+**Quick tests:** name the beneficiary concretely; state the need without a solution; state the business objective as a measurable shift; and survive the "what else could solve this?" question (if it reduces to one solution, it's a feature in disguise).
 
-| Bad (feature-based) | Good (theme-based) |
-|---|---|
-| Build a new onboarding wizard | For first-time customers, reduce time-to-first-value so that trial-to-paid conversion increases |
-| Redesign checkout | For returning shoppers, remove friction in checkout so that cart-abandonment drops |
-| Add SSO | For IT buyers, meet enterprise auth requirements so that deals over $50k don't stall |
-| Improve search | For knowledge-base users, surface relevant help earlier so that support contact rate decreases |
-
-### Good theme tests
-- Can you state the beneficiary in concrete terms?
-- Can you state the need without naming a solution?
-- Can you state the business objective as a measurable shift?
-- Does the theme survive the "what else could solve this?" question? (If it reduces to one solution, it's a feature masquerading as a theme)
+See `references/theme-development.md` for deriving themes from inputs (research, journey maps, support signals), the full good-theme test set, good vs bad examples, theme anti-patterns, subthemes, confidence calibration, and source traceability.
 
 ---
 
 ## Prioritization Frameworks
 
-Pick one framework per roadmap. The skill explains each and helps the user choose.
+Pick one framework per roadmap. Quick selection guide:
 
-### RICE (Intercom, Sean McBride)
-Formula: **(Reach × Impact × Confidence) ÷ Effort**
-- Reach: how many users affected per quarter (absolute number)
-- Impact: per-user effect (3 = massive, 2 = high, 1 = medium, 0.5 = low, 0.25 = minimal)
-- Confidence: how sure are we? (100% / 80% / 50%)
-- Effort: person-months
-- **Use when:** team has reasonable data on reach and impact
-
-### ICE (Sean Ellis)
-Formula: **Impact × Confidence × Ease** (all 1-10)
-- Simpler than RICE, less rigor
-- **Use when:** speed matters more than precision (early stage, workshops)
-
-### MoSCoW
-Must / Should / Could / Won't (this cycle)
-- **Use when:** scope negotiation with stakeholders, not comparing alternatives
-
-### Value vs Effort (2×2)
-Plot each theme on a 2×2 matrix: high/low value × high/low effort. Quick wins = high value × low effort.
-- **Use when:** early in workshops when data is thin and you need visual alignment fast
-
-### Kano Model
-Basic (expected), Performance (satisfaction scales with investment), Excitement (delighters), Indifferent, Reverse
-- **Use when:** deciding between "improve existing" and "add new" across a portfolio
-
-### Opportunity Scoring (Ulwick / JTBD)
-Opportunity = Importance + max(Importance − Satisfaction, 0)
-Survey users on importance of outcomes and satisfaction with current state. Largest opportunity = most important *and* most underserved.
-- **Use when:** you have quantitative JTBD research
-
-### Framework selection guide
 | Situation | Framework |
 |---|---|
 | Lots of data, need precision | RICE |
@@ -341,166 +259,26 @@ Survey users on importance of outcomes and satisfaction with current state. Larg
 | Scope negotiation with leadership | MoSCoW |
 | Product strategy (new vs existing) | Kano |
 | JTBD research available | Opportunity Scoring |
+| Scaled agile / time-sensitive portfolio | WSJF |
+| MVP scoping | Story Mapping (+ a ranker) |
+
+See `references/prioritization-frameworks.md` for exact formulas, scales, fit, and pitfalls for all eight frameworks (RICE, ICE, MoSCoW, Kano, Value/Effort, WSJF, Opportunity Scoring, Story Mapping), plus universal pitfalls and NNGroup's stance.
 
 ---
 
 ## Common Anti-Patterns
 
-The skill actively guards against these:
+The skill actively guards against feature-lists-as-themes, missing beneficiaries or business objectives, all-themes-in-Now, commitment creep, set-and-forget, single-audience design, missing prioritization rationale, and skipped confidence levels.
 
-1. **Feature list dressed up as themes** — "Build X, ship Y, launch Z" is not a roadmap; it's a backlog
-2. **No beneficiary named** — themes without a clear user/customer tend to serve the org, not the user
-3. **All themes in "Now"** — signals inability to defer or prioritize; every roadmap needs a distribution across horizons
-4. **Missing business objectives** — themes without outcomes can't be evaluated for success
-5. **Commitment creep** — stakeholders treat "Future" themes as commitments; the roadmap should explicitly disclaim this
-6. **Set-and-forget** — no review cadence = stale roadmap in 3 months
-7. **Designed for only one audience** — creator-only view misses consumer needs (and vice versa)
-8. **No prioritization rationale** — if you can't explain *why* A is before B, the roadmap won't survive its first pushback
-9. **Confusing a UX roadmap with a product roadmap with a release plan** — different artifacts, different audiences, different purposes
-10. **Skipping confidence levels** — treating all themes with the same certainty misleads consumers
+See `references/roadmap-structures.md` for the full 10-item roadmap anti-pattern list; `references/theme-development.md` for theme-specific anti-patterns; `references/roadmap-workshops.md` for workshop anti-patterns.
 
 ---
 
 ## Output Structure (Workflow Mode)
 
-When in workflow mode, write to `.design/phases/ROADMAP.md`:
+When in workflow mode, write the roadmap to `.design/phases/ROADMAP.md`.
 
-```yaml
----
-phase: roadmap
-skill: dp-roadmap
-roadmap_type: [now_next_future | outcome_based | theme_based | lean]
-completed: YYYY-MM-DDTHH:MM:SSZ
-owner: [role / person]
-scope: [team / product / portfolio]
-horizon: [e.g., Q2–Q4 2026]
-themes_count: N
-prioritization_framework: [RICE | ICE | MoSCoW | Value/Effort | Kano | Opportunity Scoring]
-inputs_used:
-  - DISCOVERY.md
-  - JOURNEY-MAP.md
-  - RESEARCH-interviews.md
-review_cadence: [monthly | quarterly]
-next_review: YYYY-MM-DD
----
-
-# Roadmap: [Title]
-
-> Type: [Now/Next/Future | Outcome-based | Theme-based | Lean]
-> Owner: [Name / Role]
-> Last updated: [Date]
-
-## Context
-
-**High-Level Goals**
-- [Goal 1 — company / org strategy this serves]
-- [Goal 2]
-- [Goal 3]
-
-**Scope**
-[What is in / out of scope for this roadmap]
-
-**Audience**
-- Creator: [who]
-- Contributors: [who]
-- Consumers: [who]
-
----
-
-## Roadmap
-
-### Completed (just shipped)
-| Theme | Beneficiary | Outcome achieved |
-|---|---|---|
-| [Theme] | [who] | [measurable shift] |
-
-### Now
-| # | Theme | Beneficiary | Need | Business Objective | Owner | Confidence | Disclaimers |
-|---|---|---|---|---|---|---|---|
-| 1 | [Name] | [who] | [problem] | [outcome] | [team] | H | [risk/dep] |
-
-### Next (next ~2 quarters)
-| # | Theme | Beneficiary | Need | Business Objective | Owner | Confidence | Disclaimers |
-|---|---|---|---|---|---|---|---|
-| 1 | [Name] | [who] | [problem] | [outcome] | [team] | M | [risk/dep] |
-
-### Future (6+ months)
-| # | Theme | Beneficiary | Need | Business Objective | Confidence | Disclaimers |
-|---|---|---|---|---|---|---|---|
-| 1 | [Name] | [who] | [problem] | [outcome] | L | [risk/dep] |
-
-### Future++ (parking lot)
-- [Idea 1 — source]
-- [Idea 2 — source]
-
----
-
-## Themes in Detail
-
-### Theme 1: [Theme name]
-
-**Pattern:** For [beneficiary], [need] so that [business objective].
-
-- **Beneficiary:** [who]
-- **Need:** [problem — no solution mentioned]
-- **Business Objective:** [measurable shift]
-- **Subthemes:**
-  - [sub-goal 1]
-  - [sub-goal 2]
-- **Product / Experience Area:** [where]
-- **Owner (who):** [team / role]
-- **Owner (what):** [kind of work — research, redesign, new capability]
-- **Confidence:** [H / M / L] — [rationale]
-- **Disclaimers:** [risks, dependencies, open questions]
-- **Prioritization score:** [framework] = [value]
-- **Source inputs:** [research, journey opportunity, etc.]
-
-[Repeat for each theme]
-
----
-
-## Prioritization Detail
-
-**Framework used:** [name]
-
-**Scoring matrix:**
-| Theme | [Criteria 1] | [Criteria 2] | [Criteria 3] | Score | Rank |
-|---|---|---|---|---|---|
-| T1 | [value] | [value] | [value] | [score] | 1 |
-
-**Rationale for top 3:**
-1. [Theme] — [why it ranks #1]
-2. [Theme] — [why #2]
-3. [Theme] — [why #3]
-
----
-
-## Governance
-
-- **Review cadence:** [monthly / quarterly]
-- **Next scheduled review:** [date]
-- **Update triggers (off-cycle):**
-  - Major strategic shift
-  - New research finding invalidates a theme
-  - Delivery signal (theme completed or abandoned)
-  - Leadership request
-- **Versioning:** increment version on major refresh; track in git
-
----
-
-## Open Questions
-
-- [Question 1 — planned research to close]
-- [Question 2]
-
----
-
-## Disclaimers
-
-- This roadmap is directional, not a commitment
-- "Future" themes are likely to change as we learn
-- Confidence levels reflect current evidence — not guaranteed outcomes
-```
+See `references/roadmap-structures.md` → "Workflow-Mode Output Template (ROADMAP.md)" for the complete file template (YAML frontmatter, Context, Now/Next/Future tables, Themes in Detail, Prioritization Detail, Governance, Open Questions, Disclaimers).
 
 ---
 

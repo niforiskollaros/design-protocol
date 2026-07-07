@@ -30,24 +30,32 @@ Read whatever exists:
 - `.design/PROJECT.md`
 - `.design/REQUIREMENTS.md`
 - `.design/phases/DISCOVERY.md`
+- `.design/phases/PRD.md` (if PRD phase ran)
+- `.design/phases/JOURNEY-MAP.md` (if journey phase ran)
+- `.design/phases/ROADMAP.md` (if roadmap phase ran)
 - `.design/phases/UX-DECISIONS.md`
+- `.design/phases/COLOR-SYSTEM.md` (if color phase ran)
 - `.design/phases/UI-SPEC.md`
 - `.design/phases/REVIEW.md`
 
 ### Step 3: Run Truth Verification
 
-**Design Truths** — What must be TRUE:
+**Design Truths** — What must be TRUE.
 
-| Truth | Check | Source |
-|-------|-------|--------|
-| Problem is clearly defined | Is there a problem statement in discovery? | DISCOVERY.md |
-| User is well-understood | Is primary user documented with goals? | DISCOVERY.md |
-| Requirements are prioritized | Are there must/should/could categories? | DISCOVERY.md, REQUIREMENTS.md |
-| User flow is complete | Is there an end-to-end flow? | UX-DECISIONS.md |
-| All states are specified | Are default/hover/focus/error/empty/loading documented? | UX-DECISIONS.md |
-| Accessibility addressed | Are a11y requirements documented? | UX-DECISIONS.md, REQUIREMENTS.md |
-| Visual hierarchy is clear | Is there visual spec with hierarchy? | UI-SPEC.md |
-| Components are specified | Are key components detailed? | UI-SPEC.md |
+> **Canonical source:** the T1–T10 truths, artifact list, and W1–W6 wiring checks are defined once in `agents/dp-verifier.md`. This command mirrors them for quick inline runs; if the two ever disagree, the agent file wins. The `test/install.test.js` truth-list drift test enforces that they stay identical.
+
+| ID | Truth | Check | Source |
+|----|-------|-------|--------|
+| T1 | Problem is clearly articulated | Is there a problem statement in discovery? | DISCOVERY.md |
+| T2 | Primary user is well-defined | Is primary user documented with goals? | DISCOVERY.md |
+| T3 | Requirements are prioritized | Are there must/should/could/must-not categories? | DISCOVERY.md, REQUIREMENTS.md |
+| T4 | User flow is complete | Is there an end-to-end flow? | UX-DECISIONS.md |
+| T5 | All interactive states defined | Are default/hover/focus/active/disabled/loading/error/empty/success documented? | UX-DECISIONS.md |
+| T6 | Accessibility is addressed | Are a11y requirements documented with WCAG references? | UX-DECISIONS.md, REQUIREMENTS.md |
+| T7 | Visual hierarchy is clear | Is there visual spec with hierarchy? | UI-SPEC.md |
+| T8 | Components are specified | Are key components detailed? | UI-SPEC.md |
+| T9 | Design tokens documented | Are colors, spacing, typography tokens defined? | UI-SPEC.md, COLOR-SYSTEM.md (if present) |
+| T10 | Implementation guidance clear | Is there enough detail for a developer to build? | UI-SPEC.md, REVIEW.md |
 
 **Output:**
 ```
@@ -79,6 +87,15 @@ TRUTH VERIFICATION
 | UI-SPEC.md | For Review phase | .design/phases/ |
 | REVIEW.md | For workflow completion | .design/phases/ |
 
+**Optional-phase artifacts** — verify only if the phase is enabled/completed in `config.json` (`optional_phases.*.completed`):
+
+| Artifact | Required when | Location |
+|----------|---------------|----------|
+| PRD.md | `optional_phases.prd.completed` | .design/phases/ |
+| JOURNEY-MAP.md | `optional_phases.journey.completed` | .design/phases/ |
+| ROADMAP.md | `optional_phases.roadmap.completed` | .design/phases/ |
+| COLOR-SYSTEM.md | `optional_phases.color.completed` | .design/phases/ |
+
 For each artifact, also verify it's substantive:
 - Not just placeholder text
 - Contains actual decisions/specs
@@ -106,12 +123,14 @@ ARTIFACT VERIFICATION
 
 **Design Wiring** — What must CONNECT:
 
-| Connection | From | To | Check |
-|------------|------|-----|-------|
-| Requirements trace | DISCOVERY.md | UX-DECISIONS.md | Do UX decisions reference requirements? |
-| UX to UI | UX-DECISIONS.md | UI-SPEC.md | Does UI spec cover all components from UX? |
-| States coverage | UX-DECISIONS.md | UI-SPEC.md | Are all UX states visually specified? |
-| Spec to Review | All phases | REVIEW.md | Does review check against specs? |
+| ID | From | To | Check |
+|----|------|-----|-------|
+| W1 | Discovery requirements | UX decisions | Each must-have requirement has corresponding UX decision |
+| W2 | Discovery users | UX flows | Flows address documented user goals |
+| W3 | UX components | UI specs | Each component in UX has visual spec |
+| W4 | UX states | UI states | Each state in UX has visual treatment |
+| W5 | All phases | Review | Review checks against documented specs |
+| W6 | Requirements | Final | All must-have requirements can be traced to implementation guidance |
 
 **Output:**
 ```

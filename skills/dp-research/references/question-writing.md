@@ -2,6 +2,16 @@
 
 Your questions shape your data. Biased questions = biased insights.
 
+## Contents
+- [The Cardinal Rule](#the-cardinal-rule)
+- [Question Types](#question-types)
+- [Bias Types & How to Avoid Them](#bias-types--how-to-avoid-them)
+- [Good Question Formulas](#good-question-formulas)
+- [The 5-Second Silence Technique](#the-5-second-silence-technique)
+- [Question Review Checklist](#question-review-checklist)
+- [Before/After Examples](#beforeafter-examples)
+- [Practice Exercise](#practice-exercise)
+
 ---
 
 ## The Cardinal Rule

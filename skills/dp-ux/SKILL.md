@@ -1,6 +1,12 @@
 ---
 name: dp-ux
-description: Apply UX/UI design principles for intuitive, accessible interfaces. Use with "/dp:ux", UX review, usability improvements, or user-centered design. Phase 2 of DP workflow.
+description: >
+  Applies UX design principles to create intuitive, accessible, user-centered interfaces â€” user
+  flows, interaction states, cognitive/usability foundations, and accessibility of interaction.
+  Use as Phase 2 of the DP workflow, or standalone for any UX review, usability improvement, flow
+  design, state-coverage audit, or "make this more intuitive" request. Trigger with "/dp:ux", "UX
+  review", "usability", "user flow", "interaction states", "empty/error/loading states", or
+  "user-centered design". For visual styling, grids, and design tokens, use "/dp:ui" instead.
 ---
 
 # UX/UI Design Excellence
@@ -14,6 +20,8 @@ Create interfaces that feel as polished as Linear, Stripe, Notion, and Vercel â€
 This skill is Phase 2 of the DP (Design Protocol) workflow. It automatically detects and integrates with the workflow when present.
 
 ### Detecting Workflow Mode
+
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
 
 At the start of any `/dp:ux` invocation:
 

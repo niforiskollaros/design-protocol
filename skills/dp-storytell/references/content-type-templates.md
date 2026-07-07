@@ -2,6 +2,15 @@
 
 Full end-to-end templates for each of the 6 content types. Use as scaffolding; adjust based on audience playbook.
 
+## Contents
+
+- [Template 1 — Design Proposal (Pitching New Work)](#template-1--design-proposal-pitching-new-work)
+- [Template 2 — Design Review (Showing Work for Critique)](#template-2--design-review-showing-work-for-critique)
+- [Template 3 — Research Readout](#template-3--research-readout)
+- [Template 4 — Executive One-Pager](#template-4--executive-one-pager)
+- [Template 5 — Prototype / Demo Walkthrough](#template-5--prototype--demo-walkthrough)
+- [Template 6 — Postmortem / Retrospective](#template-6--postmortem--retrospective)
+
 ---
 
 ## Template 1 — Design Proposal (Pitching New Work)

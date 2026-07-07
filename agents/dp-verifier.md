@@ -33,7 +33,11 @@ Read all available DP workflow files:
 ├── STATE.md
 └── phases/
     ├── DISCOVERY.md
+    ├── PRD.md              (if PRD phase ran)
+    ├── JOURNEY-MAP.md      (if journey phase ran)
+    ├── ROADMAP.md          (if roadmap phase ran)
     ├── UX-DECISIONS.md
+    ├── COLOR-SYSTEM.md     (if color phase ran)
     ├── UI-SPEC.md
     └── REVIEW.md
 ```
@@ -74,6 +78,15 @@ Check each artifact exists AND is substantive:
 | UX | UX-DECISIONS.md | User Flow, State Coverage, Accessibility, Patterns Applied |
 | UI | UI-SPEC.md | Visual Hierarchy, Grid System, Component Specs, Tokens |
 | Review | REVIEW.md | Quality Score, Issues by Severity, Recommendations |
+
+**Optional-phase artifacts** — verify only when the phase is completed in `config.json` (`optional_phases.*.completed`):
+
+| Phase | Artifact | Required Sections |
+|-------|----------|-------------------|
+| PRD (1.5a) | PRD.md | Problem, Goals, Requirements, Scope, Success Metrics |
+| Journey (1.5b) | JOURNEY-MAP.md | Actor/Scenario, Phases, Actions, Emotions, Pain Points, Opportunities |
+| Roadmap (1.5c) | ROADMAP.md | Themes, Now/Next/Future, Beneficiary/Need/Objective |
+| Color (2b) | COLOR-SYSTEM.md | Palette, Shade Ramps, Contrast Matrix, Tokens |
 
 **Substantive Checks:**
 - File is not just placeholder/template text

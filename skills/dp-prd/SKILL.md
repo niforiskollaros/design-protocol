@@ -19,7 +19,26 @@ and dual-audience output (stakeholder-ready or Claude Code-ready).
 
 ---
 
-## Phase 1 — Initiation
+> **Note on numbering:** the "Steps" below are internal to *this* skill's PRD-authoring process. They are distinct from the DP workflow's phase numbers. In the DP workflow, PRD is optional **Phase 1.5a** (runs between Discovery and UX, parallel to Journey 1.5b and Roadmap 1.5c).
+
+## DP Workflow Integration
+
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
+PRD is an **optional sub-phase (1.5a)** of the DP workflow. Detect mode at the start of any invocation:
+
+1. **Check for `.design/config.json`.**
+2. **If found (workflow mode):**
+   - Check `optional_phases.prd.enabled`. If not enabled, ask: "PRD phase isn't enabled for this project. Enable it and proceed? (y/n)"; on yes, set `optional_phases.prd.enabled` to `true`.
+   - Load `.design/phases/DISCOVERY.md` for problem, users, and requirements already gathered — do **not** re-interview for what discovery already answered; only fill gaps.
+   - Load `.design/phases/01.5a-CONTEXT.md` if `/dp:discuss` was run before this phase.
+   - Always write a Markdown copy of the PRD to `.design/phases/PRD.md` (in addition to any docx/HTML the user requested), because downstream phases (`/dp:journey`, `/dp:ux`) read that path.
+   - On completion, update `.design/config.json`: set `optional_phases.prd.completed` to `true`, `optional_phases.prd.timestamp` to the current ISO 8601 timestamp, and `optional_phases.prd.output` to `.design/phases/PRD.md`.
+   - Update `.design/STATE.md`: mark the PRD row complete in the Optional table and add a Last Activity entry.
+   - Handoff: "PRD complete. Next: `/dp:journey` to map the experience, or `/dp:ux` to start UX design."
+3. **If not found (standalone mode):** run normally and output inline / in the requested format; offer to save.
+
+## Step 1 — Initiation
 
 When the skill is triggered, run through the initiation checklist in a **single, conversational message**.
 Do NOT ask these one by one in separate turns. Group them naturally.
@@ -89,14 +108,14 @@ What kind of PRD is this?
 
 ---
 
-## Phase 2 — Interview
+## Step 2 — Interview
 
 Once initiation is complete, conduct a structured interview to gather content for each PRD section.
 Read `references/interview-questions.md` to get the full question bank.
 
 ### Pre-generation mandatory checks
 
-Before proceeding to Phase 4 (draft generation), verify:
+Before proceeding to Step 4 (draft generation), verify:
 
 **Check A — Component inventory (if Designer persona + Claude Code audience):**
 Has the user provided a component list with Figma names mapped to CSS token names?
@@ -134,7 +153,7 @@ Run these clusters in order, but merge naturally if answers overlap:
 
 ---
 
-## Phase 3 — Research (if opted in)
+## Step 3 — Research (if opted in)
 
 If the user requested competitive or market research in initiation:
 
@@ -149,7 +168,7 @@ If the user requested competitive or market research in initiation:
 
 ---
 
-## Phase 4 — Draft Generation
+## Step 4 — Draft Generation
 
 Generate the full PRD based on interview answers and research.
 Read `references/section-templates.md` for the exact structure and formatting of each section.
@@ -174,7 +193,7 @@ Before finalising the draft, verify:
 
 ---
 
-## Phase 5 — Refinement Loop
+## Step 5 — Refinement Loop
 
 After generating the draft, explicitly invite the user to refine it.
 

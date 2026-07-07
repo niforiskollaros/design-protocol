@@ -57,7 +57,7 @@ npx design-protocol@latest          # Or install latest directly
 | 3 | UI | `/dp:ui` | UI-SPEC.md |
 | 3a | Execute | `/dp:execute` | Polished components |
 | 4 | Review | `/dp:eng_review` | REVIEW.md |
-| 5 | Verify | `/dp:verify` | Verification report |
+| ✓ | Verify (final check) | `/dp:verify` | Verification report |
 
 ## Commands
 
@@ -70,8 +70,10 @@ npx design-protocol@latest          # Or install latest directly
 | `/dp:verify` | Goal-backward verification |
 | `/dp:skip` | Skip current phase |
 | `/dp:back` | Return to previous phase |
-| `/dp:journey` | Run journey map as optional phase (cross-phase) |
-| `/dp:roadmap` | Run roadmap as optional phase (cross-phase) |
+| `/dp:prd` | Run PRD as optional phase 1.5a |
+| `/dp:journey` | Run journey map as optional phase 1.5b |
+| `/dp:roadmap` | Run roadmap as optional phase 1.5c |
+| `/dp:color` | Run color system as optional phase 2b |
 | `/dp:storytell` | Generate audience-tuned presentation outline (cross-phase) |
 
 ## Skills
@@ -203,7 +205,7 @@ The execute command auto-detects your project structure by reading `package.json
 
 ### shadcn/ui not detected (polished mode)
 
-The command checks for `components.json` and `@/components/dp:ui/`. If you haven't installed shadcn yet:
+The command checks for `components.json` and `@/components/ui/`. If you haven't installed shadcn yet:
 
 ```bash
 npx shadcn@latest init

@@ -2,6 +2,19 @@
 
 Turning raw research into actionable insights.
 
+## Contents
+- [The Synthesis Mindset](#the-synthesis-mindset)
+- [Step 1: Data Extraction](#step-1-data-extraction)
+- [Step 2: Affinity Mapping](#step-2-affinity-mapping)
+- [Step 3: Pattern Recognition](#step-3-pattern-recognition)
+- [Step 4: From Observations to Insights](#step-4-from-observations-to-insights)
+- [Step 5: Quantifying Qualitative Data](#step-5-quantifying-qualitative-data)
+- [Step 6: Prioritizing Findings](#step-6-prioritizing-findings)
+- [Synthesis Output Template](#synthesis-output-template)
+- [Common Synthesis Mistakes](#common-synthesis-mistakes)
+- [Tools for Synthesis](#tools-for-synthesis)
+- [Synthesis Session Structure](#synthesis-session-structure)
+
 ---
 
 ## The Synthesis Mindset

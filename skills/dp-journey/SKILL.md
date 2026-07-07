@@ -39,6 +39,8 @@ This skill is an optional sub-phase (Phase 1.5b) placed between Discovery and UX
 
 ### Detecting Workflow Mode
 
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
 At the start of any `/dp:journey` invocation:
 
 1. **Check for `.design/config.json`**
@@ -99,46 +101,15 @@ Every journey artifact this skill produces must honor these five principles — 
 
 ## Journey Artifact Types
 
-The skill supports five distinct artifact types. Pick one per invocation based on the user's goal. These align with NNGroup's UX Mapping Cheat Sheet (Gibbons).
+The skill supports five distinct artifact types. Pick one per invocation based on the user's goal (aligned with NNGroup's UX Mapping Cheat Sheet, Gibbons):
 
-### 1. Customer Journey Map (default)
-**What it is:** One actor, one scenario, tied to a specific product or service, chronological, from the user's perspective.
+1. **Customer Journey Map** (default) — one actor, one scenario, tied to a specific product/service. Current-state (diagnostic) or future-state (vision) variants. Use to improve or design a specific flow.
+2. **Experience Map** — generic human perspective across a whole domain, not tied to one product. Use for upstream discovery of a new category.
+3. **Day-in-the-Life Map** — actions/thoughts/emotions across a person's whole day. Use to find new opportunities and design for moments, not screens.
+4. **Service Blueprint** — extends the journey map *downward* into the organization (5 layers, 3 lines). Use when internal coordination/backstage is the bottleneck. See Service Blueprint Specifics below.
+5. **Omnichannel Journey Map** — channel switching is first-class (Channel + Device rows + transition markers). Use when the experience spans 2+ channels and handoff quality matters. See Omnichannel Specifics below.
 
-**Use when:** Improving an existing experience or designing a specific product flow (e.g., "first-time buyer on mobile").
-
-**Variants:**
-- **Current-state** — how the journey works *today* (research-grounded, diagnostic)
-- **Future-state** — how the journey *should* work (vision-setting, strategy)
-
-**Structure:** Zone A (Actor/Scenario/Expectations) → Zone B (Phases + Actions + Thoughts + Emotions + Touchpoints) → Zone C (Opportunities + Ownership + Metrics).
-
-### 2. Experience Map
-**What it is:** Broader than a journey map — a *generic* human perspective, not tied to a specific product or service. Describes how people experience a whole domain (e.g., "managing personal finances" or "planning a wedding").
-
-**Use when:** Upstream discovery for a new product category; understanding context before a product exists; seeing competitive/substitute options.
-
-**Structure:** Same swimlanes as journey map, but scenario is a life context spanning multiple providers.
-
-### 3. Day-in-the-Life Map
-**What it is:** Plots actions/thoughts/emotions across a person's *whole day* (or wider context), not just a product-specific journey.
-
-**Use when:** Finding new product opportunities; understanding competing priorities; designing for moments (not screens).
-
-**Structure:** Timeline = hours of a day; swimlanes = activities, tools, emotions, unmet needs.
-
-### 4. Service Blueprint
-**What it is:** NNGroup (Gibbons): *"a diagram that visualizes the relationships between different service components — people, props (physical or digital evidence), and processes — that are directly tied to touchpoints in a specific customer journey."* Extends the journey map *downward* into the organization.
-
-**Use when:** The experience involves service delivery (humans, systems, handoffs) and internal coordination is the bottleneck. Banking, healthcare, hospitality, complex B2B SaaS onboarding, omnichannel retail.
-
-**Structure:** 5 layers separated by 3 lines — see Service Blueprint Specifics below.
-
-### 5. Omnichannel Journey Map
-**What it is:** A journey map where channel switching is first-class. Shows the same actor moving across web, mobile, email, phone, in-person, chat.
-
-**Use when:** The experience spans 2+ channels and handoff quality matters (e.g., buy online, pick up in store; apply online, sign in person).
-
-**Structure:** Journey map + explicit Channel row + Device row + Channel Transition markers at every handoff.
+See `references/journey-types.md` for the decision tree, comparison matrix, and worked examples of each type, and `references/map-structures.md` for the full swimlane template per type.
 
 ### Related but NOT produced by this skill
 - **Empathy Map** (Says/Thinks/Feels/Does quadrants) — attitudinal, not chronological. Use `/dp:research` synthesis instead.
@@ -204,26 +175,7 @@ The skill outputs a "Validation Checklist" section listing who should review eac
 
 ## Journey Map Anatomy
 
-Every journey map this skill produces has these zones (NNGroup's Zone A/B/C model):
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ ZONE A — The Lens                                                │
-│ Actor + Scenario + Expectations                                  │
-├─────────────────────────────────────────────────────────────────┤
-│ ZONE B — The Experience                                          │
-│ ─────────────────────────────────────────────────────────────   │
-│ Phase 1      Phase 2      Phase 3      Phase 4      Phase 5     │
-│ ─────────────────────────────────────────────────────────────   │
-│ Actions      Actions      Actions      Actions      Actions     │
-│ Thoughts     Thoughts     Thoughts     Thoughts     Thoughts    │
-│ Emotions ▁▂▅▇▅▃▁ (curve across all phases)                      │
-│ Touchpoints Touchpoints  Touchpoints  Touchpoints  Touchpoints  │
-├─────────────────────────────────────────────────────────────────┤
-│ ZONE C — The Insights                                            │
-│ Pain Points | Opportunities | Ownership | Metrics                │
-└─────────────────────────────────────────────────────────────────┘
-```
+Every journey map this skill produces uses NNGroup's Zone A/B/C model: **Zone A** (the lens — Actor + Scenario + Expectations) → **Zone B** (the experience — Phases with Actions, Thoughts, Emotion curve, Touchpoints) → **Zone C** (the insights — Pain Points, Opportunities, Ownership, Metrics). See `references/map-structures.md` for the full anatomy diagram and per-type templates.
 
 ---
 
@@ -231,71 +183,24 @@ Every journey map this skill produces has these zones (NNGroup's Zone A/B/C mode
 
 When artifact type is "Omnichannel Journey Map":
 
-### Apply NNGroup's 5 Components of Omnichannel UX (Kim Flaherty)
-1. **Consistent** — a cohesive, familiar experience across channels (brand, content, data, core functionality)
-2. **Optimized (for context)** — each channel's UI is suited to its device, constraints, and context of use (not a copy-paste of desktop)
-3. **Seamless** — channel transitions involve zero or minimal overhead; users can pick up where they left off
-4. **Orchestrated** — proactively guides customers through their journey with the right interaction at the right time
-5. **Collaborative** — lets customers use multiple channels *simultaneously* (e.g., agent call + web screen-share, TV + mobile companion app)
+- **Apply NNGroup's 5 components of omnichannel UX** (Flaherty): Consistent, Optimized (for context), Seamless, Orchestrated, Collaborative — *consistent what, contextual how.*
+- **Define touchpoints precisely** (Salazar): a touchpoint = **channel × device × task**. Build a touchpoint inventory enumerating every combo the actor hits.
+- **Treat channel transitions as first-class events** — at every handoff, document what context *should* carry over, what *actually* carries over, and the failure mode if it's lost.
+- **Name the tier in the output**: Multichannel (siloed) vs Cross-channel (coordinated) vs Omnichannel (unified, designed transitions). Most orgs believe they are omnichannel but operate lower — state it honestly.
 
-### Define touchpoints precisely (NNGroup, Kim Salazar)
-A **touchpoint** = **channel × device × task**. Separate these explicitly:
-- **Channel** — method of communication/delivery (web, app, call center, store, email, SMS)
-- **Device** — hardware (phone, laptop, kiosk, POS terminal)
-- **Touchpoint** — a specific interaction = channel + device + task
-
-A **touchpoint inventory** enumerates every (channel × device × task) combo the actor hits across the journey.
-
-### Treat channel transitions as first-class events
-At every handoff, document:
-- What the user just did (source channel)
-- What they try to do next (destination channel)
-- What context *should* carry over (auth, cart, preferences, session state, intent)
-- What *actually* carries over (current reality)
-- Failure mode if context is lost (forced re-login, re-typing, re-explaining)
-
-### Multichannel vs cross-channel vs omnichannel (precise NNGroup usage)
-- **Multichannel** — presence on many channels, but each designed in isolation. No shared state, no transition design.
-- **Cross-channel** — channels are coordinated (e.g., email contains a web link that persists session).
-- **Omnichannel** — channels are designed as a connected system: each optimized for its context, transitions explicitly designed, built around the customer's journey rather than the org's channel silos.
-
-**Consistent what, contextual how:** keep brand, data, and core capability consistent across channels; let UI, interaction modality, and detail level adapt to each channel's context.
-
-Call out in the output which tier the current experience operates at.
-
-### Common omnichannel pitfalls to flag
-- Treating multichannel presence as omnichannel
-- Siloed ownership (each channel owned by a different team)
-- Inconsistent data state across channels (stale cart, stale status)
-- Forcing channel parity (replicating desktop UI on mobile)
-- Unmanaged handoffs (re-auth, re-enter, re-explain)
-- Over-personalization without permission
-- Mapping only the happy path — gaps live at transitions and recovery paths
-- Skipping the touchpoint inventory
+See `references/omnichannel-patterns.md` for the full 5-component definitions, touchpoint-inventory build steps, channel transition patterns, anti-patterns, and the maturity self-assessment.
 
 ---
 
 ## Service Blueprint Specifics
 
-When artifact type is "Service Blueprint":
+When artifact type is "Service Blueprint", the map extends *downward* into the organization:
 
-### The five layers (top to bottom)
-1. **Physical Evidence** — tangible artifacts the customer encounters (receipt, signage, UI screen)
-2. **Customer Actions** — what the customer does (this IS the journey map row)
-3. **Frontstage Actions** — what employees/systems do visibly
-4. **Backstage Actions** — what employees/systems do invisibly
-5. **Support Processes** — upstream systems, policies, and vendors
+- **5 layers** (top to bottom): Physical/Digital Evidence → Customer Actions (this IS the journey row) → Frontstage Actions → Backstage Actions → Support Processes.
+- **3 lines**: Line of Interaction (Customer ↔ Frontstage), Line of Visibility (Frontstage ↔ Backstage), Line of Internal Interaction (Backstage ↔ Support).
+- **When to use:** failures happen backstage but surface frontstage; cross-team coordination is the real problem (not UI); designing a new service, not just an interface.
 
-### The three lines
-- **Line of Interaction** — between Customer Actions and Frontstage (every interaction crosses this)
-- **Line of Visibility** — between Frontstage and Backstage (customer cannot see below this)
-- **Line of Internal Interaction** — between Backstage and Support Processes
-
-### When to use vs journey map
-Use a service blueprint when:
-- Failures happen backstage but surface frontstage
-- Cross-team coordination is the actual problem (not UI)
-- You're designing a new service, not just a new interface
+See `references/map-structures.md` §4 for the full layer definitions, the visibility-of-action nuance, and the 5-step building process.
 
 ---
 
@@ -342,180 +247,11 @@ This honors the "Research-based" principle while letting teams move forward when
 
 ## Output Structure (Workflow Mode)
 
-When in workflow mode, write to `.design/phases/JOURNEY-MAP.md`:
+When in workflow mode, write the journey artifact to `.design/phases/JOURNEY-MAP.md`.
 
-```yaml
----
-phase: journey
-skill: dp-journey
-artifact_type: [customer_journey | experience_map | service_blueprint | omnichannel_journey]
-completed: YYYY-MM-DDTHH:MM:SSZ
-mode: [research_based | hypothesis]
-actor: [persona name]
-scenario: [one-line scenario]
-phases_count: N
-research_sources:
-  - RESEARCH-interviews.md
-  - RESEARCH-usability.md
-validation_status: [validated | partial | unvalidated]
----
+The file begins with a YAML frontmatter block (keys: `phase`, `skill`, `artifact_type`, `completed`, `mode`, `actor`, `scenario`, `phases_count`, `research_sources`, `validation_status`) followed by the body in Zone A → Zone B → Zone C order, plus conditional sections for Service Blueprint (Backstage Analysis), Omnichannel (Channel Transition Analysis), and Hypothesis Mode (Validation Plan), then Handoff Notes for UX.
 
-# Journey Map: [Scenario title]
-
-> Artifact type: [Customer Journey Map | Experience Map | Service Blueprint | Omnichannel Journey Map]
-> Mode: [Research-based | Hypothesis-based ⚠]
-
-## Zone A — The Lens
-
-**Actor:** [Persona name + one-line description]
-
-**Scenario:** [Specific, time-bounded, outcome-oriented scenario]
-
-**Actor's Expectations Entering:**
-- [Expectation 1]
-- [Expectation 2]
-- [Expectation 3]
-
-**Actor's Goal:** [What success looks like from their perspective]
-
-## Zone B — The Experience
-
-### Phases
-| # | Phase Name | Duration | Key Question |
-|---|---|---|---|
-| 1 | [Phase 1] | [e.g., minutes / days] | [What is the actor trying to achieve?] |
-| ... | ... | ... | ... |
-
-### Phase-by-Phase Breakdown
-
-#### Phase 1: [Phase Name]
-
-**Actions**
-- [What the actor does]
-- [Next action]
-
-**Thoughts**
-- [Verbatim or paraphrased quotes — "..." if from research]
-
-**Emotions** — [value on 1-5 scale, e.g., 3/5 neutral]
-[Short description of emotional state]
-
-**Touchpoints / Channels**
-- [Touchpoint 1] ([channel type])
-- [Touchpoint 2] ([channel type])
-
-**Pain Points**
-- [Pain point 1 — with research source or [HYPOTHESIS] flag]
-
-**Opportunities**
-- [Opportunity 1 — concrete, actionable]
-
-**Internal Ownership**
-- [Team / role responsible]
-
-[Repeat for each phase]
-
-### Emotion Curve (across all phases)
-```
-  5 ┤
-  4 ┤    ╱╲
-  3 ┤   ╱  ╲___
-  2 ┤  ╱       ╲
-  1 ┤_╱         ╲___
-    └────────────────
-    P1  P2  P3  P4  P5
-```
-
-## Zone C — The Insights
-
-### Top 3 Opportunity Zones
-Ranked by severity × reach × strategic fit:
-
-1. **[Opportunity name]** — [Phase X]
-   - Severity: [1-5] — [why]
-   - Reach: [% of users affected]
-   - Strategic fit: [alignment with org goals]
-   - Suggested action: [concrete next step]
-
-2. ...
-
-3. ...
-
-### Key Moments of Truth
-Critical interactions where the experience succeeds or fails:
-- [Moment 1] — [why it matters]
-- [Moment 2] — [why it matters]
-
-### Ownership & Governance
-**Journey Owner (accountable):** [Name / Role — single person, RACI "A"]
-
-**Review Cadence:** [Weekly | Monthly | Quarterly] — [rationale]
-
-**Metrics to Monitor**
-| Tier | Metric | Current | Target | Source |
-|---|---|---|---|---|
-| Experience | NPS / CSAT / CES | [value] | [target] | [survey tool] |
-| Behavioral | Completion rate | [%] | [%] | [analytics] |
-| Behavioral | Drop-off points | [phase X] | — | [analytics] |
-| Business | Revenue / retention / cost-to-serve | [value] | [target] | [system] |
-
-**Phase Ownership**
-| Phase | Primary Owner | Secondary | Handoff Risks |
-|---|---|---|---|
-| Phase 1 | [Team] | [Team] | [What breaks at handoff] |
-
-## [If Service Blueprint] Backstage Analysis
-
-### Frontstage Actions
-[Per phase — what employees/systems do visibly]
-
-### Backstage Actions
-[Per phase — what happens behind the line of visibility]
-
-### Support Processes
-[Upstream systems, policies, vendors that enable backstage]
-
-### Cross-Line Failure Risks
-| Failure | Where | Customer Impact |
-|---|---|---|
-| [e.g., CRM sync delay] | Backstage → Frontstage | Agent sees stale data |
-
-## [If Omnichannel] Channel Transition Analysis
-
-### Channels in This Journey
-| Channel | Role | Strengths Leveraged |
-|---|---|---|
-| [Channel 1] | [Primary / secondary / fallback] | [What it does best] |
-
-### Channel Transitions
-| # | From | To | Context That Should Carry | Context That Does | Failure Mode |
-|---|---|---|---|---|---|
-| 1 | [Email] | [Web] | [Auth, offer ID] | [Offer ID only] | [Forces re-login] |
-
-### Omnichannel Tier
-Current state: [Multichannel | Cross-channel | Omnichannel]
-[One-line justification]
-
-## [If Hypothesis Mode] Validation Plan
-
-⚠ This map is hypothesis-based. Validate before making large investments.
-
-### Highest-Risk Hypotheses
-1. **Claim:** [Hypothesis from the map]
-   **Why risky:** [What decisions depend on it]
-   **Method:** [Interview / usability test / survey / analytics]
-   **Sample:** [N, criteria]
-   **Timing:** [Before what decision]
-
-[Repeat for top 5-8 hypotheses]
-
-## Handoff Notes for UX Phase
-
-- Key opportunities to design for: [list]
-- Phases needing the most UX attention: [list]
-- Cross-channel requirements: [if applicable]
-- Open questions for UX: [list]
-```
+See `references/map-structures.md` → "JOURNEY-MAP.md Output Template (Workflow Mode)" for the complete fill-in template.
 
 ---
 

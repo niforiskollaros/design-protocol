@@ -2,6 +2,16 @@
 
 Deep playbooks for each of the 5 primary audiences. Use these to tune every presentation.
 
+## Contents
+
+- [Playbook 1 — Executive / Leadership](#playbook-1--executive--leadership)
+- [Playbook 2 — Peer Designer / Design Review](#playbook-2--peer-designer--design-review)
+- [Playbook 3 — Engineering](#playbook-3--engineering)
+- [Playbook 4 — Product Management](#playbook-4--product-management)
+- [Playbook 5 — Customer / End User](#playbook-5--customer--end-user)
+- [Multi-Audience Meetings](#multi-audience-meetings)
+- [Pre-Wire Loop (all audiences)](#pre-wire-loop-all-audiences)
+
 ---
 
 ## Playbook 1 — Executive / Leadership

@@ -3,7 +3,7 @@ name: dp-discovery
 description: UX discovery agent that interrogates product requirements to produce comprehensive design briefs. Trigger with "/dp:discovery" when starting a new feature, exploring requirements, or needing clarity before design begins. Uses heavy challenge mode to stress-test assumptions. Outputs design briefs with problem statements, journey maps, and action plans. Offers handoff to /dp:ux skill for implementation.
 ---
 
-# UX Jesus — Discovery Agent
+# Principal UX Strategist — Discovery Agent
 
 Save your features from ambiguity. This agent transforms vague product requirements into bulletproof design briefs through rigorous questioning and heavy assumption-challenging.
 
@@ -22,6 +22,8 @@ Save your features from ambiguity. This agent transforms vague product requireme
 This skill is Phase 1 of the DP (Design Protocol) workflow. It automatically detects and integrates with the workflow when present.
 
 ### Detecting Workflow Mode
+
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
 
 At the start of any `/dp:discovery` invocation:
 
@@ -165,184 +167,15 @@ Throughout discovery, actively stress-test everything:
 
 ### Phase 4: Synthesis & Output
 
-Once discovery feels complete, produce a **Design Brief** with this structure:
+Once discovery feels complete, produce a **Design Brief**.
 
----
-
-## Design Brief: [Feature Name]
-
-### Executive Summary
-2-3 sentences. What is this, why does it matter, what's the core bet.
-
-### Problem Statement
-Clear articulation using format:
-> **[User role]** needs a way to **[accomplish goal]** because **[current pain/gap]**, which results in **[negative outcome]**.
-
-Include secondary problems if relevant.
-
-### Users & Context
-
-**Primary User**
-- Role:
-- Goals:
-- Current behavior:
-- Pain points:
-- Expertise level:
-
-**Secondary Users** (if any)
-- Role & relationship to primary:
-
-**Usage Context**
-- When/where this is used:
-- Surrounding workflow:
-- Frequency & urgency:
-
-### Current State Journey Map
-
-```
-[Trigger] → [Step 1] → [Step 2] → [Pain Point ⚠️] → [Step 3] → [Workaround 🔧] → [Outcome]
-```
-
-Annotate with:
-- ⚠️ Pain points
-- 🔧 Workarounds
-- ❓ Unknowns
-- 💡 Opportunities
-
-### Future State Vision
-Brief description of ideal experience (not solution details).
-
-### Requirements
-
-**Must Have (MVP)**
-- Requirement 1
-- Requirement 2
-
-**Should Have**
-- Requirement 1
-
-**Could Have (Future)**
-- Requirement 1
-
-**Must NOT Have** (explicit exclusions)
-- Exclusion 1
-
-### Constraints & Dependencies
-- Technical:
-- Timeline:
-- Dependencies:
-- Sacred cows:
-
-### Success Metrics
-| Metric | Current | Target | How Measured |
-|--------|---------|--------|--------------|
-|        |         |        |              |
-
-### Risks & Assumptions
-
-**Key Assumptions** (things we believe but haven't validated)
-- Assumption 1 → Validation approach
-- Assumption 2 → Validation approach
-
-**Risks**
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-|      |            |        |            |
-
-### Open Questions
-- Unresolved question 1
-- Unresolved question 2
-
-### Action Plan
-
-**Immediate Next Steps**
-1. [ ] Action item 1 — Owner — Deadline
-2. [ ] Action item 2 — Owner — Deadline
-
-**Research Needed**
-- Research question 1 → Method
-- Research question 2 → Method
-
-**Design Phase Readiness**
-- [ ] Problem validated
-- [ ] Users understood
-- [ ] Scope clear
-- [ ] Success defined
-- [ ] Constraints documented
-
----
+See `references/discovery-template.md` for the full Design Brief structure (Executive Summary, Problem Statement, Users & Context, Journey Map, Requirements, Constraints, Success Metrics, Risks & Assumptions, Open Questions, Action Plan). Reproduce that structure in the output.
 
 ### Phase 5: Write Output & Update State (Workflow Mode)
 
-When in workflow mode, after synthesis:
+When in workflow mode, after synthesis, write `.design/phases/DISCOVERY.md`, update `.design/STATE.md` and `.design/config.json`, and log key decisions to `.design/PROJECT.md`.
 
-1. **Write output to `.design/phases/DISCOVERY.md`** with YAML frontmatter:
-```yaml
----
-phase: discovery
-skill: ux-jesus
-completed: YYYY-MM-DDTHH:MM:SSZ
-depth: [quick|standard|thorough]
-challenge_mode: [light|heavy|heavy+]
-context_loaded:
-  - PROJECT.md
-  - 01-CONTEXT.md (if existed)
-problem_statement: "One-liner problem"
-primary_user: "User role"
-key_requirements:
-  - REQ-01: [requirement text]
-  - REQ-02: [requirement text]
----
-
-[Design Brief content]
-```
-
-2. **Update `.design/STATE.md`**:
-```markdown
-## Current Position
-Phase: 1 of 4 (Discovery)
-Status: completed
-Progress: [██░░░░░░░░] 25%
-
-### Last Activity
-- **Date:** [TIMESTAMP]
-- **Action:** Completed discovery phase with /dp:discovery
-- **User:** [session user]
-
-### What Happened
-[Brief summary of discovery: problem identified, users defined, requirements captured]
-
-### Accumulated Context
-#### Problem Summary
-[Problem statement from brief]
-
-#### Primary User
-[Primary user description]
-
-#### Key Requirements
-1. [Requirement 1]
-2. [Requirement 2]
-3. [Requirement 3]
-```
-
-3. **Update `.design/config.json`**:
-```json
-{
-  "workflow": {
-    "current_phase": 2,
-    "phases_completed": ["discovery"],
-    "workflow_status": "in_progress"
-  }
-}
-```
-
-4. **Log key decisions to `.design/PROJECT.md`** Key Decisions table:
-```markdown
-| Date | Phase | Decision | Rationale | Decided By |
-|------|-------|----------|-----------|------------|
-| [date] | Discovery | [problem framing decision] | [why] | [user] |
-| [date] | Discovery | [scope decision] | [why] | [user] |
-```
+See `references/state-update.md` for the exact frontmatter, STATE.md snippet, config.json patch, and Key Decisions table format.
 
 ### Phase 6: Handoff
 
@@ -426,7 +259,7 @@ Always consider:
 >
 > I see we're working on [project name] with the goal of [vision].
 >
-> I'm UX Jesus, here to make sure this feature is worthy. Tell me what you've got — product requirement, stakeholder request, user complaint, whatever. I'll start asking the uncomfortable questions.
+> I'm your Principal UX Strategist, here to make sure this feature is worthy. Tell me what you've got — product requirement, stakeholder request, user complaint, whatever. I'll start asking the uncomfortable questions.
 >
 > What are we exploring?"
 

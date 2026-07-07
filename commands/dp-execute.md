@@ -91,7 +91,7 @@ Before generating code, detect the user's project setup. Do NOT assume any speci
 
 **Detect shadcn/ui (polished mode):**
 1. Check for `components.json` (shadcn config file)
-2. Check for `@/components/dp:ui/` directory
+2. Check for `@/components/ui/` directory
 3. If not found, warn: "shadcn/ui not detected. Install it first, or I can generate without it."
 
 Store detected values for use in generation:
@@ -217,7 +217,7 @@ Generate production-ready components with:
 
 **shadcn/ui integration:**
 - Use shadcn components where specified
-- Import from `@/components/dp:ui/`
+- Import from `@/components/ui/`
 - Extend with custom styling via className
 
 **Example polished component:**
@@ -225,8 +225,8 @@ Generate production-ready components with:
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Input } from '@/components/dp:ui/input';
-import { Button } from '@/components/dp:ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -342,6 +342,21 @@ export default function Preview{FeatureName}Page() {
 }
 ```
 
+### Step 7.5: Validate Generated Code (validator → fix → repeat)
+
+Before previewing or declaring success, verify the generated code actually compiles and lints. Do NOT skip this — generated code that type-errors or breaks the build is not "done".
+
+1. **Detect available checks** from `package.json` scripts and config, in this order:
+   - Type check: `tsc --noEmit` (if TypeScript) or a `typecheck`/`type-check` script
+   - Lint: an `eslint` / `lint` script (run scoped to the generated directory when possible)
+   - Build: only if fast and the project expects it (skip for large apps)
+2. **Run the checks** against the generated files.
+3. **If any check fails:** read the errors, fix the generated files, and **re-run the checks**. Repeat until clean or until 3 attempts have failed.
+4. **If still failing after 3 attempts:** stop, report the specific remaining errors to the user, and do NOT mark the execution complete in Step 9.
+5. **If no type/lint tooling exists:** state that explicitly ("No typecheck/lint configured — generated code was not statically verified") so the user knows verification was skipped rather than passed.
+
+Only proceed to preview and state update once checks pass (or are genuinely unavailable).
+
 ### Step 8: Open in Browser
 
 Use Playwright to open the preview:
@@ -362,6 +377,8 @@ await mcp__playwright__browser_snapshot({});
 3. Provide the preview URL for manual access
 
 ### Step 9: Update State
+
+Only run this step if Step 7.5 validation passed (or no tooling was available). If validation failed after 3 attempts, leave the execution marked incomplete and report the errors instead.
 
 Update `.design/STATE.md`:
 ```markdown

@@ -53,7 +53,7 @@ The `dp-storytell` skill drives:
 
 ### Step 4 — Write output
 
-**Workflow mode:** writes `.design/phases/PRESENTATION-[topic].md` and updates config.json (array — multiple presentations allowed).
+**Workflow mode:** writes `.design/phases/PRESENTATION-[topic].md` and appends `"phases/PRESENTATION-[topic].md"` to the `optional_phases.storytell.presentations` array in config.json (multiple presentations allowed).
 
 **Standalone mode:** outputs inline; offers to save.
 
@@ -65,21 +65,7 @@ After completion, suggest:
 - Rehearse with a trusted reviewer
 - Run `/dp:storytell` again for a different audience (same source) if needed
 
-## When to use this command
-
-- Pitching new design work to leadership
-- Design reviews with cross-functional teams
-- Research findings readouts
-- Executive one-pagers
-- Prototype demos (internal or external)
-- Postmortems / retrospectives
-- Preparing responses to design critique
-
-## When NOT to use this command
-
-- Writing requirements → `/dp:prd`
-- Making design decisions → `/dp:ux`, `/dp:ui`
-- Sprint / standup updates — too tactical for narrative structure
+> When to use vs. avoid this skill is defined in the `dp-storytell` skill description — Claude uses that for triggering. This wrapper only handles workflow invocation and `.design/` wiring.
 
 ## Workflow Navigation
 

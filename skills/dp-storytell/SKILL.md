@@ -49,6 +49,8 @@ This is a **cross-phase skill** — it does not sit at a specific workflow posit
 
 ### Detecting Workflow Mode
 
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
 At the start of any `/dp:storytell` invocation:
 
 1. **Check for `.design/config.json`**
@@ -155,173 +157,34 @@ The skill selects a narrative framework based on the story's purpose. See `refer
 | Highly emotional / cultural shift | **Freytag's Pyramid** (exposition → rising action → climax → resolution) |
 
 ### The Heath brothers' SUCCESs (message stickiness)
-Every story the skill produces is tested against these 6 criteria:
-- **Simple** — one core idea, ruthlessly curated
-- **Unexpected** — breaks a pattern; surprises the audience
-- **Concrete** — specific, not abstract (named users, real quotes, actual screens)
-- **Credible** — backed by research, data, or demonstrated via prototype
-- **Emotional** — makes the audience feel something (frustration for users, urgency for the team)
-- **Story** — has a narrative arc, not a bullet list
+Every story the skill produces is tested against 6 criteria — **Simple, Unexpected, Concrete, Credible, Emotional, Story** — applied in the output SUCCESs self-check below. See `references/narrative-frameworks.md` (#12) for each criterion and its common failure mode.
 
 ---
 
 ## Content-Type Templates
 
-The skill supports six distinct content types. Pick one based on the goal.
+The skill supports six distinct content types. Pick one based on the goal, then use the full worked template.
 
-### Type 1 — Design Proposal (pitching new work)
-**Goal:** get approval / budget / resources
-**Default framework:** SCR + NABC
-**Structure:**
-1. **Hook** (10%) — one sentence + one user quote or data point
-2. **Situation** (15%) — where we are today
-3. **Complication** (25%) — why current state is painful; evidence
-4. **Resolution** (40%) — what we propose; how it works; why it works
-5. **Ask** (10%) — specific decision / resources needed
+| Type | Goal | Default framework |
+|---|---|---|
+| **1 — Design Proposal** | Get approval / budget / resources | SCR + NABC + Minto |
+| **2 — Design Review** | Get usable feedback; align peers | Process narrative (peers) / Problem-Solution (PMs) |
+| **3 — Research Readout** | Share insights; drive decisions | Problem-Insight-Recommendation per finding |
+| **4 — Executive One-Pager** | Busy leader decides without a meeting | BLUF + Minto Pyramid |
+| **5 — Prototype / Demo Walkthrough** | Audience experiences the design | Journey-based (walk the user's path) |
+| **6 — Postmortem / Retrospective** | Learn from what happened | STAR or 3-Act |
 
-### Type 2 — Design Review (showing work for critique)
-**Goal:** get usable feedback; align peers
-**Default framework:** Process narrative (for peers) or Problem-Solution (for PMs)
-**Structure:**
-1. **Context** (15%) — constraint/goal recap
-2. **Exploration** (30%) — alternatives considered, what was rejected and why
-3. **Current direction** (35%) — the design + rationale
-4. **Open questions** (10%) — specific items for feedback
-5. **Next steps** (10%) — what happens after this review
+See `references/content-type-templates.md` for the full end-to-end structure, slide-by-slide breakdowns, and worked examples of each type.
 
-### Type 3 — Research Readout (presenting findings)
-**Goal:** share insights; drive decisions
-**Default framework:** Problem-Insight-Recommendation per finding
-**Structure:**
-1. **Method snapshot** (10%) — who, how many, how
-2. **Top-line findings** (20%) — 3-5 headlines, each with one data point
-3. **Deep dives** (40%) — for each finding: evidence (quote/video), pattern, implication
-4. **Recommendations** (20%) — concrete actions, prioritized
-5. **Next research** (10%) — open questions
-
-### Type 4 — Executive One-Pager
-**Goal:** busy leader makes a decision without a meeting
-**Default framework:** BLUF + Minto Pyramid
-**Structure:**
-```
-╔══════════════════════════════════════════════════════════════╗
-║ [ONE-LINE CONCLUSION]                                        ║
-╠══════════════════════════════════════════════════════════════╣
-║ Why this matters: [1 sentence]                               ║
-║                                                              ║
-║ What we're proposing: [2-3 bullets]                          ║
-║                                                              ║
-║ Evidence: [3 data points or 1 user quote]                    ║
-║                                                              ║
-║ Decision needed: [specific ask + deadline]                   ║
-║                                                              ║
-║ Risk if we don't act: [1 sentence]                           ║
-╠══════════════════════════════════════════════════════════════╣
-║ Owner: [Name]  ·  Deadline: [Date]                           ║
-╚══════════════════════════════════════════════════════════════╝
-```
-
-### Type 5 — Prototype / Demo Walkthrough
-**Goal:** audience experiences the design
-**Default framework:** Journey-based (walk the user's path)
-**Structure:**
-1. **Set the scene** (10%) — "Imagine you're [persona], trying to [scenario]"
-2. **Walk the path** (70%) — demonstrate step by step, in user voice
-3. **Zoom-out moments** (15%) — pause to highlight decision rationale
-4. **Unanswered scenarios** (5%) — edge cases not yet designed
-
-### Type 6 — Postmortem / Retrospective
-**Goal:** learn from what happened
-**Default framework:** STAR or 3-Act
-**Structure:**
-1. **What we set out to do** (15%) — original goal + hypotheses
-2. **What happened** (35%) — facts, timeline, metrics
-3. **What we learned** (35%) — insights, surprises, errors
-4. **What changes** (15%) — concrete adjustments for next time
+Beyond these formal templates, `references/narrative-frameworks.md` catalogs **design-specific story patterns** (user-quote opener, before/after, data-insight-action, journey-emotion curve, counterfactual, small-bet demo, expert-voice sandwich) to use as opening/beat devices.
 
 ---
 
-## Design-Specific Story Patterns
+## Stakeholder Dynamics & Visual Storytelling
 
-Beyond formal frameworks, these are patterns that work specifically for design work.
+Real presentations have difficult moments (skeptics, "I don't like blue," scope-expansion attacks, the silent room, leadership override, design-by-committee) and depend on how slides, prototypes, and video clips carry the story.
 
-### Pattern A — User quote opener
-Start with a verbatim user statement. Creates immediate empathy and credibility.
-> *"I've been trying to do this for 20 minutes and I just gave up."* — Sarah, P4
-
-### Pattern B — Before / After side-by-side
-Two screens. Current state left, proposed right. Minimal annotation. The contrast speaks.
-
-### Pattern C — Data-insight-action
-Number → what it means → what we do about it.
-> *"40% of users abandon at step 3. That's the step we introduce unasked-for configuration. We propose removing it."*
-
-### Pattern D — Journey-emotion curve
-Plot the emotion line across phases. Point to valleys. Show the fix narrows or closes the valley.
-
-### Pattern E — Counterfactual
-"If we don't do this, here's what happens." Used sparingly — too often and it reads as fear-mongering.
-
-### Pattern F — Small-bet demo
-Show a cheap prototype or scrappy test that validates the direction. Reduces risk perception.
-
-### Pattern G — Expert-voice sandwich
-Your opinion, supported by an authoritative source (Nielsen heuristic, research paper, competitor benchmark), then back to your specific case.
-
----
-
-## Stakeholder Dynamics
-
-Real presentations have difficult moments. The skill prepares users for these.
-
-### Handling skeptics
-**Sign:** stakeholder repeatedly interrupts with "but what about..."
-**Tactic:** thank them, write the question on a parking lot, continue. Address in Q&A with "you asked about X — here's what we considered."
-
-### Handling "I don't like blue" feedback
-**Sign:** aesthetic opinion posed as professional critique
-**Tactic:** acknowledge the reaction, redirect to decision criteria: "What are we trying to make the user feel here?" Translate subjective to objective.
-
-### Handling scope-expansion attacks
-**Sign:** "Could we also add X, Y, Z?"
-**Tactic:** yes-and: "Great thought — that's on our Future roadmap. For this cycle we're focused on [scope] because [reason]."
-
-### Handling the silent room
-**Sign:** no one reacts after you present
-**Tactic:** ask a specific person a specific question. Not "any thoughts?" but "Priya, from engineering's perspective, what's the riskiest part of this?"
-
-### Handling leadership override
-**Sign:** exec says "just do X" mid-presentation, overriding your proposal
-**Tactic:** don't debate in the room. "Happy to explore that — can I take 24 hours to assess the tradeoff and come back?" Buys time to respond with evidence.
-
-### Handling "design by committee"
-**Sign:** every stakeholder wants a tweak, none are individually critical
-**Tactic:** enumerate all requests, then force prioritization: "We can do 3 of these before deadline. Which 3?"
-
----
-
-## Visual Storytelling Principles
-
-Slides and prototypes are part of the story. The skill enforces these principles.
-
-### Slide design
-- **One idea per slide** — if there are 2, split them
-- **Image > bullet list** — show the actual design, not a description of it
-- **Text as signposts** — titles do the narrative work, not body copy
-- **Data in service of a point** — chart titles state the insight, not the axis
-- **Dark deck for demos, light deck for reading** — contrast with delivery context
-
-### Prototypes vs static screens
-- **Static screens** — when the critique is about the design itself (layout, hierarchy, visual)
-- **Clickable prototype** — when the critique is about the flow, interaction, or feel
-- **Video walkthrough** — when time is short, or you need to guarantee consistent delivery
-- **Live product** — only when it's stable and you want to build trust through authenticity
-
-### Video clip best practices (for research readouts)
-- **15-45 seconds** per clip
-- **Set context** before playing ("This is P5, trying to complete signup for the second time.")
-- **Never play more than 3 clips in a row** — audience attention collapses
-- **Transcribe the clip below it** — so reading viewers (and post-meeting skimmers) still get the content
+See `references/delivery-tactics.md` for the full playbook: handling each difficult moment, and the Visual Storytelling Principles (slide design, prototype vs static decision, video-clip best practices).
 
 ---
 
@@ -575,20 +438,9 @@ When no `.design/` directory exists:
 
 ## Common Anti-Patterns
 
-The skill actively guards against these:
+The skill actively guards against content-level anti-patterns (process-dump, no antagonist, feature parade, jargon soup, bullet-hellscape, no ask, weak evidence, symmetry worship, under-rehearsed, single-audience deck for a multi-audience room, over-polished, ignoring the room).
 
-1. **Process-dump** — walking the audience through your timeline instead of the user's story
-2. **No antagonist** — presenting "what we built" without "what was broken"
-3. **Feature parade** — listing deliverables instead of tying to outcomes
-4. **Jargon soup** — using designer/PM terms with an audience that doesn't share them
-5. **Bullet-hellscape** — slides full of text; text on slides competes with the speaker
-6. **No ask** — ending with "any questions?" instead of a specific decision request
-7. **Weak evidence** — "users told us" with no named users, no quote, no count
-8. **Symmetry worship** — equal time to every alternative, even weak ones; audience loses signal
-9. **Under-rehearsed** — reading slides; losing timing; running 2x over
-10. **Single-audience deck for a multi-audience meeting** — if there are 3 audiences in the room, pick the primary and say so
-11. **Over-rehearsed / over-polished** — feels like a commercial; audience disengages
-12. **Ignoring the room** — sticking to script when the audience has already moved on
+See `references/narrative-frameworks.md` ("Storytelling Anti-Patterns") for the full list, and `references/delivery-tactics.md` for delivery-level anti-patterns.
 
 ---
 

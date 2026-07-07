@@ -63,12 +63,12 @@ console.log('\n\x1b[1mDP Test Suite\x1b[0m\n');
 
 console.log('\x1b[36mVersion Sync\x1b[0m');
 
-test('package.json and install.js versions match', () => {
-  const pkg = JSON.parse(readFile('package.json'));
+test('install.js derives VERSION from package.json', () => {
   const src = readFile('bin/install.js');
-  const match = src.match(/const VERSION = '([^']+)'/);
-  assert.ok(match, 'VERSION constant not found in install.js');
-  assert.strictEqual(pkg.version, match[1]);
+  assert.ok(
+    /const VERSION = require\('\.\.\/package\.json'\)\.version/.test(src),
+    'install.js should single-source VERSION from package.json'
+  );
 });
 
 test('version follows semver format', () => {
@@ -83,7 +83,8 @@ console.log('\n\x1b[36mSource Files\x1b[0m');
 const expectedSkills = ['dp-discovery', 'dp-prd', 'dp-journey', 'dp-roadmap', 'dp-ux', 'dp-color', 'dp-ui', 'dp-eng_review', 'dp-research', 'dp-storytell'];
 const expectedCommands = [
   'dp-start', 'dp-progress', 'dp-execute', 'dp-verify',
-  'dp-discuss', 'dp-skip', 'dp-back'
+  'dp-discuss', 'dp-skip', 'dp-back',
+  'dp-prd', 'dp-journey', 'dp-roadmap', 'dp-color', 'dp-storytell'
 ];
 const expectedAgents = ['dp-researcher', 'dp-verifier'];
 const expectedTemplates = ['config.json', 'state.md', 'project.md', 'requirements.md', 'roadmap.md', 'context.md'];
@@ -213,6 +214,78 @@ test('installer skips .git and .DS_Store', () => {
   assert.ok(src.includes('.DS_Store'), 'Missing .DS_Store in skip list');
 });
 
+test('expected command list matches actual command files', () => {
+  const actual = fs.readdirSync(path.join(ROOT, 'commands'))
+    .filter(f => f.endsWith('.md'))
+    .map(f => f.replace('.md', ''))
+    .sort();
+  assert.deepStrictEqual(actual, [...expectedCommands].sort(),
+    'commands/ directory and expectedCommands list are out of sync');
+});
+
+// ── Template drift ──────────────────────────────────────────────────────────
+
+console.log('\n\x1b[36mTemplate Drift\x1b[0m');
+
+test('config template in dp-start.md matches templates/config.json', () => {
+  const canonical = JSON.parse(readFile('templates/config.json'));
+  const cmd = readFile('commands/dp-start.md');
+  const match = cmd.match(/### config\.json\n\n```json\n([\s\S]*?)\n```/);
+  assert.ok(match, 'config.json code block not found in dp-start.md');
+  const inline = JSON.parse(match[1]);
+  assert.deepStrictEqual(inline, canonical,
+    'Inline config template in dp-start.md has drifted from templates/config.json');
+});
+
+// ── Installer integration (real install/uninstall in a temp dir) ────────────
+
+console.log('\n\x1b[36mInstaller Integration\x1b[0m');
+
+const os = require('os');
+const { execSync } = require('child_process');
+
+test('install --global --auto copies skills, commands, and agents; uninstall removes them', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dp-test-'));
+  try {
+    const env = { ...process.env, CLAUDE_CONFIG_DIR: tmpDir };
+    const run = (args) => execSync(`node ${path.join(ROOT, 'bin/install.js')} ${args}`, {
+      env, encoding: 'utf8', stdio: 'pipe'
+    });
+
+    run('--global --auto');
+
+    expectedSkills.forEach(skill => {
+      assert.ok(fs.existsSync(path.join(tmpDir, 'skills', skill, 'SKILL.md')),
+        `Installed skill missing: ${skill}`);
+    });
+    expectedCommands.forEach(cmd => {
+      assert.ok(fs.existsSync(path.join(tmpDir, 'commands', `${cmd}.md`)),
+        `Installed command missing: ${cmd}`);
+    });
+    expectedAgents.forEach(agent => {
+      assert.ok(fs.existsSync(path.join(tmpDir, 'agents', `${agent}.md`)),
+        `Installed agent missing: ${agent}`);
+    });
+
+    run('--global --uninstall');
+
+    expectedSkills.forEach(skill => {
+      assert.ok(!fs.existsSync(path.join(tmpDir, 'skills', skill)),
+        `Skill not removed on uninstall: ${skill}`);
+    });
+    expectedCommands.forEach(cmd => {
+      assert.ok(!fs.existsSync(path.join(tmpDir, 'commands', `${cmd}.md`)),
+        `Command not removed on uninstall: ${cmd}`);
+    });
+    expectedAgents.forEach(agent => {
+      assert.ok(!fs.existsSync(path.join(tmpDir, 'agents', `${agent}.md`)),
+        `Agent not removed on uninstall: ${agent}`);
+    });
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 // ── No hardcoded paths ──────────────────────────────────────────────────────
 
 console.log('\n\x1b[36mNo Hardcoded Paths\x1b[0m');
@@ -261,6 +334,80 @@ test('package.json has prepublishOnly guard', () => {
   const pkg = JSON.parse(readFile('package.json'));
   assert.ok(pkg.scripts.prepublishOnly, 'Missing prepublishOnly script');
   assert.ok(pkg.scripts.prepublishOnly.includes('verify'), 'prepublishOnly should run verify');
+});
+
+// ── Semantic consistency ─────────────────────────────────────────────────────
+// These guard the cross-file invariants documented in CONTRIBUTING.md. Structural
+// tests above check files exist; these check files AGREE with each other.
+
+console.log('\n\x1b[36mSemantic Consistency\x1b[0m');
+
+const workflowSkills = [
+  'dp-discovery', 'dp-prd', 'dp-ux', 'dp-ui', 'dp-color',
+  'dp-eng_review', 'dp-journey', 'dp-roadmap', 'dp-storytell', 'dp-research'
+];
+
+test('every optional_phases.<key> referenced in a skill exists in the config schema', () => {
+  const config = JSON.parse(readFile('templates/config.json'));
+  const validKeys = new Set(Object.keys(config.optional_phases));
+  const offenders = [];
+  workflowSkills.forEach(skill => {
+    const content = readFile(`skills/${skill}/SKILL.md`);
+    const re = /optional_phases\.([a-z_]+)/g;
+    let m;
+    while ((m = re.exec(content)) !== null) {
+      if (!validKeys.has(m[1])) offenders.push(`${skill}: optional_phases.${m[1]}`);
+    }
+  });
+  assert.strictEqual(offenders.length, 0,
+    `Unknown optional_phases keys (would silently lose state):\n  ${offenders.join('\n  ')}\n  Valid: ${[...validKeys].join(', ')}`);
+});
+
+function extractRows(content, prefix, cols = 1) {
+  // Map "<Prefix><n>" -> first `cols` normalized columns joined, from table rows
+  const map = {};
+  const re = new RegExp(`\\|\\s*(${prefix}\\d+)\\s*\\|([^\\n]*)`, 'g');
+  let m;
+  while ((m = re.exec(content)) !== null) {
+    // Keep the FIRST occurrence — the canonical definition table precedes any
+    // illustrative example tables that reuse the same T/W ids.
+    if (m[1] in map) continue;
+    const parts = m[2].split('|').map(s => s.trim()).filter(Boolean);
+    map[m[1]] = parts.slice(0, cols).join(' | ');
+  }
+  return map;
+}
+
+test('verify T1-T10 truth labels match between dp-verify command and dp-verifier agent', () => {
+  const cmd = extractRows(readFile('commands/dp-verify.md'), 'T');
+  const agent = extractRows(readFile('agents/dp-verifier.md'), 'T');
+  for (let i = 1; i <= 10; i++) {
+    const id = `T${i}`;
+    assert.ok(cmd[id], `${id} missing from dp-verify.md`);
+    assert.ok(agent[id], `${id} missing from dp-verifier.md`);
+    assert.strictEqual(cmd[id], agent[id],
+      `${id} label drifted:\n  command: "${cmd[id]}"\n  agent:   "${agent[id]}"`);
+  }
+});
+
+test('wiring W1-W6 From→To matches between dp-verify command and dp-verifier agent', () => {
+  const cmd = extractRows(readFile('commands/dp-verify.md'), 'W', 2);
+  const agent = extractRows(readFile('agents/dp-verifier.md'), 'W', 2);
+  for (let i = 1; i <= 6; i++) {
+    const id = `W${i}`;
+    assert.ok(cmd[id], `${id} missing from dp-verify.md`);
+    assert.ok(agent[id], `${id} missing from dp-verifier.md`);
+    assert.strictEqual(cmd[id], agent[id],
+      `${id} From→To drifted:\n  command: "${cmd[id]}"\n  agent:   "${agent[id]}"`);
+  }
+});
+
+test('every workflow skill contains the canonical workflow-mode-detection sentence', () => {
+  const marker = 'detect the mode by checking for `.design/config.json`';
+  const missing = workflowSkills.filter(skill =>
+    !readFile(`skills/${skill}/SKILL.md`).includes(marker));
+  assert.strictEqual(missing.length, 0,
+    `Skills missing the canonical mode-detection sentence: ${missing.join(', ')}`);
 });
 
 // ─── Summary ────────────────────────────────────────────────────────────────

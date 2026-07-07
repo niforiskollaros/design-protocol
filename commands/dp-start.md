@@ -5,7 +5,7 @@ description: Initialize a new DP (Design Protocol) design project with structure
 
 # /dp:start — Initialize Design Project
 
-You are initializing a new DP 2.0 design workflow. This creates the `.design/` directory structure and captures initial project context.
+You are initializing a new DP (Design Protocol) design workflow. This creates the `.design/` directory structure and captures initial project context.
 
 ## Workflow
 
@@ -124,7 +124,7 @@ Use these inline templates as the base for each file, replacing placeholders wit
 
 ```json
 {
-  "version": "2.1",
+  "version": "1.0",
   "created": "",
   "project_name": "",
   "workflow": {
@@ -175,6 +175,35 @@ Use these inline templates as the base for each file, replacing placeholders wit
     "research": {
       "enabled": false,
       "methods": []
+    },
+    "prd": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "journey": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "roadmap": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "color": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null,
+      "accessibility_level": "AA",
+      "include_dark_mode": true
+    },
+    "storytell": {
+      "presentations": []
     }
   }
 }
@@ -426,7 +455,7 @@ Discovery ──► UX ──► UI ──► Review
 ## Current Position
 
 Phase: [0-4] of 4 ([phase_name])
-Status: [not_started | ready | in_progress | completed | blocked]
+Status: [not_started | ready | in_progress | blocked | complete | gaps | verified]
 Progress: [░░░░░░░░░░] 0%
 
 ## Phase Status
@@ -479,10 +508,10 @@ After writing `config.json`, verify it by reading it back and checking:
    - `created` (ISO 8601 timestamp)
    - `workflow.current_phase` (number, 0-4)
    - `workflow.phases_completed` (array)
-   - `workflow.workflow_status` (one of: `not_started`, `ready`, `in_progress`, `blocked`, `complete`, `gaps`)
+   - `workflow.workflow_status` (one of: `not_started`, `ready`, `in_progress`, `blocked`, `complete`, `gaps`, `verified`)
    - `phases.discovery`, `phases.ux`, `phases.ui`, `phases.review` (objects with `enabled` boolean)
 3. **Values are consistent:**
-   - `current_phase` matches `workflow_status` (phase 0 = `ready`, not `complete`)
+   - A fresh project has `current_phase: 1` and `workflow_status: "ready"` (Step 4 sets these — the raw template defaults of `0`/`not_started` must be overridden)
    - `phases_completed` is empty for a fresh project
 
 If validation fails, fix the issue immediately before showing the success message.

@@ -2,6 +2,15 @@
 
 Copy and customize this template for moderated usability testing.
 
+## Contents
+- [Usability Test: [Project Name]](#usability-test-project-name)
+- [Pre-Test Checklist](#pre-test-checklist)
+- [Test Script](#test-script) — Introduction, Background, Task Scenarios, Overall Impressions, Wrap-Up
+- [Note-Taking Template](#note-taking-template)
+- [Facilitation Tips](#facilitation-tips)
+- [Task Scenario Examples](#task-scenario-examples)
+- [Post-Test Debrief](#post-test-debrief)
+
 ---
 
 ## Usability Test: [Project Name]

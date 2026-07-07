@@ -7,6 +7,8 @@ description: UX research agent that helps plan, execute, analyze, and present us
 
 Structure your research so you can focus on listening, not figuring out what to ask next.
 
+> **This skill vs. the `dp-researcher` agent:** this skill is the **interactive** research assistant — use it when the user is working through research turn by turn in the main conversation. The `dp-researcher` agent is a **spawned subagent** for delegated, self-contained research work invoked by other commands (`/dp:discuss`, `/dp:verify`, `/dp:discovery`). Both write the same `.design/research/` artifacts; this skill's `references/` are the canonical method and synthesis guides for both.
+
 ---
 
 ## DP Workflow Integration
@@ -14,6 +16,8 @@ Structure your research so you can focus on listening, not figuring out what to 
 This skill is an **optional branch** in the DP (Design Protocol) workflow. It can be triggered from any phase to validate assumptions or gather user insights.
 
 ### Detecting Workflow Mode
+
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
 
 At the start of any `/dp:research` invocation:
 
@@ -183,20 +187,7 @@ See: `references/interview-guide-template.md`
 4. **Reactions** (10 min) — Show concepts/prototypes if applicable
 5. **Wrap-up** (5 min) — Anything we missed, thank you
 
-**Question Quality Rules:**
-
-✅ **Good questions:**
-- Open-ended: "Tell me about..." / "Walk me through..." / "How do you..."
-- Behavior-focused: "Last time you did X, what happened?"
-- Non-leading: "What was that experience like?"
-
-❌ **Bad questions:**
-- Leading: "Don't you think X is frustrating?"
-- Hypothetical: "Would you use X if we built it?"
-- Binary: "Do you like X?" (yes/no)
-- Compound: "Do you do X and Y and how often?"
-
-See: `references/question-writing.md` for comprehensive guidance.
+See `references/question-writing.md` for writing open-ended, non-leading questions and avoiding leading/loaded/hypothetical/binary/compound phrasing.
 
 ### Usability Test Scripts
 
@@ -209,29 +200,11 @@ See: `references/usability-test-template.md`
 4. **Post-task questions** — Difficulty rating, expectations vs. reality
 5. **Wrap-up** — Overall impressions, comparison to current tools
 
-**Task Scenario Rules:**
-
-✅ **Good scenario:**
-> "You need to find a vessel that's arriving in Rotterdam next week and check its cargo details. Please show me how you'd do that."
-
-❌ **Bad scenario:**
-> "Click on the search bar, type a vessel name, and use the filter to select Rotterdam."
-
-Scenarios describe **goals**, not **steps**.
+Scenarios describe **goals**, not **steps** — see the template for good/bad examples.
 
 ### Survey Design
 
-**Question Types:**
-- Use rating scales (1-5 or 1-7) for measuring attitudes
-- Use multiple choice for behaviors with known options
-- Use open-ended sparingly and at the end
-- Include "Other" and "N/A" options
-
-**Bias Prevention:**
-- Randomize option order where appropriate
-- Avoid double-barreled questions
-- Don't prime with leading language
-- Test survey with colleagues first
+See `references/method-selection.md` (Survey Design) for question types and bias prevention.
 
 ---
 
@@ -239,100 +212,27 @@ Scenarios describe **goals**, not **steps**.
 
 ### Session Facilitation
 
-See: `references/facilitation-guide.md`
+See: `references/facilitation-guide.md` for the full guide — active listening, neutral probing, the 5-second silence rule, handling difficult situations, managing observers, and bias awareness (confirmation, leading, anchoring, social desirability) with mitigations.
 
-**Before the Session:**
-- Test all technology
-- Have backup recording method
-- Prepare note-taking template
-- Brief observers on their role (silent)
+**Before the session:** test all technology, have a backup recording method, prepare a note-taking template, and brief observers to stay silent.
 
-**During the Session:**
-
-| Do | Don't |
-|----|-------|
-| Listen more than talk | Fill silences immediately |
-| Use "tell me more" | Ask leading questions |
-| Follow unexpected threads | Stick rigidly to script |
-| Note body language | Only capture verbal |
-| Ask for examples | Accept generalizations |
-| Embrace awkward pauses | Rescue them from silence |
-
-**The 5-Second Rule:**
-After they answer, count to 5 silently. They'll often add the most valuable insight to fill the silence.
-
-**Probing Techniques:**
-- "Tell me more about that..."
-- "What do you mean by [term they used]?"
-- "Can you give me a specific example?"
-- "What happened next?"
-- "How did that make you feel?"
-- "Why was that important?"
-
-**When They Ask Questions:**
-- "What do you think it means?" (turn it back)
-- "What would you expect?" (understand mental model)
-- "Let's see what happens" (for usability tests)
-
-### Bias Awareness
-
-**Your biases to watch:**
-- Confirmation bias: Hearing what supports your hypothesis
-- Leading: Subtle cues that suggest "right" answers
-- Anchoring: First impressions coloring everything after
-- Social desirability: They want to please you
-
-**Mitigation:**
-- Have someone else take notes
-- Record and review later
-- Use standardized probes
-- Debrief immediately after
+**Core stance during the session:** listen more than you talk, follow unexpected threads, ask for specific examples, and embrace awkward pauses rather than filling them.
 
 ---
 
 ## Phase 4: Synthesizing Findings
 
-See: `references/synthesis-methods.md`
+See: `references/synthesis-methods.md` for the full process — data extraction, affinity mapping, pattern recognition, turning observations into insights, quantifying qualitative data (frequency, severity, confidence), and prioritization.
 
-### Affinity Mapping Process
-
-1. **Extract observations** — One insight per sticky note
-2. **Cluster** — Group related observations (no labels yet)
-3. **Name clusters** — What theme connects these?
-4. **Find hierarchy** — Which themes are biggest? Related?
-5. **Identify patterns** — What appears across multiple participants?
-
-### From Observations to Insights
-
-**Observation** (what happened):
-> "3 of 5 users clicked the wrong button first"
-
-**Insight** (what it means):
-> "Users expect vessel actions to be grouped by workflow, not data type"
-
-**Recommendation** (what to do):
-> "Reorganize vessel actions around user tasks: 'Track this vessel' vs 'View vessel data'"
-
-### Quantifying Qualitative Data
-
-- Count frequency: "4 of 6 participants struggled with X"
-- Severity rating: Critical / Major / Minor
-- Confidence level: High (consistent) / Medium (mixed) / Low (limited data)
+**The core move:** separate **observation** (what happened) → **insight** (what it means) → **recommendation** (what to do). Always note sample size ("X of Y participants") and a confidence level.
 
 ---
 
 ## Phase 5: Presenting Research
 
-See: `references/research-report-template.md`
+See: `references/research-report-template.md` for report structure, audience-specific framing (executives, PMs, designers, engineers), live-readout tips, one-page formats, and video-clip guidelines.
 
-### Know Your Audience
-
-| Audience | They Care About | Format |
-|----------|-----------------|--------|
-| Executives | Business impact, decisions | 1-page summary, 3 key findings |
-| Product Managers | Priorities, roadmap implications | Findings + recommendations |
-| Designers | Details, examples, quotes | Full report + highlight clips |
-| Engineers | Feasibility, specifics | Technical implications |
+Tailor format to audience: lead with insights (not methodology), separate findings from recommendations, and be honest about confidence.
 
 ---
 

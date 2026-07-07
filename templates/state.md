@@ -6,7 +6,7 @@
 
 ```
 Phase: [0-4] of 4 ([phase_name])
-Status: [not_started | ready | in_progress | completed | blocked]
+Status: [not_started | ready | in_progress | blocked | complete | gaps | verified]
 Progress: [░░░░░░░░░░] 0%
 ```
 

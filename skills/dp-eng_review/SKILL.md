@@ -15,6 +15,8 @@ This skill is Phase 4 of the DP (Design Protocol) workflow. It automatically det
 
 ### Detecting Workflow Mode
 
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
 At the start of any `/dp:eng_review` invocation:
 
 1. **Check for `.design/config.json`**
@@ -68,7 +70,7 @@ What file(s) should I review?
 - **After building** — Review implementations created with /dp:ux and /dp:ui guidance
 - **Before merging** — Catch issues before they ship
 - **During refactoring** — Ensure quality isn't regressing
-- **Accessibility audits** — Detailed WCAG 2.1 AA compliance checks
+- **Accessibility audits** — Detailed WCAG 2.2 AA compliance checks
 
 ---
 
@@ -89,7 +91,9 @@ What file(s) should I review?
 
 ## Review Categories
 
-### 1. Accessibility (WCAG 2.1 AA)
+### 1. Accessibility (WCAG 2.2 AA)
+
+> The canonical accessibility rule set (design + implementation) lives in `dp-ux`'s `references/accessibility-checklist.md`. The tables below are the **code-detection layer** — they map WCAG criteria to concrete code patterns to grep for during review. Use the checklist for the full rule definitions; use these tables to find violations in code.
 
 #### Critical (Must Fix)
 | Issue | WCAG | Pattern to Find |
@@ -105,7 +109,7 @@ What file(s) should I review?
 |-------|------|-----------------|
 | Focus outline removed | 2.4.7 | `outline-none` without `focus-visible:ring` replacement |
 | Color-only information | 1.4.1 | Status indicated only by color (no icon, text, or pattern) |
-| Touch target too small | 2.5.5 | Clickable elements smaller than 44x44px |
+| Touch target too small | 2.5.8 | Clickable elements smaller than 24×24 CSS px (AA); prefer 44×44px for primary targets |
 | Missing error association | 1.3.1 | Error messages not linked via `aria-describedby` |
 | Auto-playing media | 1.4.2 | Video/audio with `autoPlay` without user control |
 
@@ -116,6 +120,14 @@ What file(s) should I review?
 | Positive tabIndex | 2.4.3 | `tabIndex` > 0 (disrupts natural order) |
 | Missing live regions | 4.1.3 | Dynamic content updates without `aria-live` |
 | Generic link text | 2.4.4 | "Click here", "Read more" without context |
+
+#### WCAG 2.2 Additions (check these too)
+| Issue | WCAG | Pattern to Find |
+|-------|------|-----------------|
+| Focus obscured by sticky UI | 2.4.11 | `position: sticky/fixed` overlays that can cover a focused element |
+| Drag-only interaction | 2.5.7 | Drag-and-drop / slider with no click/tap alternative |
+| Cognitive-test login | 3.3.8 | Auth flows requiring puzzles/memorization with no alternative (e.g. paste-blocked password fields) |
+| Redundant re-entry | 3.3.7 | Multi-step forms re-asking data already provided in the same flow |
 
 ### 2. Component Quality
 

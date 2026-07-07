@@ -44,7 +44,7 @@ Invoke the `dp-roadmap` skill. The skill drives:
 
 ### Step 3 — Write output
 
-**Workflow mode:** writes `.design/phases/ROADMAP.md` and updates STATE.md, config.json.
+**Workflow mode:** writes `.design/phases/ROADMAP.md`, updates STATE.md, and sets `optional_phases.roadmap` in config.json to `{ "enabled": true, "completed": true, "timestamp": "<ISO 8601>", "output": "phases/ROADMAP.md" }`.
 
 **Standalone mode:** outputs inline; offers to save.
 
@@ -55,20 +55,7 @@ After completion, suggest next step:
 - `/dp:prd` — generate PRD for highest-priority theme
 - `/dp:research` — validate low-confidence Future themes
 
-## When to use this command
-
-- Quarterly / annual UX planning at team or org level
-- Aligning stakeholders around a problem portfolio
-- Converting journey-map opportunities into prioritized work
-- Replacing a feature-based roadmap with a theme-based one
-- Re-planning after a strategic shift
-
-## When NOT to use this command
-
-- Sprint planning or backlog — too tactical, use a PM tool
-- Feature specs — use `/dp:prd`
-- Individual feature design — use `/dp:ux` + `/dp:ui`
-- Engineering/tech-debt roadmaps — different audience and criteria
+> When to use vs. avoid this phase is defined in the `dp-roadmap` skill description — Claude uses that for triggering. This wrapper only handles workflow invocation and `.design/` wiring.
 
 ## Workflow Navigation
 

@@ -2,6 +2,20 @@
 
 Eight frameworks for ranking themes on a roadmap, with exact formulas, scales, fit, and pitfalls. Pick one per roadmap (mixing is OK once the team is mature).
 
+## Contents
+- [1. RICE (Intercom, Sean McBride)](#1-rice-intercom-sean-mcbride)
+- [2. ICE (Sean Ellis)](#2-ice-sean-ellis)
+- [3. MoSCoW](#3-moscow)
+- [4. Kano Model (Noriaki Kano, 1984)](#4-kano-model-noriaki-kano-1984)
+- [5. Value vs. Effort Matrix (2×2)](#5-value-vs-effort-matrix-22)
+- [6. WSJF — Weighted Shortest Job First](#6-wsjf--weighted-shortest-job-first-safe-don-reinertsen)
+- [7. Opportunity Scoring (Anthony Ulwick, JTBD)](#7-opportunity-scoring-anthony-ulwick-jtbd)
+- [8. Story Mapping (Jeff Patton)](#8-story-mapping-jeff-patton)
+- [Framework Selection Guide](#framework-selection-guide)
+- [Universal Pitfalls (All Frameworks)](#universal-pitfalls-all-frameworks)
+- [NNGroup's General Stance](#nngroups-general-stance)
+- [Workflow Integration](#workflow-integration)
+
 ---
 
 ## 1. RICE (Intercom, Sean McBride)

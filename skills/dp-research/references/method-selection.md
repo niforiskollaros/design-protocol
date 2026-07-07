@@ -2,6 +2,13 @@
 
 Pick the right method for what you need to learn.
 
+## Contents
+- [Quick Decision Framework](#quick-decision-framework)
+- [Method Deep Dives](#method-deep-dives) — Interviews, Usability, Surveys, Contextual Inquiry, Card Sorting, A/B Testing
+- [Survey Design](#survey-design)
+- [Combining Methods](#combining-methods)
+- [Common Mistakes](#common-mistakes)
+
 ## Quick Decision Framework
 
 **What do you need to learn?**
@@ -154,6 +161,24 @@ Pick the right method for what you need to learn.
 - Sufficient traffic for statistical significance
 - Clear success metric
 - Technical implementation capacity
+
+---
+
+## Survey Design
+
+Once you've chosen a survey, design the instrument carefully.
+
+**Question types:**
+- Use rating scales (1-5 or 1-7) for measuring attitudes
+- Use multiple choice for behaviors with known options
+- Use open-ended sparingly and at the end
+- Include "Other" and "N/A" options
+
+**Bias prevention:**
+- Randomize option order where appropriate
+- Avoid double-barreled questions
+- Don't prime with leading language
+- Test the survey with colleagues first
 
 ---
 

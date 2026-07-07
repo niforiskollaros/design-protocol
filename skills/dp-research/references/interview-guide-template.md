@@ -2,6 +2,13 @@
 
 Copy and customize this template for user or stakeholder interviews.
 
+## Contents
+- [Interview Guide: [Project Name]](#interview-guide-project-name)
+- [Pre-Interview Checklist](#pre-interview-checklist)
+- [Interview Script](#interview-script) — Introduction, Context, Core Exploration, Reactions, Wrap-Up
+- [Post-Interview](#post-interview)
+- [Question Bank](#question-bank)
+
 ---
 
 ## Interview Guide: [Project Name]

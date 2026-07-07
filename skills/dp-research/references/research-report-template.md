@@ -2,6 +2,15 @@
 
 Presenting findings so stakeholders actually act on them.
 
+## Contents
+- [Know Your Audience First](#know-your-audience-first)
+- [Report Structure](#report-structure) — Executive Summary, Full Report
+- [Presenting Research (Live)](#presenting-research-live)
+- [Common Report Mistakes](#common-report-mistakes)
+- [One-Page Formats](#one-page-formats)
+- [Video Clip Guidelines](#video-clip-guidelines)
+- [Report Templates by Research Type](#report-templates-by-research-type)
+
 ---
 
 ## Know Your Audience First

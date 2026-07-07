@@ -190,7 +190,12 @@ When going back, preserve history:
 └── UI-SPEC.md          # Current (may be stale)
 ```
 
-Maximum versions to keep: 3 (oldest auto-deleted)
+**Version pruning — keep at most 3 versions total (current + two archived).** When archiving the current file:
+
+1. List existing archives for that phase: `ls .design/phases/[PHASE_NAME].v*.md`
+2. Rename the current file to the next available version number (e.g., if `.v1.md` and `.v2.md` exist, current becomes `.v3.md`)
+3. If there are now more than 2 archived versions, delete the lowest-numbered one(s) until only 2 remain
+4. Record the deletion in the STATE.md activity log
 
 ## State Updates
 

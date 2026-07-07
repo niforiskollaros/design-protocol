@@ -95,13 +95,15 @@ This skill is an **optional sub-phase** of the DP workflow, running between UX (
 
 ### Detecting Workflow Mode
 
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
 At the start of any `/dp:color` invocation:
 
 1. **Check for `.design/config.json`**
 2. **If found** (workflow mode):
-   - Check `optional_phases.color_system.enabled`
+   - Check `optional_phases.color.enabled`
    - If not enabled, ask: "Color system phase isn't enabled for this project. Enable it and proceed? (y/n)"
-   - If enabled (or user says yes), update `optional_phases.color_system.enabled` to `true`
+   - If enabled (or user says yes), update `optional_phases.color.enabled` to `true`
    - Load `.design/phases/DISCOVERY.md` for brand constraints, tone, target audience
    - Load `.design/phases/UX-DECISIONS.md` for semantic color needs (states, component list)
    - Check for `.design/phases/02b-CONTEXT.md` if `/dp:discuss` was run before this phase
@@ -131,8 +133,9 @@ When color system is complete in workflow mode:
 
 1. **Write output** to `.design/phases/COLOR-SYSTEM.md` using the structure below
 2. **Update `.design/config.json`:**
-   - Set `optional_phases.color_system.completed` to `true`
-   - Set `optional_phases.color_system.timestamp` to current ISO 8601 timestamp
+   - Set `optional_phases.color.completed` to `true`
+   - Set `optional_phases.color.timestamp` to current ISO 8601 timestamp
+   - Set `optional_phases.color.output` to `.design/phases/COLOR-SYSTEM.md`
 3. **Update `.design/STATE.md`:**
    - Mark Color System row as complete in the Optional table
    - Add completion entry to Last Activity
@@ -201,8 +204,11 @@ Respects these settings from `.design/config.json`:
 ```json
 {
   "optional_phases": {
-    "color_system": {
+    "color": {
       "enabled": true,
+      "completed": false,
+      "timestamp": null,
+      "output": null,
       "accessibility_level": "AA",
       "include_dark_mode": true
     }

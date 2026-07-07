@@ -46,7 +46,7 @@ Invoke the `dp-journey` skill. The skill drives:
 
 ### Step 3 — Write output
 
-**Workflow mode:** writes `.design/phases/JOURNEY-MAP.md` and updates STATE.md, config.json.
+**Workflow mode:** writes `.design/phases/JOURNEY-MAP.md`, updates STATE.md, and sets `optional_phases.journey` in config.json to `{ "enabled": true, "completed": true, "timestamp": "<ISO 8601>", "output": "phases/JOURNEY-MAP.md" }`.
 
 **Standalone mode:** outputs inline; offers to save.
 
@@ -57,20 +57,7 @@ After completion, suggest next step:
 - `/dp:research` — if hypothesis-mode map needs validation
 - `/dp:prd` — if PRD hasn't been generated and journey insights should feed it
 
-## When to use this command
-
-- Multi-step customer experiences (onboarding, purchase, renewal, support)
-- Omnichannel experiences (web + mobile + email + in-person)
-- Services with backstage operations (service blueprint)
-- Pre-product discovery (experience map, day-in-the-life)
-- Diagnosing why a journey is underperforming
-
-## When NOT to use this command
-
-- Single-screen UX decisions → use `/dp:ux`
-- Feature specs → use `/dp:prd`
-- Requirements gathering → use `/dp:discovery`
-- Research interviews → use `/dp:research`
+> When to use vs. avoid this phase is defined in the `dp-journey` skill description — Claude uses that for triggering. This wrapper only handles workflow invocation and `.design/` wiring.
 
 ## Workflow Navigation
 
