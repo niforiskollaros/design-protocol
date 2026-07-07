@@ -63,7 +63,7 @@ npx design-protocol@latest          # Or install latest directly
 
 | Command | Description |
 |---------|-------------|
-| `/dp:start` | Initialize a new design project |
+| `/dp:start` | Front door — asks what you need and routes to a full project, a single deliverable (standalone or tracked), or an existing project. `/dp:start full` skips the wizard. |
 | `/dp:progress` | View workflow status with progress bar |
 | `/dp:execute` | Generate implementation (wireframe or polished) |
 | `/dp:discuss` | Capture decisions before a phase |
