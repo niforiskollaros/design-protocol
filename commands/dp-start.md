@@ -1,6 +1,6 @@
 ---
 name: dp-start
-description: Entry point to the DP (Design Protocol) workflow. Asks what the user needs and routes them — a full end-to-end design project, a single deliverable (PRD, journey, roadmap, color, research, UX, UI, review, presentation) run standalone or tracked, or an existing project. Creates the .design/ directory with config, roadmap, requirements, and state when a project is started. Run `/dp:start full` to skip the wizard.
+description: Entry point to the DP (Design Protocol) workflow. Asks what the user needs and routes them — a full end-to-end design project, a single deliverable (PRD, journey, roadmap, color, research, UX, UI, review, presentation) run standalone or tracked, or an existing project. Free-text descriptions get a proposed phase plan with recommended optional phases, each justified from the user's own words. Creates the .design/ directory with config, roadmap, requirements, and state when a project is started. Run `/dp:start full` to skip the wizard.
 ---
 
 # /dp:start — Initialize Design Project
@@ -48,7 +48,7 @@ What are you here to do?
 
   3. Continue or check an existing project      → /dp:progress
 
-Or just describe what you're trying to accomplish and I'll recommend a path.
+Or just describe what you're trying to accomplish and I'll propose a plan.
 ```
 
 **Routing:**
@@ -59,7 +59,43 @@ Or just describe what you're trying to accomplish and I'll recommend a path.
   - **Standalone** → do NOT create `.design/`. Invoke the mapped skill directly (it detects the absence of `.design/` and runs in standalone mode) and stop. Tell the user they can run `/dp:start` again anytime to set up a full project.
   - **Track it in a project** → create the `.design/` structure (Steps 3–5), set `optional_phases.<that_phase>.enabled` to `true`, set `workflow.workflow_status` to `"ready"`, then hand off to the mapped skill/command.
 - **Choice 3 (existing project)** → run `/dp:progress` and stop.
-- **Free-text** → map the described need to the closest route above, state your recommendation and why, and confirm before proceeding (e.g. *"Sounds like a one-off color system — I'd run `/dp:color` standalone. Sound right?"*).
+- **Free-text** → map the described need to the closest route above, state your recommendation and why, and confirm before proceeding (e.g. *"Sounds like a one-off color system — I'd run `/dp:color` standalone. Sound right?"*). When the need maps to the **full workflow**, don't stop at the route — propose a phase plan (next section).
+
+### Free-Text: Propose a Phase Plan, Not Just a Route
+
+A description of the work usually signals which optional phases will earn their cost. Listen for these while reading the free text:
+
+| Signal in the description | Recommend enabling |
+|---------------------------|--------------------|
+| Stakeholders, executives, buy-in, "present this", leadership review | Storytell |
+| Onboarding, multi-step experience, cross-channel, touchpoints, "end to end journey" | Journey map (1.5b) |
+| Formal spec, PM handoff, requirements doc, "we need this documented" | PRD (1.5a) |
+| Quarterly planning, prioritization, themes, "what comes after this" | Roadmap (1.5c) |
+| Brand refresh, palette, theming, dark mode, "our colors are a mess" | Color system (2b) |
+| Untested assumptions, "we think users want", no prior user contact | Research (branch) |
+
+Compose the recommendation as one confirmable plan — core phases always included, recommended optionals inserted where they run, each with a one-line reason drawn from THEIR words:
+
+```
+Here's the plan I'd run for this:
+
+  Discovery → Journey → UX → execute (wireframe) → UI → execute (polished) → Review → Verify
+              ────┬──                                                                  + Storytell
+                  │                                                                     ───┬─────
+                  └ you described a multi-step onboarding flow                             └ you mentioned presenting to leadership
+
+  Not recommending: PRD, Roadmap, Color, Research — nothing in your description calls for them,
+  and you can add any of them later with their /dp: command.
+
+Adjust anything, or shall I set it up?
+```
+
+Rules for the plan:
+
+- **Recommend, don't inflate.** Every recommended optional cites a phrase from the user's description. No signal, no recommendation — the core four phases are the default answer, and a plan of nothing-but-core is a good plan, not a thin one.
+- **Name what you're NOT recommending** in one line, so the user knows the optionals exist without being sold them.
+- **The user's edits win without debate.** Add or drop whatever they say; this is their call, not a negotiation.
+- **A confirmed plan pre-answers question 9** in Step 3 (optional phases) — set the `enabled` flags from the plan and don't re-ask the menu. Questions 1-8 still run; the plan replaces only the optional-phases question.
 
 ### Step 3: Gather Project Information
 
@@ -100,7 +136,8 @@ ls IMPLEMENTATION.md docs/IMPLEMENTATION.md 2>/dev/null
    Record the contract path and the implementation adapter path (if any) — they populate `design_system` in config.json.
 
 **Optional phases:**
-9. "The core flow is always Discovery → UX → UI → Review. Do you want any optional phases enabled now? (you can add them later too)
+
+9. Skip this question if a phase plan was already confirmed in Step 2 — use the plan's selections. Otherwise ask: "The core flow is always Discovery → UX → UI → Review. Do you want any optional phases enabled now? (you can add them later too)
    - **PRD** (1.5a) — a formal product spec
    - **Journey map** (1.5b) — a multi-step or omnichannel experience
    - **Roadmap** (1.5c) — theme-based Now/Next/Future planning
