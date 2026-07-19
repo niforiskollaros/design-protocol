@@ -37,6 +37,7 @@ Read whatever exists:
 - `.design/phases/COLOR-SYSTEM.md` (if color phase ran)
 - `.design/phases/UI-SPEC.md`
 - `.design/phases/REVIEW.md`
+- `.design/DEVIATIONS.md` (if /dp:execute logged spec departures)
 
 ### Step 3: Run Truth Verification
 
@@ -131,6 +132,7 @@ ARTIFACT VERIFICATION
 | W4 | UX states | UI states | Each state in UX has visual treatment |
 | W5 | All phases | Review | Review checks against documented specs |
 | W6 | Requirements | Final | All must-have requirements can be traced to implementation guidance |
+| W7 | Deviations log | Phase documents | Each entry in DEVIATIONS.md is reflected back into the phase document it departed from (or explicitly accepted in REVIEW.md) |
 
 **Output:**
 ```
@@ -147,6 +149,16 @@ WIRING VERIFICATION
   UX defined 9 states, UI spec covers 6
   Missing visual specs: focus, disabled, empty
 ```
+
+### Step 5.5: Re-Examine Every PARTIAL Verdict
+
+PARTIAL verdicts are cheap to write and expensive to leave wrong: a truth parked as "partially addressed" quietly weakens the handoff whether the parking was right or not. Before generating the report, take every truth or wiring check marked ◐ PARTIAL and do a focused deep-read of the actual phase document it concerns — don't trust the note from the first pass; go look. Three outcomes per verdict:
+
+1. **Promote to ✓** — the deep-read shows the content is actually there; the first pass skimmed past it.
+2. **Confirm ◐** — genuinely partial after the deep-read; the gap description stands.
+3. **Escalate to ✗** — worse than partial; the section is placeholder text or contradicts another phase.
+
+If no verdicts were PARTIAL, skip in one line. Reporting a verdict you never re-opened the file for is rubber-stamping — every ✓ and ◐ in the report must carry a quote or concrete reference as evidence, not a recollection.
 
 ### Step 6: Generate Summary Report
 
@@ -176,14 +188,24 @@ CRITICAL GAPS (must fix)
    → Update UX-DECISIONS.md with: focus, disabled, empty states
    → Then update UI-SPEC.md with visual specs for these states
 
+TASTE CHECKPOINTS AWAITING SIGN-OFF (only the human can close these)
+────────────────────────────────────────────────────────────────────────────────
+1. [ ] [Checkpoint from the design brief, verbatim]
+2. [ ] [Checkpoint]
+(Omit this section if the brief has no Taste Checkpoints list.)
+
 RECOMMENDATIONS
 ────────────────────────────────────────────────────────────────────────────────
 1. [ ] Complete /dp:ui phase to generate UI-SPEC.md
 2. [ ] Add missing states to UX-DECISIONS.md
 3. [ ] Re-run /dp:verify after addressing gaps
 
+Re-examined [N] partial verdicts. Promoted [X]. Confirmed [Y]. Escalated [Z].
+
 ═══════════════════════════════════════════════════════════════════════════════
 ```
+
+The re-examination count line is verbatim and mandatory (the counts must add up; write `Re-examined 0 partial verdicts.` when there were none). Taste checkpoints never fail verification, but they must be listed until the human has signed them off — verification cannot approve taste on the human's behalf.
 
 ### Step 7: Update State
 
@@ -212,6 +234,12 @@ Update `.design/config.json`:
 ## Agent Integration
 
 This command can spawn the `dp-verifier` agent for deeper analysis if needed.
+
+---
+
+## Rationale (recorded so future edits don't drift it)
+
+The PARTIAL re-examination step is adapted from the Foundry framework's demotion-review round: uncertain verdicts written in a fast first pass are wrong in both directions often enough that every one deserves a second, evidence-based look before it lands in a report the human acts on. The evidence requirement (quote or concrete reference per verdict) blocks verification-by-recollection, which is how a report passes files nobody re-opened. W7 exists because /dp:execute's deviations log is only honest bookkeeping if something downstream checks it was reconciled; without the check, deviations become a write-only file. Taste checkpoints are surfaced but never auto-failed because they are, by definition, the calls verification cannot make.
 
 ---
 

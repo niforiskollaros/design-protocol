@@ -390,10 +390,10 @@ test('verify T1-T10 truth labels match between dp-verify command and dp-verifier
   }
 });
 
-test('wiring W1-W6 From→To matches between dp-verify command and dp-verifier agent', () => {
+test('wiring W1-W7 From→To matches between dp-verify command and dp-verifier agent', () => {
   const cmd = extractRows(readFile('commands/dp-verify.md'), 'W', 2);
   const agent = extractRows(readFile('agents/dp-verifier.md'), 'W', 2);
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 7; i++) {
     const id = `W${i}`;
     assert.ok(cmd[id], `${id} missing from dp-verify.md`);
     assert.ok(agent[id], `${id} missing from dp-verifier.md`);

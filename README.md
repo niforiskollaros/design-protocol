@@ -153,6 +153,18 @@ DP creates a `.design/` directory to track progress:
 }
 ```
 
+## The Light Path
+
+The full workflow is thorough and token-heavy. When cost matters — a small feature, a tight deadline, a smaller model — here's the honest cheaper shape. Same process, a fraction of the cost:
+
+1. **`/dp:start`** and **`/dp:discovery`** as normal — but set `depth: "quick"` (1-2 interrogation rounds). Never cut discovery entirely; a few questions are the cheapest insurance in the whole workflow.
+2. **Skip the optional phases** (PRD, journey, roadmap, color) unless one is the actual point of the work.
+3. **`/dp:ux` → `/dp:execute` (wireframe)** as normal — the wireframe checkpoint catches flow problems before any polish is spent on them.
+4. **Collapse UI + polish:** run `/dp:ui` at `depth: "quick"`, then `/dp:execute`.
+5. **`/dp:eng_review` once**, accessibility angle only. **`/dp:verify`** as normal — it's cheap and it's the last gate.
+
+When to spend on the full workflow instead: designs you'll live with for quarters, work touching money or user data, and anything where being subtly wrong is expensive.
+
 ## Standalone vs Workflow
 
 All skills detect `.design/config.json`:

@@ -92,6 +92,25 @@ Use a **hybrid iterative-adaptive** approach:
 3. **Drill down** — Focus next round on the weakest areas
 4. **Repeat** — Continue until confident in understanding
 
+#### Question Discipline
+
+Every question must earn its place. Before asking, apply the **"if necessary" test** — a question makes the cut only if:
+
+- the answer would change what gets designed (scope, priorities, what's in and what's out), OR
+- it's a call only the human holds (product feel, user-facing shape, visual direction, priorities, money).
+
+Design-craft questions never make the cut. Interaction patterns, state handling, and accessibility approach are this skill's job downstream; where a genuine trade-off exists, carry a recommendation and present it for a veto, never as a bare "which do you want?" quiz. If nothing meets the bar in a round, say so in one line ("No questions worth your time on this — my recommendations are in the brief") and move on. That's a successful round, not a failure.
+
+For the questions that survive:
+
+- **Order by blast radius.** The question whose answer would change the most of the design goes first.
+- **Anchor to what they gave you.** "Your brief assumes X — is that right?" beats "what do you want?"
+- **Offer options with a recommendation.** Concrete lettered options with the recommended one marked, so the human can accept the default in one word or overrule it.
+- **Reach for references when words run out.** If the human can't articulate what they want, ask for a reference before asking for more words: a competitor that does it right, a screenshot, an existing screen in their product. A concrete artifact beats a paragraph of adjectives.
+- **Taste-heavy questions:** offer 2-4 distinct directions to react to instead of asking someone to describe taste in the abstract.
+
+If the human stops answering mid-round, fold in whatever was answered so far, note the early exit in one line, and never re-ask.
+
 **Depth Settings (from config.json or defaults):**
 | Depth | Interrogation Rounds | Challenge Mode |
 |-------|---------------------|----------------|
@@ -170,6 +189,8 @@ Throughout discovery, actively stress-test everything:
 Once discovery feels complete, produce a **Design Brief**.
 
 See `references/discovery-template.md` for the full Design Brief structure (Executive Summary, Problem Statement, Users & Context, Journey Map, Requirements, Constraints, Success Metrics, Risks & Assumptions, Open Questions, Action Plan). Reproduce that structure in the output.
+
+**Taste Checkpoints.** Wherever an answer was a taste call (product feel, visual direction, tone, "I'll know it when I see it"), add it to a short **Taste Checkpoints** list in the brief: the items the human must personally eyeball before the work ships. These are by definition things no downstream phase or verification can absorb on the human's behalf — `/dp:execute` surfaces them at preview time and `/dp:verify` lists any that were never signed off. Keep each checkpoint to one line naming what to look at and what "right" was described as.
 
 ### Phase 5: Write Output & Update State (Workflow Mode)
 
@@ -290,6 +311,12 @@ Respects these settings from `.design/config.json`:
   }
 }
 ```
+
+---
+
+## Rationale (recorded so future edits don't drift it)
+
+The question discipline is adapted from interview-stage patterns proven elsewhere (Thariq Shihipar's "Finding Your Unknowns"; GitHub spec-kit's clarify stage; the Foundry framework's frame-it command): at most a handful of questions per round, ordered by how much of the design the answer would change, each carrying options and a recommendation so the human can answer in one word. The "if necessary" test exists because interviews degrade into quizzes when the agent outsources its own craft decisions; the human owns taste, scope, and money — the agent owns the rest and brings recommendations. Taste Checkpoints exist because taste answers otherwise evaporate between phases: naming them once, in the brief, gives execute and verify a concrete list of what only the human can approve.
 
 ---
 

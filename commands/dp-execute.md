@@ -312,6 +312,21 @@ export function EmailInput({ onAdd, disabled }: EmailInputProps) {
 }
 ```
 
+### Step 6.5: Log Deviations from the Spec
+
+No spec survives contact with real code untouched. When generation forces a departure from UX-DECISIONS.md or UI-SPEC.md (a state the spec never defined, an interaction that can't work as described, a token that doesn't exist in the project), pick the conservative option that stays closest to the spec's intent, log it, and keep going — don't silently absorb it and don't stall waiting for a decision the log can carry.
+
+Deviations go in `.design/DEVIATIONS.md` (create it with a `# Deviations` title line if missing). One bullet per departure, four parts:
+
+```markdown
+- **Spec said:** [what UX-DECISIONS.md or UI-SPEC.md specified]
+  **Code forced:** [why it couldn't be built as written]
+  **Chose:** [what was implemented instead] ([file:line])
+  **Lesson:** [one line — what the spec should have covered]
+```
+
+This log is load-bearing downstream: `/dp:eng_review` reads it FIRST and treats every entry as a prime review target (deviations are exactly the parts of the implementation no design phase ever saw), and `/dp:verify` fails wiring if deviations exist that no phase document was updated to reflect. If generation matched the specs exactly, don't create the file.
+
 ### Step 7: Generate Preview Page
 
 Create a preview page to view the component in browser. The location and format depend on the detected framework:
@@ -478,6 +493,18 @@ Generated {N} components:
 Preview page:
 └── {preview-page-path}  ✓ created
 
+{If .design/DEVIATIONS.md gained entries this run}
+DEVIATIONS FROM SPEC ({N})
+────────────────────────────────────────────────────────────────────────────────
+→ [One line per deviation: what the spec said vs. what was built]
+→ Full log: .design/DEVIATIONS.md — /dp:eng_review will target these first
+
+{If the design brief has Taste Checkpoints}
+TASTE CHECKPOINTS — only you can sign these off
+────────────────────────────────────────────────────────────────────────────────
+→ [Each checkpoint from DISCOVERY.md, verbatim, as a check item]
+→ Eyeball these in the preview; verification can't approve them for you
+
 NEXT STEPS
 ────────────────────────────────────────────────────────────────────────────────
 {If wireframe}
@@ -516,6 +543,12 @@ After generating, verify:
 - [ ] Keyboard navigation functional
 - [ ] (Polished) Visual design matches spec
 - [ ] (Polished) Animations are smooth
+
+---
+
+## Rationale (recorded so future edits don't drift it)
+
+The deviations log (adapted from the Foundry framework's build-it stage) replaces two worse behaviors: silently absorbing spec departures (which leaves the review phase auditing an implementation against a spec it no longer matches) and stalling generation on questions the human isn't present to answer. The four-part entry format — spec said / code forced / chose / lesson — exists so eng_review can re-verify each departure without reconstructing the reasoning, and so the lesson feeds back into better specs. Taste checkpoints surface at preview time because that's the one moment the human is looking at rendered output; burying them in phase documents means they get signed off by nobody.
 
 ---
 
