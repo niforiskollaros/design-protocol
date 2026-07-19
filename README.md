@@ -92,6 +92,17 @@ npx design-protocol@latest          # Or install latest directly
 | `/dp:research` | Research planning — interviews, usability tests, synthesis |
 | `/dp:storytell` | Audience-tuned presentation outlines for design work (cross-phase) |
 
+## Agents
+
+DP ships subagents that other commands spawn to do self-contained work in isolation, without taking over the main conversation:
+
+| Agent | Purpose |
+|-------|---------|
+| `dp-verifier` | Goal-backward verification specialist spawned by `/dp:verify` — checks truths, artifacts, and cross-phase wiring for comprehensive design-quality checks |
+| `dp-researcher` | UX research specialist for delegated/autonomous research — invoked when `/dp:discuss`, `/dp:verify`, or `/dp:discovery` surface unknowns or unvalidated assumptions, producing `.design/research/` artifacts |
+
+The interactive counterpart to `dp-researcher` is the `/dp:research` skill — use the skill when you're working through research turn by turn, the agent when a command delegates a research task.
+
 ## Implementation Generation
 
 DP generates working code at two checkpoints:
@@ -246,6 +257,22 @@ Or tell the command to generate without shadcn — it will use plain Tailwind in
 
 - Claude Code CLI
 - Node.js 14+
+
+## Changelog
+
+### 1.1.0
+
+- **Intent-routing `/dp:start` wizard** — a front door that asks what you need and routes to a full project, a single deliverable (standalone or tracked), or an existing project, and can propose a phase plan from a free-text description. `/dp:start full` skips the wizard.
+- **Bring-your-own design system** — DP auto-detects a `DESIGN.md`-style contract and applies it across `/dp:ui`, `/dp:color`, and `/dp:execute` instead of inventing a parallel system.
+- **`/dp:design_check` skill** — verifies shipped code against your design contract (token coverage, design intent, stack rules) and produces a feedback report for design-system owners.
+- **`/dp:prd` and `/dp:color`** promoted to first-class optional phases with dedicated commands.
+- **`dp-verifier` and `dp-researcher` agents** — spawnable subagents for verification and delegated research.
+- **Foundry-style review discipline** adopted across DP phases for tighter, more consistent output.
+- Skill reference libraries extracted into `references/` for lighter, more focused `SKILL.md` files.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add or modify skills, commands, and agents, and how to run the test suite (`npm test`) and version checks (`npm run verify`).
 
 ## License
 
