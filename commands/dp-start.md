@@ -1,11 +1,13 @@
 ---
 name: dp-start
-description: Initialize a new DP (Design Protocol) design project with structured workflow. Creates .design/ directory with project config, roadmap, requirements, and state tracking.
+description: Entry point to the DP (Design Protocol) workflow. Asks what the user needs and routes them — a full end-to-end design project, a single deliverable (PRD, journey, roadmap, color, research, UX, UI, review, presentation) run standalone or tracked, or an existing project. Free-text descriptions get a proposed phase plan with recommended optional phases, each justified from the user's own words. Creates the .design/ directory with config, roadmap, requirements, and state when a project is started. Run `/dp:start full` to skip the wizard.
 ---
 
 # /dp:start — Initialize Design Project
 
-You are initializing a new DP 2.0 design workflow. This creates the `.design/` directory structure and captures initial project context.
+You are the front door to the DP (Design Protocol) workflow. Your job is to understand what the user actually needs and route them to the right starting point — a full end-to-end project, a single deliverable, or an existing project — rather than assuming everyone wants the whole workflow.
+
+**Escape hatch:** if the user runs `/dp:start full` (or says "just start the full workflow"), skip the wizard and go straight to Step 3 (full-workflow init).
 
 ## Workflow
 
@@ -21,9 +23,81 @@ ls .design/config.json 2>/dev/null
 1. Continue existing project (show `/dp:progress`)
 2. Archive and start fresh
 
-**If not exists:** Proceed with initialization.
+**If not exists:** Proceed to Step 2.
 
-### Step 2: Gather Project Information
+### Step 2: Route the Intent (wizard)
+
+Present this once, then let the user answer by number **or** by describing their need in their own words — infer the route from free text when they do.
+
+```
+What are you here to do?
+
+  1. Design something end-to-end                → full workflow (default)
+     Discovery → UX → UI → Review, plus any optional phases you choose
+
+  2. Produce one specific deliverable
+     a. PRD / product spec ............ /dp:prd
+     b. Customer journey map .......... /dp:journey
+     c. UX roadmap .................... /dp:roadmap
+     d. Color system (OKLCH) .......... /dp:color
+     e. Research plan ................. /dp:research
+     f. UX review of existing UI ...... /dp:ux
+     g. Visual / UI design ............ /dp:ui
+     h. Code / accessibility review ... /dp:eng_review
+     i. Stakeholder presentation ...... /dp:storytell
+
+  3. Continue or check an existing project      → /dp:progress
+
+Or just describe what you're trying to accomplish and I'll propose a plan.
+```
+
+**Routing:**
+
+- **Choice 1 (full workflow)** → continue to Step 3. This is the default if the user is vague about scope or clearly wants to design a feature/product from scratch.
+- **Choice 2 (one deliverable)** → ask the one question that matters:
+  > "Run this as a **standalone** deliverable (no project files created), or **track it in a project** (creates `.design/` so later phases can build on it)?"
+  - **Standalone** → do NOT create `.design/`. Invoke the mapped skill directly (it detects the absence of `.design/` and runs in standalone mode) and stop. Tell the user they can run `/dp:start` again anytime to set up a full project.
+  - **Track it in a project** → create the `.design/` structure (Steps 3–5), set `optional_phases.<that_phase>.enabled` to `true`, set `workflow.workflow_status` to `"ready"`, then hand off to the mapped skill/command.
+- **Choice 3 (existing project)** → run `/dp:progress` and stop.
+- **Free-text** → map the described need to the closest route above, state your recommendation and why, and confirm before proceeding (e.g. *"Sounds like a one-off color system — I'd run `/dp:color` standalone. Sound right?"*). When the need maps to the **full workflow**, don't stop at the route — propose a phase plan (next section).
+
+### Free-Text: Propose a Phase Plan, Not Just a Route
+
+A description of the work usually signals which optional phases will earn their cost. Listen for these while reading the free text:
+
+| Signal in the description | Recommend enabling |
+|---------------------------|--------------------|
+| Stakeholders, executives, buy-in, "present this", leadership review | Storytell |
+| Onboarding, multi-step experience, cross-channel, touchpoints, "end to end journey" | Journey map (1.5b) |
+| Formal spec, PM handoff, requirements doc, "we need this documented" | PRD (1.5a) |
+| Quarterly planning, prioritization, themes, "what comes after this" | Roadmap (1.5c) |
+| Brand refresh, palette, theming, dark mode, "our colors are a mess" | Color system (2b) |
+| Untested assumptions, "we think users want", no prior user contact | Research (branch) |
+
+Compose the recommendation as one confirmable plan — core phases always included, recommended optionals inserted where they run, each with a one-line reason drawn from THEIR words:
+
+```
+Here's the plan I'd run for this:
+
+  Discovery → Journey → UX → execute (wireframe) → UI → execute (polished) → Review → Verify
+              ────┬──                                                                  + Storytell
+                  │                                                                     ───┬─────
+                  └ you described a multi-step onboarding flow                             └ you mentioned presenting to leadership
+
+  Not recommending: PRD, Roadmap, Color, Research — nothing in your description calls for them,
+  and you can add any of them later with their /dp: command.
+
+Adjust anything, or shall I set it up?
+```
+
+Rules for the plan:
+
+- **Recommend, don't inflate.** Every recommended optional cites a phrase from the user's description. No signal, no recommendation — the core four phases are the default answer, and a plan of nothing-but-core is a good plan, not a thin one.
+- **Name what you're NOT recommending** in one line, so the user knows the optionals exist without being sold them.
+- **The user's edits win without debate.** Add or drop whatever they say; this is their call, not a negotiation.
+- **A confirmed plan pre-answers question 9** in Step 3 (optional phases) — set the `enabled` flags from the plan and don't re-ask the menu. Questions 1-8 still run; the plan replaces only the optional-phases question.
+
+### Step 3: Gather Project Information
 
 Ask the user these questions to populate the project files:
 
@@ -46,7 +120,35 @@ Ask the user these questions to populate the project files:
 
 7. "Is this B2B/enterprise? (affects UI patterns)"
 
-### Step 3: Create Directory Structure
+**Design system (detect first, ask second):**
+
+8. Before asking anything, glob the repo for a design contract at the conventional locations:
+
+```bash
+ls DESIGN.md design.md docs/DESIGN.md design-system.md docs/design-system.md 2>/dev/null
+ls IMPLEMENTATION.md docs/IMPLEMENTATION.md 2>/dev/null
+```
+
+   - **Exactly one contract found** → confirm, don't interrogate: "Found `DESIGN.md` — I'll treat it as your design contract: UI and color phases will apply its tokens instead of inventing new ones. Sound right?"
+   - **Several found** → ask which one is canonical.
+   - **None found** → ask once: "Do you have a design system file (a DESIGN.md — tokens, principles, component rules)? If yes, give me the path; if no, the UI phase will create tokens from scratch and you can adopt them as your DESIGN.md later."
+
+   Record the contract path and the implementation adapter path (if any) — they populate `design_system` in config.json.
+
+**Optional phases:**
+
+9. Skip this question if a phase plan was already confirmed in Step 2 — use the plan's selections. Otherwise ask: "The core flow is always Discovery → UX → UI → Review. Do you want any optional phases enabled now? (you can add them later too)
+   - **PRD** (1.5a) — a formal product spec
+   - **Journey map** (1.5b) — a multi-step or omnichannel experience
+   - **Roadmap** (1.5c) — theme-based Now/Next/Future planning
+   - **Color system** (2b) — an OKLCH palette and tokens
+   - **Research** (branch) — validate assumptions with users
+   - **Storytelling** — stakeholder presentations
+   Pick any, all, or none."
+
+Record which optional phases the user selected — they drive the `enabled` flags in Step 5. (If a design contract was found in #8 and the user wants a color system, note that `/dp:color` will audit/extend the contract's palette rather than invent one.)
+
+### Step 4: Create Directory Structure
 
 Create the `.design/` directory with all files:
 
@@ -61,13 +163,15 @@ Create the `.design/` directory with all files:
     └── (created as phases complete)
 ```
 
-### Step 4: Populate Files
+### Step 5: Populate Files
 
 **config.json:**
 - Set `project_name` from answer #1
 - Set `created` to current timestamp
 - Set `settings.depth` based on answer #6
 - Set `phases.ui.include_b2b` based on answer #7
+- Set `design_system.path` and `design_system.implementation_path` from answer #8 (leave `null` if none), and `design_system.detected` to `true` when the file was found by globbing rather than user-supplied
+- For each optional phase the user selected in answer #9, set `optional_phases.<phase>.enabled` to `true` (leave the rest `false`)
 - Set `workflow.current_phase` to 1
 - Set `workflow.workflow_status` to "ready"
 
@@ -90,9 +194,9 @@ Create the `.design/` directory with all files:
 - Set Progress bar to 0%
 - Set last activity to initialization
 
-### Step 5: Confirm and Offer Next Steps
+### Step 6: Confirm and Offer Next Steps
 
-After creating files, display:
+After creating files, display (list any enabled optional phases so the user sees them):
 
 ```
 ✓ DP project initialized: [project_name]
@@ -109,12 +213,17 @@ Current Position:
   Status: Ready
   Progress: [░░░░░░░░░░] 0%
 
+Optional phases enabled: [list, or "none"]
+Design contract: [path, or "none — UI phase will create tokens from scratch"]
+
 Next Steps:
   1. /dp:discuss — Capture any known context before discovery
   2. /dp:discovery    — Start discovery interrogation
 
 Ready to begin discovery?
 ```
+
+If the user reached this step via a **one-off deliverable tracked in a project** (Step 2, choice 2 → "track it"), adjust the next-step suggestion to point at the mapped skill/command for that phase instead of discovery.
 
 ## File Templates
 
@@ -124,7 +233,7 @@ Use these inline templates as the base for each file, replacing placeholders wit
 
 ```json
 {
-  "version": "2.1",
+  "version": "1.0",
   "created": "",
   "project_name": "",
   "workflow": {
@@ -147,6 +256,11 @@ Use these inline templates as the base for each file, replacing placeholders wit
   "settings": {
     "depth": "standard",
     "challenge_mode": "heavy"
+  },
+  "design_system": {
+    "path": null,
+    "implementation_path": null,
+    "detected": false
   },
   "phases": {
     "discovery": {
@@ -175,6 +289,35 @@ Use these inline templates as the base for each file, replacing placeholders wit
     "research": {
       "enabled": false,
       "methods": []
+    },
+    "prd": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "journey": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "roadmap": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "color": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null,
+      "accessibility_level": "AA",
+      "include_dark_mode": true
+    },
+    "storytell": {
+      "presentations": []
     }
   }
 }
@@ -426,7 +569,7 @@ Discovery ──► UX ──► UI ──► Review
 ## Current Position
 
 Phase: [0-4] of 4 ([phase_name])
-Status: [not_started | ready | in_progress | completed | blocked]
+Status: [not_started | ready | in_progress | blocked | complete | gaps | verified]
 Progress: [░░░░░░░░░░] 0%
 
 ## Phase Status
@@ -479,10 +622,11 @@ After writing `config.json`, verify it by reading it back and checking:
    - `created` (ISO 8601 timestamp)
    - `workflow.current_phase` (number, 0-4)
    - `workflow.phases_completed` (array)
-   - `workflow.workflow_status` (one of: `not_started`, `ready`, `in_progress`, `blocked`, `complete`, `gaps`)
+   - `workflow.workflow_status` (one of: `not_started`, `ready`, `in_progress`, `blocked`, `complete`, `gaps`, `verified`)
    - `phases.discovery`, `phases.ux`, `phases.ui`, `phases.review` (objects with `enabled` boolean)
+   - `design_system` (object with `path`, `implementation_path`, `detected` — `path` may be `null`)
 3. **Values are consistent:**
-   - `current_phase` matches `workflow_status` (phase 0 = `ready`, not `complete`)
+   - A fresh project has `current_phase: 1` and `workflow_status: "ready"` (Step 5 sets these — the raw template defaults of `0`/`not_started` must be overridden)
    - `phases_completed` is empty for a fresh project
 
 If validation fails, fix the issue immediately before showing the success message.
@@ -505,6 +649,8 @@ If validation fails, fix the issue immediately before showing the success messag
 
 | | |
 |---|---|
-| **This command** | `/dp:start` — Initialize design project |
-| **Next step** | `/dp:discuss` — Capture known context, then `/dp:discovery` — Start discovery |
+| **This command** | `/dp:start` — Route the intent / initialize design project |
+| **Skip the wizard** | `/dp:start full` — jump straight to full-workflow init |
+| **Next step (full)** | `/dp:discuss` — Capture known context, then `/dp:discovery` — Start discovery |
+| **Next step (deliverable)** | The mapped skill — e.g. `/dp:color`, `/dp:prd`, `/dp:journey` |
 | **Check status** | `/dp:progress` — View workflow status |

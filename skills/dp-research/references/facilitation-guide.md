@@ -2,6 +2,21 @@
 
 Running research sessions without contaminating the data.
 
+## Contents
+- [Your Role](#your-role)
+- [Before the Session](#before-the-session)
+- [The First 2 Minutes Set the Tone](#the-first-2-minutes-set-the-tone)
+- [Active Listening Techniques](#active-listening-techniques)
+- [The Art of Silence](#the-art-of-silence)
+- [Probing Without Leading](#probing-without-leading)
+- [When They Get Stuck (Usability Testing)](#when-they-get-stuck-usability-testing)
+- [Handling Difficult Situations](#handling-difficult-situations)
+- [Bias Awareness](#bias-awareness)
+- [Body Language & Presence](#body-language--presence)
+- [Managing Observers](#managing-observers)
+- [Post-Session Habits](#post-session-habits)
+- [Common Facilitator Mistakes](#common-facilitator-mistakes)
+
 ---
 
 ## Your Role
@@ -211,6 +226,22 @@ Simply repeat their last few words as a question:
 **You say:** "That's interesting — tell me more about what problem that would solve for you?"
 
 (Redirect from solution to problem)
+
+---
+
+## Bias Awareness
+
+**Your biases to watch:**
+- Confirmation bias: Hearing what supports your hypothesis
+- Leading: Subtle cues that suggest "right" answers
+- Anchoring: First impressions coloring everything after
+- Social desirability: They want to please you
+
+**Mitigation:**
+- Have someone else take notes
+- Record and review later
+- Use standardized probes
+- Debrief immediately after
 
 ---
 

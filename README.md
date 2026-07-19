@@ -57,21 +57,23 @@ npx design-protocol@latest          # Or install latest directly
 | 3 | UI | `/dp:ui` | UI-SPEC.md |
 | 3a | Execute | `/dp:execute` | Polished components |
 | 4 | Review | `/dp:eng_review` | REVIEW.md |
-| 5 | Verify | `/dp:verify` | Verification report |
+| ✓ | Verify (final check) | `/dp:verify` | Verification report |
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/dp:start` | Initialize a new design project |
+| `/dp:start` | Front door — asks what you need and routes to a full project, a single deliverable (standalone or tracked), or an existing project. `/dp:start full` skips the wizard. |
 | `/dp:progress` | View workflow status with progress bar |
 | `/dp:execute` | Generate implementation (wireframe or polished) |
 | `/dp:discuss` | Capture decisions before a phase |
 | `/dp:verify` | Goal-backward verification |
 | `/dp:skip` | Skip current phase |
 | `/dp:back` | Return to previous phase |
-| `/dp:journey` | Run journey map as optional phase (cross-phase) |
-| `/dp:roadmap` | Run roadmap as optional phase (cross-phase) |
+| `/dp:prd` | Run PRD as optional phase 1.5a |
+| `/dp:journey` | Run journey map as optional phase 1.5b |
+| `/dp:roadmap` | Run roadmap as optional phase 1.5c |
+| `/dp:color` | Run color system as optional phase 2b |
 | `/dp:storytell` | Generate audience-tuned presentation outline (cross-phase) |
 
 ## Skills
@@ -86,6 +88,7 @@ npx design-protocol@latest          # Or install latest directly
 | `/dp:color` | OKLCH palettes, shade ramps, contrast checking, color theory |
 | `/dp:ui` | Visual design — grids, tokens, aesthetic archetypes, B2B patterns, data viz |
 | `/dp:eng_review` | Code review — a11y, React patterns, spec alignment |
+| `/dp:design_check` | Design-contract coverage — verify code resolves to your DESIGN.md tokens and principles |
 | `/dp:research` | Research planning — interviews, usability tests, synthesis |
 | `/dp:storytell` | Audience-tuned presentation outlines for design work (cross-phase) |
 
@@ -144,12 +147,40 @@ DP creates a `.design/` directory to track progress:
     "depth": "standard",      // quick | standard | thorough
     "challenge_mode": "heavy" // light | heavy
   },
+  "design_system": {
+    "path": "DESIGN.md",      // your design contract, or null
+    "implementation_path": "IMPLEMENTATION.md"
+  },
   "phases": {
     "ux": { "include_accessibility": true },
     "ui": { "include_b2b": true }
   }
 }
 ```
+
+## Bring Your Own Design System
+
+If your project has a design contract — a `DESIGN.md` (or similar) defining tokens, principles, and component rules — DP applies it instead of inventing a parallel system:
+
+- **`/dp:start`** auto-detects it (`DESIGN.md`, `design.md`, `docs/DESIGN.md`, `design-system.md`) and asks only if nothing is found
+- **`/dp:ui`** runs in *apply mode*: UI-SPEC.md maps components to your tokens; genuinely missing tokens become "Proposed token additions", never silent inventions
+- **`/dp:color`** audits and extends your palette instead of generating one
+- **`/dp:execute`** (polished) consumes your token names through your theming mechanism
+- **`/dp:design_check`** verifies the shipped code against the contract — token coverage, design intent, and stack rules — and produces a feedback report for your design-system owners
+
+No contract? Everything works as before, and the UI phase's token tables make a good first DESIGN.md.
+
+## The Light Path
+
+The full workflow is thorough and token-heavy. When cost matters — a small feature, a tight deadline, a smaller model — here's the honest cheaper shape. Same process, a fraction of the cost:
+
+1. **`/dp:start`** and **`/dp:discovery`** as normal — but set `depth: "quick"` (1-2 interrogation rounds). Never cut discovery entirely; a few questions are the cheapest insurance in the whole workflow.
+2. **Skip the optional phases** (PRD, journey, roadmap, color) unless one is the actual point of the work.
+3. **`/dp:ux` → `/dp:execute` (wireframe)** as normal — the wireframe checkpoint catches flow problems before any polish is spent on them.
+4. **Collapse UI + polish:** run `/dp:ui` at `depth: "quick"`, then `/dp:execute`.
+5. **`/dp:eng_review` once**, accessibility angle only. **`/dp:verify`** as normal — it's cheap and it's the last gate.
+
+When to spend on the full workflow instead: designs you'll live with for quarters, work touching money or user data, and anything where being subtly wrong is expensive.
 
 ## Standalone vs Workflow
 
@@ -166,7 +197,7 @@ Restart Claude Code after installing. DP skills are loaded on startup.
 
 ```bash
 # Verify files were installed
-ls ~/.claude/skills/    # Should show: dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell
+ls ~/.claude/skills/    # Should show: dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell, dp-design_check
 ls ~/.claude/commands/  # Should show: dp-*.md files
 ```
 
@@ -203,7 +234,7 @@ The execute command auto-detects your project structure by reading `package.json
 
 ### shadcn/ui not detected (polished mode)
 
-The command checks for `components.json` and `@/components/dp:ui/`. If you haven't installed shadcn yet:
+The command checks for `components.json` and `@/components/ui/`. If you haven't installed shadcn yet:
 
 ```bash
 npx shadcn@latest init

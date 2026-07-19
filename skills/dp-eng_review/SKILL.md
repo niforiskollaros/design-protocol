@@ -15,6 +15,8 @@ This skill is Phase 4 of the DP (Design Protocol) workflow. It automatically det
 
 ### Detecting Workflow Mode
 
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
 At the start of any `/dp:eng_review` invocation:
 
 1. **Check for `.design/config.json`**
@@ -68,28 +70,57 @@ What file(s) should I review?
 - **After building** — Review implementations created with /dp:ux and /dp:ui guidance
 - **Before merging** — Catch issues before they ship
 - **During refactoring** — Ensure quality isn't regressing
-- **Accessibility audits** — Detailed WCAG 2.1 AA compliance checks
+- **Accessibility audits** — Detailed WCAG 2.2 AA compliance checks
 
 ---
 
 ## Workflow
 
 1. **Identify target** — If `$ARGUMENTS` provided, review that file/component. Otherwise, ask user what to review or offer to scan for components.
-2. **Read the code** — Always read the actual file(s) before making assessments
-3. **Check references** — Load relevant reference files for detailed criteria:
+2. **Read the deviations log FIRST** (workflow mode) — If `.design/DEVIATIONS.md` exists, read it before any code. Each entry is a place the implementation departed from the reviewed specs, which means it carries the least design coverage of anything in the codebase; treat every entry as a prime review target and verify the chosen departure holds up. If the file is absent, say so in one line and move on.
+3. **Read the code** — Always read the actual file(s) before making assessments. Read each file in full, not just the parts the specs mention — problems hide in the lines the spec never covered.
+4. **Check references** — Load relevant reference files for detailed criteria:
    - `references/code-review-checklist.md` — Full audit criteria
    - `references/shadcn-patterns.md` — Component usage patterns
    - `references/tailwind-conventions.md` — Styling consistency
    - `references/react-patterns.md` — React 19 best practices
-4. **Load design specs** (workflow mode) — Check implementation against specs
-5. **Generate report** — Use the structured output format below
-6. **Offer fixes** — If requested, implement the fixes directly
+5. **Load design specs** (workflow mode) — Check implementation against specs
+6. **Generate report** — Use the structured output format below
+7. **Offer fixes** — If requested, implement the fixes directly
+
+---
+
+## Re-Review: Rotate the Angle
+
+Reviews only find the next layer of problems when each pass looks from a genuinely different angle. When `/dp:eng_review` is invoked again on the same code (after fixes, or because the user wants a deeper pass), do NOT re-run the same sweep — that re-finds the same nothing.
+
+**At the top of a repeat review, read back your prior pass(es) in this conversation and state, in one line each:**
+
+1. The angle(s) already used (`Angles used: [pass 1: X], [pass 2: Y]`)
+2. The new angle for this pass, and why it's likely to surface different problems
+
+**The angle list to rotate through:**
+
+1. Accessibility (the WCAG tables below)
+2. Spec alignment — does the code match what UX/UI documents actually say?
+3. State completeness — every state the spec named, traced to a rendered treatment
+4. Did the previous pass's fixes break anything new? (highest-yield second angle — fixes written under review pressure get less scrutiny than the code they fix)
+5. Where else does the same root cause apply? (a violation found in one component almost always lives in its siblings — grep for it)
+6. Hostile input and edge data — empty lists, max-length strings, unexpected null props
+7. Seams between components — two components disagreeing about a prop shape, callback contract, or shared token
+8. Over-engineering — helpers with one caller, defensive guards on props the parent already validates, generic machinery for a single use case
+9. Discoverability — will this code make sense to a developer six months from now?
+10. Design-contract token compliance — when `design_system.path` is set in config, spot-check that values resolve to the contract's tokens; for the full three-persona pass, hand off to `/dp:design_check` rather than duplicating it here
+
+An angle that repeats a prior pass under a different name doesn't count ("accessibility" then "WCAG compliance" is the same lens). If a repeat pass finds nothing AND its reasoning reads similar to the prior pass, that's a rubber stamp — pick a genuinely different angle and go again before reporting.
 
 ---
 
 ## Review Categories
 
-### 1. Accessibility (WCAG 2.1 AA)
+### 1. Accessibility (WCAG 2.2 AA)
+
+> The canonical accessibility rule set (design + implementation) lives in `dp-ux`'s `references/accessibility-checklist.md`. The tables below are the **code-detection layer** — they map WCAG criteria to concrete code patterns to grep for during review. Use the checklist for the full rule definitions; use these tables to find violations in code.
 
 #### Critical (Must Fix)
 | Issue | WCAG | Pattern to Find |
@@ -105,7 +136,7 @@ What file(s) should I review?
 |-------|------|-----------------|
 | Focus outline removed | 2.4.7 | `outline-none` without `focus-visible:ring` replacement |
 | Color-only information | 1.4.1 | Status indicated only by color (no icon, text, or pattern) |
-| Touch target too small | 2.5.5 | Clickable elements smaller than 44x44px |
+| Touch target too small | 2.5.8 | Clickable elements smaller than 24×24 CSS px (AA); prefer 44×44px for primary targets |
 | Missing error association | 1.3.1 | Error messages not linked via `aria-describedby` |
 | Auto-playing media | 1.4.2 | Video/audio with `autoPlay` without user control |
 
@@ -116,6 +147,14 @@ What file(s) should I review?
 | Positive tabIndex | 2.4.3 | `tabIndex` > 0 (disrupts natural order) |
 | Missing live regions | 4.1.3 | Dynamic content updates without `aria-live` |
 | Generic link text | 2.4.4 | "Click here", "Read more" without context |
+
+#### WCAG 2.2 Additions (check these too)
+| Issue | WCAG | Pattern to Find |
+|-------|------|-----------------|
+| Focus obscured by sticky UI | 2.4.11 | `position: sticky/fixed` overlays that can cover a focused element |
+| Drag-only interaction | 2.5.7 | Drag-and-drop / slider with no click/tap alternative |
+| Cognitive-test login | 3.3.8 | Auth flows requiring puzzles/memorization with no alternative (e.g. paste-blocked password fields) |
+| Redundant re-entry | 3.3.7 | Multi-step forms re-asking data already provided in the same flow |
 
 ### 2. Component Quality
 
@@ -287,8 +326,12 @@ Accessibility: NEEDS WORK — 2 critical issues
 Spec Alignment: 85% — Minor gaps [workflow mode only]
 Ready to Ship: NO — Fix critical issues first
 
+Reviewed with angle: [angle]. Issues found: [N]. Deviations verified: [M of M].
+
 ═══════════════════════════════════════════════════════════════════════════════
 ```
+
+The closing count line is verbatim and mandatory — the human scans for it across passes; don't restyle it. `Deviations verified` counts entries from `.design/DEVIATIONS.md` that this review re-checked (write `0 of 0` when the log is absent). A clean review closes the same way, with `Issues found: 0` and the angle named — a "no issues" claim without a named angle is the lazy kind; don't write it.
 
 ---
 
@@ -449,6 +492,12 @@ When `severityThreshold: "critical"`, only report critical issues.
 When `severityThreshold: "serious"`, report critical + serious.
 When `severityThreshold: "moderate"`, report all issues (default).
 When `includeSpecAlignment: true`, include spec alignment section (workflow mode).
+
+---
+
+## Rationale (recorded so future edits don't drift it)
+
+The angle-rotation mechanic is adapted from the Foundry framework's challenge rounds, which measured its five-round bug-catch curve at 4, 0, 4, 3, 1: the zero came from a round whose angle accidentally repeated the previous one, and every genuinely rotated round found the next layer. The read-back step (list the angles already used, in writing) makes an accidental repeat visible before the pass starts. The deviations-first rule exists because deviations are, by definition, the parts of the implementation no design phase ever reviewed. The verbatim count line exists so the human can scan multiple passes without re-reading full reports, and the named-angle requirement on clean reviews blocks the cheapest failure mode of re-review: declaring confidence that was never earned.
 
 ---
 

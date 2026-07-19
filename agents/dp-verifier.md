@@ -33,10 +33,16 @@ Read all available DP workflow files:
 ├── STATE.md
 └── phases/
     ├── DISCOVERY.md
+    ├── PRD.md              (if PRD phase ran)
+    ├── JOURNEY-MAP.md      (if journey phase ran)
+    ├── ROADMAP.md          (if roadmap phase ran)
     ├── UX-DECISIONS.md
+    ├── COLOR-SYSTEM.md     (if color phase ran)
     ├── UI-SPEC.md
     └── REVIEW.md
 ```
+
+Also read `.design/DEVIATIONS.md` if it exists — /dp:execute logs spec departures there, and wiring check W7 verifies they were reconciled.
 
 ### Phase 2: Truth Verification
 
@@ -75,6 +81,15 @@ Check each artifact exists AND is substantive:
 | UI | UI-SPEC.md | Visual Hierarchy, Grid System, Component Specs, Tokens |
 | Review | REVIEW.md | Quality Score, Issues by Severity, Recommendations |
 
+**Optional-phase artifacts** — verify only when the phase is completed in `config.json` (`optional_phases.*.completed`):
+
+| Phase | Artifact | Required Sections |
+|-------|----------|-------------------|
+| PRD (1.5a) | PRD.md | Problem, Goals, Requirements, Scope, Success Metrics |
+| Journey (1.5b) | JOURNEY-MAP.md | Actor/Scenario, Phases, Actions, Emotions, Pain Points, Opportunities |
+| Roadmap (1.5c) | ROADMAP.md | Themes, Now/Next/Future, Beneficiary/Need/Objective |
+| Color (2b) | COLOR-SYSTEM.md | Palette, Shade Ramps, Contrast Matrix, Tokens |
+
 **Substantive Checks:**
 - File is not just placeholder/template text
 - Required sections have actual content
@@ -95,11 +110,22 @@ Check connections between phases:
 | W4 | UX states | UI states | Each state in UX has visual treatment |
 | W5 | All phases | Review | Review checks against documented specs |
 | W6 | Requirements | Final | All must-have requirements can be traced to implementation guidance |
+| W7 | Deviations log | Phase documents | Each entry in DEVIATIONS.md is reflected back into the phase document it departed from (or explicitly accepted in REVIEW.md) |
 
 For each wiring check:
 - Count: X of Y connected
 - List gaps: What's missing
 - Severity: Critical (blocks implementation) / Moderate (may cause issues) / Minor (nice to have)
+
+### Phase 4.5: Re-Examine Every PARTIAL Verdict
+
+Before writing the report, take every truth or wiring check you marked PARTIAL and do a focused deep-read of the actual phase document it concerns — don't trust your first-pass note; go look. Three outcomes per verdict:
+
+1. **Promote to TRUE/complete** — the content is actually there; the first pass skimmed past it.
+2. **Confirm PARTIAL** — genuinely partial after the deep-read; the gap description stands.
+3. **Escalate to FALSE/broken** — worse than partial; placeholder text, or content contradicting another phase.
+
+If nothing was PARTIAL, note that in one line. Every verdict in the final report must carry a quote or concrete reference as evidence — confirming a verdict without re-opening the file it concerns is rubber-stamping.
 
 ### Phase 5: Generate Report
 
@@ -155,6 +181,16 @@ Output structured report:
    - Remediation: [Specific action to fix]
    - Phase to update: [Which phase file]
 
+## Taste Checkpoints Awaiting Sign-Off
+
+[List each Taste Checkpoint from the design brief that the human has not signed off, verbatim. These never fail verification — but they stay listed until the human closes them, because verification cannot approve taste on their behalf. Omit the section if the brief has none.]
+
+## Partial-Verdict Re-Examination
+
+Re-examined [N] partial verdicts. Promoted [X]. Confirmed [Y]. Escalated [Z].
+
+[The counts must add up. Write "Re-examined 0 partial verdicts." when there were none.]
+
 ## Recommendations
 
 [Prioritized list of actions]
@@ -205,3 +241,4 @@ After verification:
 - Consider the context (MVP vs polish)
 - Don't fail verification for minor issues
 - Be specific with evidence and gaps
+- Never confirm a verdict without re-opening the file it concerns — evidence, not recollection

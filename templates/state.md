@@ -6,7 +6,7 @@
 
 ```
 Phase: [0-4] of 4 ([phase_name])
-Status: [not_started | ready | in_progress | completed | blocked]
+Status: [not_started | ready | in_progress | blocked | complete | gaps | verified]
 Progress: [░░░░░░░░░░] 0%
 ```
 
@@ -67,6 +67,22 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Decision | Impact |
 |-------|----------|--------|
+| | | |
+
+### Taste Checkpoints
+
+> Items only the human can sign off (from the Discovery brief). Verification lists these until closed.
+
+| Checkpoint | Signed Off | When |
+|------------|------------|------|
+| | | |
+
+### Deviations from Spec
+
+> Logged by /dp:execute in `.design/DEVIATIONS.md` when code forced a departure. /dp:eng_review targets these first; /dp:verify checks they were reconciled (W7).
+
+| Deviation | Reconciled in | Status |
+|-----------|---------------|--------|
 | | | |
 
 ## Current Blockers

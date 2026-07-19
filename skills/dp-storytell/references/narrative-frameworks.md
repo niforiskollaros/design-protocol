@@ -2,6 +2,25 @@
 
 Twelve frameworks for structuring a design story, with exact structures and design-work examples. Use with the quick-selector in SKILL.md.
 
+## Contents
+
+- [1. SCR — Situation, Complication, Resolution](#1-scr--situation-complication-resolution-mckinsey)
+- [2. NABC — Need, Approach, Benefits, Competition](#2-nabc--need-approach-benefits-competition-sri-international)
+- [3. Minto Pyramid Principle](#3-minto-pyramid-principle-barbara-minto-1967)
+- [4. STAR — Situation, Task, Action, Result](#4-star--situation-task-action-result)
+- [5. 3-Act Structure](#5-3-act-structure)
+- [6. Pixar Story Spine](#6-pixar-story-spine)
+- [7. Hero's Journey](#7-heros-journey-joseph-campbell-simplified)
+- [8. Dan Harmon's Story Circle](#8-dan-harmons-story-circle-8-steps)
+- [9. Freytag's Pyramid](#9-freytags-pyramid-classical-5-act)
+- [10. Problem-Agitate-Solve (PAS)](#10-problem-agitate-solve-pas)
+- [11. Before / During / After](#11-before--during--after)
+- [12. Pyramid Principle meets Heath's SUCCESs](#12-pyramid-principle-meets-heaths-successs)
+- [Framework Selection Quick Reference](#framework-selection-quick-reference)
+- [Meta-Rules Across All Frameworks](#meta-rules-across-all-frameworks)
+- [Design-Specific Story Patterns](#design-specific-story-patterns)
+- [Storytelling Anti-Patterns (content-level)](#storytelling-anti-patterns-content-level)
+
 ---
 
 ## 1. SCR — Situation, Complication, Resolution (McKinsey)
@@ -257,3 +276,51 @@ Every story must pass the **SUCCESs test** (Chip & Dan Heath, *Made to Stick*):
 4. **Oscillate between "what is" and "what could be."** Tension sustains attention. — Duarte
 5. **End on New Bliss.** The future state *if the audience acts*. Never end flat. — Duarte
 6. **Seed a STAR moment.** One repeatable, memorable beat somewhere in the middle. — Duarte
+
+---
+
+## Design-Specific Story Patterns
+
+Beyond the formal frameworks above, these are patterns that work specifically for design work.
+
+### Pattern A — User quote opener
+Start with a verbatim user statement. Creates immediate empathy and credibility.
+> *"I've been trying to do this for 20 minutes and I just gave up."* — Sarah, P4
+
+### Pattern B — Before / After side-by-side
+Two screens. Current state left, proposed right. Minimal annotation. The contrast speaks.
+
+### Pattern C — Data-insight-action
+Number → what it means → what we do about it.
+> *"40% of users abandon at step 3. That's the step we introduce unasked-for configuration. We propose removing it."*
+
+### Pattern D — Journey-emotion curve
+Plot the emotion line across phases. Point to valleys. Show the fix narrows or closes the valley.
+
+### Pattern E — Counterfactual
+"If we don't do this, here's what happens." Used sparingly — too often and it reads as fear-mongering.
+
+### Pattern F — Small-bet demo
+Show a cheap prototype or scrappy test that validates the direction. Reduces risk perception.
+
+### Pattern G — Expert-voice sandwich
+Your opinion, supported by an authoritative source (Nielsen heuristic, research paper, competitor benchmark), then back to your specific case.
+
+---
+
+## Storytelling Anti-Patterns (content-level)
+
+Guard against these when structuring the narrative and content (for delivery-level anti-patterns, see `delivery-tactics.md`):
+
+1. **Process-dump** — walking the audience through your timeline instead of the user's story
+2. **No antagonist** — presenting "what we built" without "what was broken"
+3. **Feature parade** — listing deliverables instead of tying to outcomes
+4. **Jargon soup** — using designer/PM terms with an audience that doesn't share them
+5. **Bullet-hellscape** — slides full of text; text on slides competes with the speaker
+6. **No ask** — ending with "any questions?" instead of a specific decision request
+7. **Weak evidence** — "users told us" with no named users, no quote, no count
+8. **Symmetry worship** — equal time to every alternative, even weak ones; audience loses signal
+9. **Under-rehearsed** — reading slides; losing timing; running 2x over
+10. **Single-audience deck for a multi-audience meeting** — if there are 3 audiences in the room, pick the primary and say so
+11. **Over-rehearsed / over-polished** — feels like a commercial; audience disengages
+12. **Ignoring the room** — sticking to script when the audience has already moved on

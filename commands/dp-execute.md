@@ -49,6 +49,7 @@ if (uiComplete) {
 
 **For Polished mode, also load:**
 - `.design/phases/UI-SPEC.md` — Design tokens, visual specs, Tailwind classes
+- The design contract (`design_system.path` in config.json), if set — generated code must consume ITS token names through the project's established mechanism (CSS variables, Tailwind theme), never re-hardcode the underlying values. A token UI-SPEC.md proposed but the contract doesn't define yet gets used under its proposed name AND logged as a deviation (Step 6.5) so the proposal isn't silently forgotten.
 
 ### Step 3: Extract Component Specifications
 
@@ -91,7 +92,7 @@ Before generating code, detect the user's project setup. Do NOT assume any speci
 
 **Detect shadcn/ui (polished mode):**
 1. Check for `components.json` (shadcn config file)
-2. Check for `@/components/dp:ui/` directory
+2. Check for `@/components/ui/` directory
 3. If not found, warn: "shadcn/ui not detected. Install it first, or I can generate without it."
 
 Store detected values for use in generation:
@@ -217,7 +218,7 @@ Generate production-ready components with:
 
 **shadcn/ui integration:**
 - Use shadcn components where specified
-- Import from `@/components/dp:ui/`
+- Import from `@/components/ui/`
 - Extend with custom styling via className
 
 **Example polished component:**
@@ -225,8 +226,8 @@ Generate production-ready components with:
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Input } from '@/components/dp:ui/input';
-import { Button } from '@/components/dp:ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -312,6 +313,21 @@ export function EmailInput({ onAdd, disabled }: EmailInputProps) {
 }
 ```
 
+### Step 6.5: Log Deviations from the Spec
+
+No spec survives contact with real code untouched. When generation forces a departure from UX-DECISIONS.md or UI-SPEC.md (a state the spec never defined, an interaction that can't work as described, a token that doesn't exist in the project), pick the conservative option that stays closest to the spec's intent, log it, and keep going — don't silently absorb it and don't stall waiting for a decision the log can carry.
+
+Deviations go in `.design/DEVIATIONS.md` (create it with a `# Deviations` title line if missing). One bullet per departure, four parts:
+
+```markdown
+- **Spec said:** [what UX-DECISIONS.md or UI-SPEC.md specified]
+  **Code forced:** [why it couldn't be built as written]
+  **Chose:** [what was implemented instead] ([file:line])
+  **Lesson:** [one line — what the spec should have covered]
+```
+
+This log is load-bearing downstream: `/dp:eng_review` reads it FIRST and treats every entry as a prime review target (deviations are exactly the parts of the implementation no design phase ever saw), and `/dp:verify` fails wiring if deviations exist that no phase document was updated to reflect. If generation matched the specs exactly, don't create the file.
+
 ### Step 7: Generate Preview Page
 
 Create a preview page to view the component in browser. The location and format depend on the detected framework:
@@ -342,6 +358,21 @@ export default function Preview{FeatureName}Page() {
 }
 ```
 
+### Step 7.5: Validate Generated Code (validator → fix → repeat)
+
+Before previewing or declaring success, verify the generated code actually compiles and lints. Do NOT skip this — generated code that type-errors or breaks the build is not "done".
+
+1. **Detect available checks** from `package.json` scripts and config, in this order:
+   - Type check: `tsc --noEmit` (if TypeScript) or a `typecheck`/`type-check` script
+   - Lint: an `eslint` / `lint` script (run scoped to the generated directory when possible)
+   - Build: only if fast and the project expects it (skip for large apps)
+2. **Run the checks** against the generated files.
+3. **If any check fails:** read the errors, fix the generated files, and **re-run the checks**. Repeat until clean or until 3 attempts have failed.
+4. **If still failing after 3 attempts:** stop, report the specific remaining errors to the user, and do NOT mark the execution complete in Step 9.
+5. **If no type/lint tooling exists:** state that explicitly ("No typecheck/lint configured — generated code was not statically verified") so the user knows verification was skipped rather than passed.
+
+Only proceed to preview and state update once checks pass (or are genuinely unavailable).
+
 ### Step 8: Open in Browser
 
 Use Playwright to open the preview:
@@ -362,6 +393,8 @@ await mcp__playwright__browser_snapshot({});
 3. Provide the preview URL for manual access
 
 ### Step 9: Update State
+
+Only run this step if Step 7.5 validation passed (or no tooling was available). If validation failed after 3 attempts, leave the execution marked incomplete and report the errors instead.
 
 Update `.design/STATE.md`:
 ```markdown
@@ -461,6 +494,18 @@ Generated {N} components:
 Preview page:
 └── {preview-page-path}  ✓ created
 
+{If .design/DEVIATIONS.md gained entries this run}
+DEVIATIONS FROM SPEC ({N})
+────────────────────────────────────────────────────────────────────────────────
+→ [One line per deviation: what the spec said vs. what was built]
+→ Full log: .design/DEVIATIONS.md — /dp:eng_review will target these first
+
+{If the design brief has Taste Checkpoints}
+TASTE CHECKPOINTS — only you can sign these off
+────────────────────────────────────────────────────────────────────────────────
+→ [Each checkpoint from DISCOVERY.md, verbatim, as a check item]
+→ Eyeball these in the preview; verification can't approve them for you
+
 NEXT STEPS
 ────────────────────────────────────────────────────────────────────────────────
 {If wireframe}
@@ -472,6 +517,8 @@ NEXT STEPS
 {If polished}
 → Run `{devCommand}` and visit http://localhost:{devPort}/preview/{feature-name}
 → Verify visual design matches UI-SPEC.md
+{If design_system.path is set}
+→ Run /dp:design_check to verify design-contract token coverage
 → When satisfied, run /dp:eng_review for code review
 → Then /dp:verify to complete workflow
 
@@ -499,6 +546,12 @@ After generating, verify:
 - [ ] Keyboard navigation functional
 - [ ] (Polished) Visual design matches spec
 - [ ] (Polished) Animations are smooth
+
+---
+
+## Rationale (recorded so future edits don't drift it)
+
+The deviations log (adapted from the Foundry framework's build-it stage) replaces two worse behaviors: silently absorbing spec departures (which leaves the review phase auditing an implementation against a spec it no longer matches) and stalling generation on questions the human isn't present to answer. The four-part entry format — spec said / code forced / chose / lesson — exists so eng_review can re-verify each departure without reconstructing the reasoning, and so the lesson feeds back into better specs. Taste checkpoints surface at preview time because that's the one moment the human is looking at rendered output; burying them in phase documents means they get signed off by nobody.
 
 ---
 

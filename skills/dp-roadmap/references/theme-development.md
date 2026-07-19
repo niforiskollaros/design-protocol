@@ -2,6 +2,17 @@
 
 How to derive roadmap themes from research, journey maps, support signals, and stakeholder inputs. The hardest part of roadmapping is making the jump from "what we know" to "what we'll work on."
 
+## Contents
+- [The Theme Formula](#the-theme-formula)
+- [Good Theme Tests](#good-theme-tests)
+- [Source-to-Theme Mapping](#source-to-theme-mapping)
+- [Theme Evolution Across Horizons](#theme-evolution-across-horizons)
+- [Good vs Bad Theme Examples](#good-vs-bad-theme-examples)
+- [Theme Anti-Patterns to Reject](#theme-anti-patterns-to-reject)
+- [Subthemes](#subthemes)
+- [Confidence Calibration](#confidence-calibration)
+- [Linking Themes to Research Sources](#linking-themes-to-research-sources)
+
 ---
 
 ## The Theme Formula

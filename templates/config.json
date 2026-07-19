@@ -1,5 +1,5 @@
 {
-  "version": "2.1",
+  "version": "1.0",
   "created": "",
   "project_name": "",
   "workflow": {
@@ -22,6 +22,11 @@
   "settings": {
     "depth": "standard",
     "challenge_mode": "heavy"
+  },
+  "design_system": {
+    "path": null,
+    "implementation_path": null,
+    "detected": false
   },
   "phases": {
     "discovery": {
@@ -50,6 +55,35 @@
     "research": {
       "enabled": false,
       "methods": []
+    },
+    "prd": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "journey": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "roadmap": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null
+    },
+    "color": {
+      "enabled": false,
+      "completed": false,
+      "timestamp": null,
+      "output": null,
+      "accessibility_level": "AA",
+      "include_dark_mode": true
+    },
+    "storytell": {
+      "presentations": []
     }
   }
 }

@@ -1,6 +1,12 @@
 ---
 name: dp-ui
-description: Apply visual design principles and B2B/enterprise UI patterns to create polished, professional interfaces. Trigger with "/dp:ui" or when designing dashboards, data-dense interfaces, complex tables, enterprise applications. Phase 3 of DP workflow.
+description: >
+  Applies visual design principles and enterprise/B2B UI patterns to produce polished, professional
+  interface specs — visual hierarchy, 8px grid systems, design tokens, component specifications, and
+  data-dense layouts. Use as Phase 3 of the DP workflow, or standalone when designing dashboards,
+  complex tables, data-viz, or enterprise applications. Trigger with "/dp:ui", "visual design",
+  "design tokens", "dashboard", "data-dense", "complex table", or "enterprise UI". For user flows,
+  interaction states, and usability, use "/dp:ux" first; for color palettes, use "/dp:color".
 ---
 
 # UI Design — Visual Principles & B2B Patterns
@@ -15,6 +21,8 @@ This skill is Phase 3 of the DP (Design Protocol) workflow. It automatically det
 
 ### Detecting Workflow Mode
 
+At the start of any invocation, detect the mode by checking for `.design/config.json`: if present, run in **workflow mode** (load prior-phase context, write outputs under `.design/`, update state, and hand off to the next phase); if absent, run in **standalone mode** (operate independently and offer to save output).
+
 At the start of any `/dp:ui` invocation:
 
 1. **Check for `.design/config.json`**
@@ -22,10 +30,12 @@ At the start of any `/dp:ui` invocation:
    - Load `.design/phases/DISCOVERY.md` for problem context
    - Load `.design/phases/UX-DECISIONS.md` for interaction patterns
    - Load `.design/REQUIREMENTS.md` for visual requirements
+   - Check `design_system.path` — if set, load that file too and switch to **apply mode** (see "Design Contract Mode" below)
    - Check for `03-CONTEXT.md` if `/dp:discuss` was run first
    - Announce: "Loading context from discovery and UX phases..."
    - Display: "Components to design: [list from UX-DECISIONS.md]"
 3. **If not found** (standalone mode):
+   - Glob for a design contract at conventional locations (`DESIGN.md`, `design.md`, `docs/DESIGN.md`, `design-system.md`) before inventing anything; if one exists, confirm it and switch to apply mode
    - Run with default behavior
    - Ask: "What would you like me to help design visually?"
 
@@ -130,227 +140,27 @@ Establish clear importance through:
 
 ---
 
+## Design Contract Mode (apply, don't invent)
+
+When a design contract exists (`design_system.path` in config, or detected in the repo), the job of this phase changes: **apply the existing system; never mint a parallel one.**
+
+- **Tokens in UI-SPEC.md reference the contract's tokens by name** — `bg-brand-primary`, not a fresh hex value. The token tables become a mapping (component/state → contract token), not new definitions.
+- **Honor the contract's stated principles** (elevation policy, typeface discipline, semantic vs. decorative color) over this skill's generic defaults wherever they conflict. The contract wins; note the conflict in one line.
+- **Gaps become proposals, not inventions.** When the design genuinely needs a token the contract lacks (a state color, a spacing step), add it to a **"Proposed token additions"** section in UI-SPEC.md — name, value, rationale, and where the contract should define it. Never silently use the raw value as if it were a token; that's how parallel systems are born.
+- **Grid and spacing derive from the contract's scale** — the 8px default below applies only when the contract doesn't define its own.
+- After polished implementation, hand off to `/dp:design_check` to verify the code actually resolves to the contract's tokens.
+
+Without a contract, this skill's normal behavior (create the tokens) applies unchanged — and the resulting UI-SPEC.md token tables are a reasonable seed for a future DESIGN.md.
+
+---
+
 ## Output Structure (Workflow Mode)
 
 When in workflow mode, produce structured output:
 
 ### UI-SPEC.md Structure
 
-```yaml
----
-phase: ui
-skill: ui
-completed: YYYY-MM-DDTHH:MM:SSZ
-context_loaded:
-  - DISCOVERY.md
-  - UX-DECISIONS.md
-  - 03-CONTEXT.md (if existed)
-requirements_addressed:
-  - VIS-01
-  - VIS-02
-components_specified:
-  - ComponentName1
-  - ComponentName2
----
-
-# UI Specification: [Feature Name]
-
-## Visual Direction
-
-**Style:** [Modern minimal / Dense professional / Playful / etc.]
-**Inspiration:** [Reference products or styles]
-**Key Principles:**
-1. [Principle 1]
-2. [Principle 2]
-3. [Principle 3]
-
-## Layout & Grid
-
-**Grid System:** 8px base grid
-**Columns:** [12-column / 6-column / custom]
-**Gutters:** [16px / 24px / 32px]
-**Max Width:** [1280px / 1440px / fluid]
-**Breakpoints:**
-| Breakpoint | Width | Columns | Gutter |
-|------------|-------|---------|--------|
-| Mobile | <640px | 4 | 16px |
-| Tablet | 640-1024px | 8 | 24px |
-| Desktop | >1024px | 12 | 24px |
-
-## Visual Hierarchy
-
-**Primary Focus:** [What draws eye first]
-**Secondary Elements:** [Supporting content]
-**Tertiary/Background:** [Less prominent items]
-
-**Z-Index Layers:**
-| Layer | Z-Index | Contents |
-|-------|---------|----------|
-| Base | 0 | Main content |
-| Elevated | 10 | Cards, dropdowns |
-| Modal | 100 | Modals, dialogs |
-| Toast | 200 | Notifications |
-
-## Design Tokens
-
-### Colors
-
-**Brand/Primary:**
-| Token | Value | Usage |
-|-------|-------|-------|
-| --primary | [hex] | Primary actions, links |
-| --primary-hover | [hex] | Hover state |
-| --primary-foreground | [hex] | Text on primary |
-
-**Semantic:**
-| Token | Value | Usage |
-|-------|-------|-------|
-| --success | [hex] | Success states |
-| --error | [hex] | Error states |
-| --warning | [hex] | Warning states |
-| --info | [hex] | Info states |
-
-**Neutrals:**
-| Token | Value | Usage |
-|-------|-------|-------|
-| --background | [hex] | Page background |
-| --foreground | [hex] | Primary text |
-| --muted | [hex] | Secondary text |
-| --border | [hex] | Borders |
-
-### Typography
-
-**Font Family:**
-- Headings: [Font name]
-- Body: [Font name]
-- Mono: [Font name]
-
-**Scale:**
-| Token | Size | Line Height | Weight | Usage |
-|-------|------|-------------|--------|-------|
-| --text-xs | 12px | 16px | 400 | Captions |
-| --text-sm | 14px | 20px | 400 | Secondary |
-| --text-base | 16px | 24px | 400 | Body |
-| --text-lg | 18px | 28px | 500 | Emphasis |
-| --text-xl | 20px | 28px | 600 | Subheadings |
-| --text-2xl | 24px | 32px | 700 | Headings |
-| --text-3xl | 30px | 36px | 700 | Page titles |
-
-### Spacing
-
-**Scale (8px base):**
-| Token | Value | Usage |
-|-------|-------|-------|
-| --space-1 | 4px | Tight spacing |
-| --space-2 | 8px | Default small |
-| --space-3 | 12px | Medium small |
-| --space-4 | 16px | Default |
-| --space-5 | 20px | Medium |
-| --space-6 | 24px | Large |
-| --space-8 | 32px | Section gap |
-| --space-10 | 40px | Large section |
-| --space-12 | 48px | Page section |
-
-### Border Radius
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| --radius-sm | 4px | Small elements |
-| --radius-md | 6px | Default |
-| --radius-lg | 8px | Cards |
-| --radius-xl | 12px | Modals |
-| --radius-full | 9999px | Pills, avatars |
-
-### Shadows
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| --shadow-sm | [box-shadow] | Subtle elevation |
-| --shadow-md | [box-shadow] | Cards |
-| --shadow-lg | [box-shadow] | Dropdowns |
-| --shadow-xl | [box-shadow] | Modals |
-
-## Component Visual Specifications
-
-### [Component 1]: [Name]
-
-**Dimensions:**
-- Height: [value]
-- Min Width: [value]
-- Padding: [value]
-
-**Visual States:**
-| State | Background | Border | Text | Shadow | Other |
-|-------|------------|--------|------|--------|-------|
-| Default | [value] | [value] | [value] | [value] | |
-| Hover | [value] | [value] | [value] | [value] | cursor: pointer |
-| Focus | [value] | [value] | [value] | [value] | ring: 2px |
-| Active | [value] | [value] | [value] | [value] | |
-| Disabled | [value] | [value] | [value] | [value] | opacity: 0.5 |
-| Loading | [value] | [value] | [value] | [value] | spinner |
-| Error | [value] | [value] | [value] | [value] | |
-| Success | [value] | [value] | [value] | [value] | |
-
-**Tailwind Classes:**
-```
-Default: bg-background border border-border text-foreground rounded-md px-4 py-2
-Hover: hover:bg-muted hover:border-primary
-Focus: focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-...
-```
-
-**Variants:**
-| Variant | Modifications |
-|---------|---------------|
-| Primary | bg-primary text-primary-foreground |
-| Secondary | bg-secondary text-secondary-foreground |
-| Outline | bg-transparent border-2 |
-| Ghost | bg-transparent hover:bg-muted |
-
-### [Component 2]: [Name]
-...
-
-## Animation & Transitions
-
-**Default Transition:**
-- Duration: 150ms
-- Easing: ease-out
-- Properties: color, background-color, border-color, opacity, transform
-
-**Specific Animations:**
-| Element | Animation | Duration | Easing |
-|---------|-----------|----------|--------|
-| Modal enter | fade + scale | 200ms | ease-out |
-| Modal exit | fade | 150ms | ease-in |
-| Dropdown | slide-down | 150ms | ease-out |
-| Toast | slide-in | 200ms | ease-out |
-
-**Reduced Motion:**
-- Respect `prefers-reduced-motion`
-- Replace animations with instant changes
-
-## Responsive Behavior
-
-| Component | Mobile | Tablet | Desktop |
-|-----------|--------|--------|---------|
-| [Component 1] | [behavior] | [behavior] | [behavior] |
-| [Component 2] | [behavior] | [behavior] | [behavior] |
-
-## Requirements Coverage
-
-| Requirement | Addressed By | Notes |
-|-------------|--------------|-------|
-| VIS-01: [text] | [Token/Component] | |
-| VIS-02: [text] | [Token/Component] | |
-| A11Y-03: Color independence | Semantic tokens | Icons + text for all states |
-
-## Handoff Notes for Review Phase
-
-- Implementation approach: [shadcn/ui components to use]
-- Critical visual details: [list]
-- Known compromises: [list]
-- Testing priorities: [list]
-```
+Write `.design/phases/UI-SPEC.md` using the full scaffold in **`references/ui-spec-template.md`** — it covers frontmatter, visual direction, layout/grid, visual hierarchy, the complete design-token tables (colors, typography, spacing, radius, shadows), per-component visual state specs, animation, responsive behavior, requirements coverage, and handoff notes. Fill every placeholder with project-specific values.
 
 ---
 
@@ -411,6 +221,7 @@ Summary:
 • Visual direction: [style]
 • Grid system: 8px base, [N]-column layout
 • Design tokens: [M] colors, [P] typography scales, [Q] spacing tokens
+  [Contract mode: "[M] mapped to [contract path], [K] proposed additions"]
 • Components specified: [list]
 • All [N] UX states have visual specs
 
@@ -468,6 +279,11 @@ Before finalizing any UI:
 Respects these settings from `.design/config.json`:
 ```json
 {
+  "design_system": {
+    "path": "DESIGN.md",
+    "implementation_path": "IMPLEMENTATION.md",
+    "detected": true
+  },
   "phases": {
     "ui": {
       "enabled": true,
@@ -481,6 +297,7 @@ Respects these settings from `.design/config.json`:
 
 When `includeB2B: true`, automatically apply B2B/enterprise patterns.
 When `includeDataViz: true`, include data visualization guidance.
+When `design_system.path` is set, run in Design Contract Mode (apply, don't invent).
 
 ---
 

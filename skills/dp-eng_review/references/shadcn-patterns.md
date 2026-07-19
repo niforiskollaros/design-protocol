@@ -18,7 +18,7 @@ Correct usage patterns for shadcn/ui components in this project. Reference this 
 ### Basic Usage
 
 ```tsx
-import { Button } from "@/components/dp:ui/button"
+import { Button } from "@/components/ui/button"
 
 // Variants
 <Button>Default</Button>
@@ -110,8 +110,8 @@ import Link from "next/link"
 ### Input with Label (Required)
 
 ```tsx
-import { Input } from "@/components/dp:ui/input"
-import { Label } from "@/components/dp:ui/label"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 // ALWAYS pair inputs with labels
 <div className="space-y-2">
@@ -185,7 +185,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/dp:ui/select"
+} from "@/components/ui/select"
 
 <div className="space-y-2">
   <Label htmlFor="status">Status</Label>
@@ -217,7 +217,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/dp:ui/dialog"
+} from "@/components/ui/dialog"
 
 <Dialog>
   <DialogTrigger asChild>
@@ -273,7 +273,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/dp:ui/alert-dialog"
+} from "@/components/ui/alert-dialog"
 
 <AlertDialog>
   <AlertDialogTrigger asChild>
@@ -310,7 +310,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/dp:ui/table"
+} from "@/components/ui/table"
 
 <Table>
   <TableHeader>
@@ -385,7 +385,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/dp:ui/card"
+} from "@/components/ui/card"
 
 <Card>
   <CardHeader>

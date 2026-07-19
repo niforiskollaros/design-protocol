@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Verify version is in sync between package.json and bin/install.js.
+ * Verify bin/install.js derives its version from package.json (single source
+ * of truth) instead of a hardcoded constant that can drift.
  * Run before every publish via `npm run verify`.
  */
 
@@ -13,21 +14,17 @@ const root = path.join(__dirname, '..');
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const installSrc = fs.readFileSync(path.join(root, 'bin/install.js'), 'utf8');
 
-const match = installSrc.match(/const VERSION = '([^']+)'/);
-if (!match) {
-  console.error('✗ Could not find VERSION constant in bin/install.js');
+if (!/const VERSION = require\('\.\.\/package\.json'\)\.version/.test(installSrc)) {
+  console.error('✗ bin/install.js must derive VERSION from package.json:');
+  console.error("  const VERSION = require('../package.json').version;");
   process.exit(1);
 }
 
-const pkgVersion = pkg.version;
-const jsVersion = match[1];
-
-if (pkgVersion !== jsVersion) {
-  console.error(`✗ Version mismatch!`);
-  console.error(`  package.json:  ${pkgVersion}`);
-  console.error(`  bin/install.js: ${jsVersion}`);
-  console.error(`\n  Update both files before publishing.`);
+// Sanity-check: loading the installer's version source resolves to the same value
+const resolved = require(path.join(root, 'package.json')).version;
+if (resolved !== pkg.version) {
+  console.error('✗ Version resolution mismatch — this should be impossible.');
   process.exit(1);
 }
 
-console.log(`✓ Version in sync: ${pkgVersion}`);
+console.log(`✓ Version single-sourced from package.json: ${pkg.version}`);

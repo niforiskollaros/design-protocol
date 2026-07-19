@@ -2,6 +2,18 @@
 
 Concrete tactics for delivering the presentation — pacing, handling difficult moments, Q&A, pre-wiring.
 
+## Contents
+
+- [Before the Meeting](#before-the-meeting)
+- [Opening the Presentation](#opening-the-presentation)
+- [During the Presentation](#during-the-presentation)
+- [Handling Difficult Moments](#handling-difficult-moments)
+- [Q&A Handling](#qa-handling)
+- [After the Meeting](#after-the-meeting)
+- [Anti-Patterns to Avoid](#anti-patterns-to-avoid)
+- [The 10-Second Test](#the-10-second-test)
+- [Visual Storytelling Principles](#visual-storytelling-principles)
+
 ---
 
 ## Before the Meeting
@@ -226,3 +238,28 @@ Before delivering, apply:
 
 If you can't answer, the presentation isn't ready.
 That sentence is your opening and your closing.
+
+---
+
+## Visual Storytelling Principles
+
+Slides and prototypes are part of the story. Enforce these principles.
+
+### Slide design
+- **One idea per slide** — if there are 2, split them
+- **Image > bullet list** — show the actual design, not a description of it
+- **Text as signposts** — titles do the narrative work, not body copy
+- **Data in service of a point** — chart titles state the insight, not the axis
+- **Dark deck for demos, light deck for reading** — contrast with delivery context
+
+### Prototypes vs static screens
+- **Static screens** — when the critique is about the design itself (layout, hierarchy, visual)
+- **Clickable prototype** — when the critique is about the flow, interaction, or feel
+- **Video walkthrough** — when time is short, or you need to guarantee consistent delivery
+- **Live product** — only when it's stable and you want to build trust through authenticity
+
+### Video clip best practices (for research readouts)
+- **15-45 seconds** per clip
+- **Set context** before playing ("This is P5, trying to complete signup for the second time.")
+- **Never play more than 3 clips in a row** — audience attention collapses
+- **Transcribe the clip below it** — so reading viewers (and post-meeting skimmers) still get the content

@@ -35,10 +35,10 @@ Read these files:
 **Validate config.json** after reading:
 
 Required fields — if any are missing, warn the user and offer to repair:
-- `version` — must be a string (e.g., `"2.1"`)
+- `version` — must be a string (e.g., `"1.0"`)
 - `workflow.current_phase` — must be a number 0-4
 - `workflow.phases_completed` — must be an array
-- `workflow.workflow_status` — must be one of: `not_started`, `in_progress`, `blocked`, `complete`, `gaps`
+- `workflow.workflow_status` — must be one of: `not_started`, `ready`, `in_progress`, `blocked`, `complete`, `gaps`, `verified`
 - `phases` — must be an object with `discovery`, `ux`, `ui`, `review` keys
 
 If JSON parsing fails entirely:
@@ -65,12 +65,17 @@ Then fill in the missing fields with defaults from the config template and write
 
 ### Step 3: Calculate Progress
 
-Determine completion percentage:
+Determine **core** completion percentage from the four required phases (optional phases do not dilute this — they are tracked and displayed separately):
 - Phase 0 (not started): 0%
 - Phase 1 (discovery) complete: 25%
 - Phase 2 (ux) complete: 50%
 - Phase 3 (ui) complete: 75%
 - Phase 4 (review) complete: 100%
+
+Then read `optional_phases` from `config.json` and record each optional phase's status for the Optional Phases table below:
+- `prd`, `journey`, `roadmap`, `color` — status is `completed` (✓), `enabled but not completed` (◐), or `not enabled` (○)
+- `research` — `enabled` with `methods`, or `not enabled`
+- `storytell` — count of entries in the `presentations` array
 
 Generate progress bar:
 - 0%: `[░░░░░░░░░░]`
@@ -99,7 +104,18 @@ PHASE STATUS
 │ 3 │ UI        │ ○ pending │ —          │ UI-SPEC.md        │
 │ 4 │ Review    │ ○ pending │ —          │ REVIEW.md         │
 
-Optional: Research — not enabled
+OPTIONAL PHASES
+────────────────────────────────────────────────────────────────────────────────
+│ Phase        │ When    │ Status       │ Output          │
+│──────────────│─────────│──────────────│─────────────────│
+│ PRD          │ 1.5a    │ ○ not enabled│ PRD.md          │
+│ Journey      │ 1.5b    │ ○ not enabled│ JOURNEY-MAP.md  │
+│ Roadmap      │ 1.5c    │ ○ not enabled│ ROADMAP.md      │
+│ Color System │ 2b      │ ✓ complete   │ COLOR-SYSTEM.md │
+│ Research     │ branch  │ ○ not enabled│ .design/research/│
+│ Storytell    │ x-phase │ 2 presentations │ PRESENTATION-*.md │
+
+(Render only the phases present in config; ✓ complete / ◐ enabled / ○ not enabled.)
 
 CURRENT POSITION
 ────────────────────────────────────────────────────────────────────────────────
@@ -155,10 +171,12 @@ Display a summary of that phase's output.
 
 From `config.json`:
 - `not_started` — Project initialized but no phase started
+- `ready` — Current phase set up and ready to run (e.g., freshly initialized project)
 - `in_progress` — Actively working through phases
 - `blocked` — Cannot proceed (show blockers from STATE.md)
 - `complete` — All phases done
-- `gaps` — Review found issues needing iteration
+- `gaps` — Review or verification found issues needing iteration
+- `verified` — `/dp:verify` passed with no gaps
 
 ## Error Handling
 

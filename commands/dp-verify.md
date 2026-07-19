@@ -30,24 +30,33 @@ Read whatever exists:
 - `.design/PROJECT.md`
 - `.design/REQUIREMENTS.md`
 - `.design/phases/DISCOVERY.md`
+- `.design/phases/PRD.md` (if PRD phase ran)
+- `.design/phases/JOURNEY-MAP.md` (if journey phase ran)
+- `.design/phases/ROADMAP.md` (if roadmap phase ran)
 - `.design/phases/UX-DECISIONS.md`
+- `.design/phases/COLOR-SYSTEM.md` (if color phase ran)
 - `.design/phases/UI-SPEC.md`
 - `.design/phases/REVIEW.md`
+- `.design/DEVIATIONS.md` (if /dp:execute logged spec departures)
 
 ### Step 3: Run Truth Verification
 
-**Design Truths** — What must be TRUE:
+**Design Truths** — What must be TRUE.
 
-| Truth | Check | Source |
-|-------|-------|--------|
-| Problem is clearly defined | Is there a problem statement in discovery? | DISCOVERY.md |
-| User is well-understood | Is primary user documented with goals? | DISCOVERY.md |
-| Requirements are prioritized | Are there must/should/could categories? | DISCOVERY.md, REQUIREMENTS.md |
-| User flow is complete | Is there an end-to-end flow? | UX-DECISIONS.md |
-| All states are specified | Are default/hover/focus/error/empty/loading documented? | UX-DECISIONS.md |
-| Accessibility addressed | Are a11y requirements documented? | UX-DECISIONS.md, REQUIREMENTS.md |
-| Visual hierarchy is clear | Is there visual spec with hierarchy? | UI-SPEC.md |
-| Components are specified | Are key components detailed? | UI-SPEC.md |
+> **Canonical source:** the T1–T10 truths, artifact list, and W1–W6 wiring checks are defined once in `agents/dp-verifier.md`. This command mirrors them for quick inline runs; if the two ever disagree, the agent file wins. The `test/install.test.js` truth-list drift test enforces that they stay identical.
+
+| ID | Truth | Check | Source |
+|----|-------|-------|--------|
+| T1 | Problem is clearly articulated | Is there a problem statement in discovery? | DISCOVERY.md |
+| T2 | Primary user is well-defined | Is primary user documented with goals? | DISCOVERY.md |
+| T3 | Requirements are prioritized | Are there must/should/could/must-not categories? | DISCOVERY.md, REQUIREMENTS.md |
+| T4 | User flow is complete | Is there an end-to-end flow? | UX-DECISIONS.md |
+| T5 | All interactive states defined | Are default/hover/focus/active/disabled/loading/error/empty/success documented? | UX-DECISIONS.md |
+| T6 | Accessibility is addressed | Are a11y requirements documented with WCAG references? | UX-DECISIONS.md, REQUIREMENTS.md |
+| T7 | Visual hierarchy is clear | Is there visual spec with hierarchy? | UI-SPEC.md |
+| T8 | Components are specified | Are key components detailed? | UI-SPEC.md |
+| T9 | Design tokens documented | Are colors, spacing, typography tokens defined? | UI-SPEC.md, COLOR-SYSTEM.md (if present) |
+| T10 | Implementation guidance clear | Is there enough detail for a developer to build? | UI-SPEC.md, REVIEW.md |
 
 **Output:**
 ```
@@ -79,6 +88,15 @@ TRUTH VERIFICATION
 | UI-SPEC.md | For Review phase | .design/phases/ |
 | REVIEW.md | For workflow completion | .design/phases/ |
 
+**Optional-phase artifacts** — verify only if the phase is enabled/completed in `config.json` (`optional_phases.*.completed`):
+
+| Artifact | Required when | Location |
+|----------|---------------|----------|
+| PRD.md | `optional_phases.prd.completed` | .design/phases/ |
+| JOURNEY-MAP.md | `optional_phases.journey.completed` | .design/phases/ |
+| ROADMAP.md | `optional_phases.roadmap.completed` | .design/phases/ |
+| COLOR-SYSTEM.md | `optional_phases.color.completed` | .design/phases/ |
+
 For each artifact, also verify it's substantive:
 - Not just placeholder text
 - Contains actual decisions/specs
@@ -106,12 +124,15 @@ ARTIFACT VERIFICATION
 
 **Design Wiring** — What must CONNECT:
 
-| Connection | From | To | Check |
-|------------|------|-----|-------|
-| Requirements trace | DISCOVERY.md | UX-DECISIONS.md | Do UX decisions reference requirements? |
-| UX to UI | UX-DECISIONS.md | UI-SPEC.md | Does UI spec cover all components from UX? |
-| States coverage | UX-DECISIONS.md | UI-SPEC.md | Are all UX states visually specified? |
-| Spec to Review | All phases | REVIEW.md | Does review check against specs? |
+| ID | From | To | Check |
+|----|------|-----|-------|
+| W1 | Discovery requirements | UX decisions | Each must-have requirement has corresponding UX decision |
+| W2 | Discovery users | UX flows | Flows address documented user goals |
+| W3 | UX components | UI specs | Each component in UX has visual spec |
+| W4 | UX states | UI states | Each state in UX has visual treatment |
+| W5 | All phases | Review | Review checks against documented specs |
+| W6 | Requirements | Final | All must-have requirements can be traced to implementation guidance |
+| W7 | Deviations log | Phase documents | Each entry in DEVIATIONS.md is reflected back into the phase document it departed from (or explicitly accepted in REVIEW.md) |
 
 **Output:**
 ```
@@ -128,6 +149,16 @@ WIRING VERIFICATION
   UX defined 9 states, UI spec covers 6
   Missing visual specs: focus, disabled, empty
 ```
+
+### Step 5.5: Re-Examine Every PARTIAL Verdict
+
+PARTIAL verdicts are cheap to write and expensive to leave wrong: a truth parked as "partially addressed" quietly weakens the handoff whether the parking was right or not. Before generating the report, take every truth or wiring check marked ◐ PARTIAL and do a focused deep-read of the actual phase document it concerns — don't trust the note from the first pass; go look. Three outcomes per verdict:
+
+1. **Promote to ✓** — the deep-read shows the content is actually there; the first pass skimmed past it.
+2. **Confirm ◐** — genuinely partial after the deep-read; the gap description stands.
+3. **Escalate to ✗** — worse than partial; the section is placeholder text or contradicts another phase.
+
+If no verdicts were PARTIAL, skip in one line. Reporting a verdict you never re-opened the file for is rubber-stamping — every ✓ and ◐ in the report must carry a quote or concrete reference as evidence, not a recollection.
 
 ### Step 6: Generate Summary Report
 
@@ -157,14 +188,24 @@ CRITICAL GAPS (must fix)
    → Update UX-DECISIONS.md with: focus, disabled, empty states
    → Then update UI-SPEC.md with visual specs for these states
 
+TASTE CHECKPOINTS AWAITING SIGN-OFF (only the human can close these)
+────────────────────────────────────────────────────────────────────────────────
+1. [ ] [Checkpoint from the design brief, verbatim]
+2. [ ] [Checkpoint]
+(Omit this section if the brief has no Taste Checkpoints list.)
+
 RECOMMENDATIONS
 ────────────────────────────────────────────────────────────────────────────────
 1. [ ] Complete /dp:ui phase to generate UI-SPEC.md
 2. [ ] Add missing states to UX-DECISIONS.md
 3. [ ] Re-run /dp:verify after addressing gaps
 
+Re-examined [N] partial verdicts. Promoted [X]. Confirmed [Y]. Escalated [Z].
+
 ═══════════════════════════════════════════════════════════════════════════════
 ```
+
+The re-examination count line is verbatim and mandatory (the counts must add up; write `Re-examined 0 partial verdicts.` when there were none). Taste checkpoints never fail verification, but they must be listed until the human has signed them off — verification cannot approve taste on the human's behalf.
 
 ### Step 7: Update State
 
@@ -193,6 +234,12 @@ Update `.design/config.json`:
 ## Agent Integration
 
 This command can spawn the `dp-verifier` agent for deeper analysis if needed.
+
+---
+
+## Rationale (recorded so future edits don't drift it)
+
+The PARTIAL re-examination step is adapted from the Foundry framework's demotion-review round: uncertain verdicts written in a fast first pass are wrong in both directions often enough that every one deserves a second, evidence-based look before it lands in a report the human acts on. The evidence requirement (quote or concrete reference per verdict) blocks verification-by-recollection, which is how a report passes files nobody re-opened. W7 exists because /dp:execute's deviations log is only honest bookkeeping if something downstream checks it was reconciled; without the check, deviations become a write-only file. Taste checkpoints are surfaced but never auto-failed because they are, by definition, the calls verification cannot make.
 
 ---
 

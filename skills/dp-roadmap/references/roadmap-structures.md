@@ -2,6 +2,17 @@
 
 Templates for the four NNGroup roadmap types plus audience-specific variants. Use the matching template based on the type chosen in Step 1.
 
+## Contents
+- [Template 1 — Now / Next / Future (canonical NNGroup)](#template-1--now--next--future-canonical-nngroup)
+- [Template 2 — Outcome-Based](#template-2--outcome-based)
+- [Template 3 — Theme-Based (No Time Horizons)](#template-3--theme-based-no-time-horizons)
+- [Template 4 — Lean / Low-Fidelity](#template-4--lean--low-fidelity)
+- [Audience-Specific Variants](#audience-specific-variants)
+- [Visualization Formats](#visualization-formats)
+- [Versioning & Change Log](#versioning--change-log)
+- [Common Roadmap Anti-Patterns](#common-roadmap-anti-patterns)
+- [Workflow-Mode Output Template (ROADMAP.md)](#workflow-mode-output-template-roadmapmd)
+
 ---
 
 ## Template 1 — Now / Next / Future (canonical NNGroup)
@@ -177,3 +188,165 @@ Every roadmap iteration should include:
 ```
 
 Never delete themes from history — mark them as *completed*, *deprecated*, or *merged into X*.
+
+---
+
+## Common Roadmap Anti-Patterns
+
+Guard against these when building or reviewing any roadmap:
+
+1. **Feature list dressed up as themes** — "Build X, ship Y, launch Z" is not a roadmap; it's a backlog
+2. **No beneficiary named** — themes without a clear user/customer tend to serve the org, not the user
+3. **All themes in "Now"** — signals inability to defer or prioritize; every roadmap needs a distribution across horizons
+4. **Missing business objectives** — themes without outcomes can't be evaluated for success
+5. **Commitment creep** — stakeholders treat "Future" themes as commitments; the roadmap should explicitly disclaim this
+6. **Set-and-forget** — no review cadence = stale roadmap in 3 months
+7. **Designed for only one audience** — creator-only view misses consumer needs (and vice versa)
+8. **No prioritization rationale** — if you can't explain *why* A is before B, the roadmap won't survive its first pushback
+9. **Confusing a UX roadmap with a product roadmap with a release plan** — different artifacts, different audiences, different purposes
+10. **Skipping confidence levels** — treating all themes with the same certainty misleads consumers
+
+(For theme-specific anti-patterns, see `theme-development.md`; for workshop anti-patterns, see `roadmap-workshops.md`.)
+
+---
+
+## Workflow-Mode Output Template (ROADMAP.md)
+
+When in DP workflow mode, write the roadmap to `.design/phases/ROADMAP.md` using this structure:
+
+```yaml
+---
+phase: roadmap
+skill: dp-roadmap
+roadmap_type: [now_next_future | outcome_based | theme_based | lean]
+completed: YYYY-MM-DDTHH:MM:SSZ
+owner: [role / person]
+scope: [team / product / portfolio]
+horizon: [e.g., Q2–Q4 2026]
+themes_count: N
+prioritization_framework: [RICE | ICE | MoSCoW | Value/Effort | Kano | Opportunity Scoring]
+inputs_used:
+  - DISCOVERY.md
+  - JOURNEY-MAP.md
+  - RESEARCH-interviews.md
+review_cadence: [monthly | quarterly]
+next_review: YYYY-MM-DD
+---
+
+# Roadmap: [Title]
+
+> Type: [Now/Next/Future | Outcome-based | Theme-based | Lean]
+> Owner: [Name / Role]
+> Last updated: [Date]
+
+## Context
+
+**High-Level Goals**
+- [Goal 1 — company / org strategy this serves]
+- [Goal 2]
+- [Goal 3]
+
+**Scope**
+[What is in / out of scope for this roadmap]
+
+**Audience**
+- Creator: [who]
+- Contributors: [who]
+- Consumers: [who]
+
+---
+
+## Roadmap
+
+### Completed (just shipped)
+| Theme | Beneficiary | Outcome achieved |
+|---|---|---|
+| [Theme] | [who] | [measurable shift] |
+
+### Now
+| # | Theme | Beneficiary | Need | Business Objective | Owner | Confidence | Disclaimers |
+|---|---|---|---|---|---|---|---|
+| 1 | [Name] | [who] | [problem] | [outcome] | [team] | H | [risk/dep] |
+
+### Next (next ~2 quarters)
+| # | Theme | Beneficiary | Need | Business Objective | Owner | Confidence | Disclaimers |
+|---|---|---|---|---|---|---|---|
+| 1 | [Name] | [who] | [problem] | [outcome] | [team] | M | [risk/dep] |
+
+### Future (6+ months)
+| # | Theme | Beneficiary | Need | Business Objective | Confidence | Disclaimers |
+|---|---|---|---|---|---|---|---|
+| 1 | [Name] | [who] | [problem] | [outcome] | L | [risk/dep] |
+
+### Future++ (parking lot)
+- [Idea 1 — source]
+- [Idea 2 — source]
+
+---
+
+## Themes in Detail
+
+### Theme 1: [Theme name]
+
+**Pattern:** For [beneficiary], [need] so that [business objective].
+
+- **Beneficiary:** [who]
+- **Need:** [problem — no solution mentioned]
+- **Business Objective:** [measurable shift]
+- **Subthemes:**
+  - [sub-goal 1]
+  - [sub-goal 2]
+- **Product / Experience Area:** [where]
+- **Owner (who):** [team / role]
+- **Owner (what):** [kind of work — research, redesign, new capability]
+- **Confidence:** [H / M / L] — [rationale]
+- **Disclaimers:** [risks, dependencies, open questions]
+- **Prioritization score:** [framework] = [value]
+- **Source inputs:** [research, journey opportunity, etc.]
+
+[Repeat for each theme]
+
+---
+
+## Prioritization Detail
+
+**Framework used:** [name]
+
+**Scoring matrix:**
+| Theme | [Criteria 1] | [Criteria 2] | [Criteria 3] | Score | Rank |
+|---|---|---|---|---|---|
+| T1 | [value] | [value] | [value] | [score] | 1 |
+
+**Rationale for top 3:**
+1. [Theme] — [why it ranks #1]
+2. [Theme] — [why #2]
+3. [Theme] — [why #3]
+
+---
+
+## Governance
+
+- **Review cadence:** [monthly / quarterly]
+- **Next scheduled review:** [date]
+- **Update triggers (off-cycle):**
+  - Major strategic shift
+  - New research finding invalidates a theme
+  - Delivery signal (theme completed or abandoned)
+  - Leadership request
+- **Versioning:** increment version on major refresh; track in git
+
+---
+
+## Open Questions
+
+- [Question 1 — planned research to close]
+- [Question 2]
+
+---
+
+## Disclaimers
+
+- This roadmap is directional, not a commitment
+- "Future" themes are likely to change as we learn
+- Confidence levels reflect current evidence — not guaranteed outcomes
+```

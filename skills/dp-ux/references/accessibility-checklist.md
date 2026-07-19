@@ -1,6 +1,21 @@
 # Accessibility Checklist
 
-Essential WCAG 2.1 AA compliance for production interfaces.
+Essential WCAG 2.2 AA compliance for production interfaces. This is the **single source of truth** for accessibility rules across DP — `dp-eng_review` references this file rather than duplicating it.
+
+## Contents
+
+- Keyboard Navigation
+- Color & Contrast
+- Text & Typography
+- Images & Media
+- Forms
+- Interactive Elements
+- Motion & Animation
+- Touch & Mobile
+- WCAG 2.2 New Criteria (AA)
+- Screen Reader Essentials
+- Testing Checklist
+- Quick Wins
 
 ## Keyboard Navigation
 
@@ -75,11 +90,25 @@ Essential WCAG 2.1 AA compliance for production interfaces.
 
 ## Touch & Mobile
 
-- [ ] Touch targets ≥ 44×44px
+- [ ] Touch targets ≥ 24×24 CSS px (WCAG 2.2 AA, SC 2.5.8) — or have sufficient spacing/exception
+- [ ] Prefer ≥ 44×44px for primary targets (WCAG AAA / platform HIG best practice)
 - [ ] Adequate spacing between touch targets (≥ 8px)
 - [ ] Gestures have alternative controls
 - [ ] Pinch-to-zoom not disabled
 - [ ] Orientation not locked (unless essential)
+
+## WCAG 2.2 New Criteria (AA)
+
+These success criteria were added in WCAG 2.2 (Oct 2023) — verify them in addition to the 2.1 AA set above.
+
+- [ ] **2.4.11 Focus Not Obscured (Minimum)** — a focused element is not entirely hidden by author-created content (e.g. sticky headers, cookie banners)
+- [ ] **2.5.7 Dragging Movements** — any drag interaction has a single-pointer (tap/click) alternative
+- [ ] **2.5.8 Target Size (Minimum)** — interactive targets are ≥ 24×24 CSS px, or spaced/exempt
+- [ ] **3.2.6 Consistent Help** — help mechanisms (contact, chat, docs) appear in the same relative order across pages
+- [ ] **3.3.7 Redundant Entry** — information already entered is not requested again in the same process (auto-populate or offer to reuse)
+- [ ] **3.3.8 Accessible Authentication (Minimum)** — no cognitive-function test (e.g. solving a puzzle, memorizing) required to log in unless an alternative exists
+
+> Note: SC 4.1.1 Parsing was removed/obsoleted in WCAG 2.2.
 
 ## Screen Reader Essentials
 

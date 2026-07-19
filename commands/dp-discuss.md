@@ -62,6 +62,26 @@ Ask questions based on the phase:
 3. "Any areas I should NOT probe deeply? (sensitive topics, already decided, etc.)"
 4. "What format would be most useful for the output?"
 
+**For PRD (`/dp:prd`, optional Phase 1.5a):**
+1. "Who is the PRD for — stakeholders or Claude Code implementation?"
+2. "Which requirements from discovery are in scope for this PRD?"
+3. "Any decisions already made that the PRD should record rather than reopen?"
+
+**For Journey Mapping (`/dp:journey`, optional Phase 1.5b):**
+1. "Which actor and scenario should the map cover?"
+2. "Do we have research to ground the map, or is this hypothesis mode?"
+3. "Which artifact type fits best? (journey map, experience map, service blueprint, etc.)"
+
+**For Roadmap (`/dp:roadmap`, optional Phase 1.5c):**
+1. "What scope — team, product, or portfolio?"
+2. "Which prioritization framework do you prefer, if any?"
+3. "Are there fixed commitments that must appear in Now?"
+
+**For Color System (`/dp:color`, optional Phase 2b):**
+1. "Are there fixed brand colors or an existing palette we must build around?"
+2. "What accessibility level is the target — WCAG AA or AAA?"
+3. "Do we need dark mode token overrides, sRGB-only, or P3-enhanced output?"
+
 **For UX (`/dp:ux`):**
 1. "Any specific user flows you want to prioritize?"
 2. "Are there UI patterns from elsewhere in the product we should match?"
@@ -84,7 +104,11 @@ Ask questions based on the phase:
 
 Create `.design/phases/{NN}-CONTEXT.md` where NN is the phase number:
 - `01-CONTEXT.md` for Discovery
+- `01.5a-CONTEXT.md` for PRD (optional)
+- `01.5b-CONTEXT.md` for Journey Mapping (optional)
+- `01.5c-CONTEXT.md` for Roadmap (optional)
 - `02-CONTEXT.md` for UX
+- `02b-CONTEXT.md` for Color System (optional)
 - `03-CONTEXT.md` for UI
 - `04-CONTEXT.md` for Review
 
@@ -223,7 +247,11 @@ Use this inline template, replacing placeholders with gathered information:
 | Phase # | Phase Name | Skill | Context File |
 |---------|------------|-------|--------------|
 | 1 | Discovery | /dp:discovery | 01-CONTEXT.md |
+| 1.5a | PRD (optional) | /dp:prd | 01.5a-CONTEXT.md |
+| 1.5b | Journey (optional) | /dp:journey | 01.5b-CONTEXT.md |
+| 1.5c | Roadmap (optional) | /dp:roadmap | 01.5c-CONTEXT.md |
 | 2 | UX | /dp:ux | 02-CONTEXT.md |
+| 2b | Color System (optional) | /dp:color | 02b-CONTEXT.md |
 | 3 | UI | /dp:ui | 03-CONTEXT.md |
 | 4 | Review | /dp:eng_review | 04-CONTEXT.md |
 

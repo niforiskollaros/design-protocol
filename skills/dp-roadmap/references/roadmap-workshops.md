@@ -2,6 +2,15 @@
 
 Full facilitation guides for the two NNGroup workshop formats, stakeholder interviews, and key exercises.
 
+## Contents
+- [Format A — Single 3-Hour Workshop](#format-a--single-3-hour-workshop)
+- [Format B — Two Workshops + Research](#format-b--two-workshops--research)
+- [Key Exercises in Detail](#key-exercises-in-detail)
+- [Stakeholder Mapping (Pre-Workshop)](#stakeholder-mapping-pre-workshop)
+- [Common Workshop Anti-Patterns](#common-workshop-anti-patterns)
+- [Post-Workshop Sharing Strategies](#post-workshop-sharing-strategies)
+- [Revisit Cadence](#revisit-cadence)
+
 ---
 
 ## Format A — Single 3-Hour Workshop
