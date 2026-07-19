@@ -88,6 +88,7 @@ npx design-protocol@latest          # Or install latest directly
 | `/dp:color` | OKLCH palettes, shade ramps, contrast checking, color theory |
 | `/dp:ui` | Visual design — grids, tokens, aesthetic archetypes, B2B patterns, data viz |
 | `/dp:eng_review` | Code review — a11y, React patterns, spec alignment |
+| `/dp:design_check` | Design-contract coverage — verify code resolves to your DESIGN.md tokens and principles |
 | `/dp:research` | Research planning — interviews, usability tests, synthesis |
 | `/dp:storytell` | Audience-tuned presentation outlines for design work (cross-phase) |
 
@@ -146,12 +147,28 @@ DP creates a `.design/` directory to track progress:
     "depth": "standard",      // quick | standard | thorough
     "challenge_mode": "heavy" // light | heavy
   },
+  "design_system": {
+    "path": "DESIGN.md",      // your design contract, or null
+    "implementation_path": "IMPLEMENTATION.md"
+  },
   "phases": {
     "ux": { "include_accessibility": true },
     "ui": { "include_b2b": true }
   }
 }
 ```
+
+## Bring Your Own Design System
+
+If your project has a design contract — a `DESIGN.md` (or similar) defining tokens, principles, and component rules — DP applies it instead of inventing a parallel system:
+
+- **`/dp:start`** auto-detects it (`DESIGN.md`, `design.md`, `docs/DESIGN.md`, `design-system.md`) and asks only if nothing is found
+- **`/dp:ui`** runs in *apply mode*: UI-SPEC.md maps components to your tokens; genuinely missing tokens become "Proposed token additions", never silent inventions
+- **`/dp:color`** audits and extends your palette instead of generating one
+- **`/dp:execute`** (polished) consumes your token names through your theming mechanism
+- **`/dp:design_check`** verifies the shipped code against the contract — token coverage, design intent, and stack rules — and produces a feedback report for your design-system owners
+
+No contract? Everything works as before, and the UI phase's token tables make a good first DESIGN.md.
 
 ## The Light Path
 
@@ -180,7 +197,7 @@ Restart Claude Code after installing. DP skills are loaded on startup.
 
 ```bash
 # Verify files were installed
-ls ~/.claude/skills/    # Should show: dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell
+ls ~/.claude/skills/    # Should show: dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell, dp-design_check
 ls ~/.claude/commands/  # Should show: dp-*.md files
 ```
 

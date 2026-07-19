@@ -106,10 +106,12 @@ At the start of any `/dp:color` invocation:
    - If enabled (or user says yes), update `optional_phases.color.enabled` to `true`
    - Load `.design/phases/DISCOVERY.md` for brand constraints, tone, target audience
    - Load `.design/phases/UX-DECISIONS.md` for semantic color needs (states, component list)
+   - Check `design_system.path` — if set, load that file and switch to **audit/extend mode**: the palette already exists, so the job is auditing its ramps and contrast, converting it to OKLCH for analysis, and extending it where UX needs colors it lacks. Never generate a competing palette next to an existing contract; new colors are proposed as additions to it (derived from its existing hues), and every proposal is labeled as such in COLOR-SYSTEM.md.
    - Check for `.design/phases/02b-CONTEXT.md` if `/dp:discuss` was run before this phase
    - Announce: "Loading context from discovery and UX phases..."
    - Display extracted context: brand constraints, semantic needs, accessibility level
 3. **If not found** (standalone mode):
+   - Glob for a design contract (`DESIGN.md`, `design.md`, `docs/DESIGN.md`, `design-system.md`) — if one defines a palette, confirm it and run in audit/extend mode rather than inventing
    - Run with default behavior (clarify intent as usual)
 
 ### Loading Previous Phase Context

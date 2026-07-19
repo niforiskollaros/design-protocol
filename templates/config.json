@@ -23,6 +23,11 @@
     "depth": "standard",
     "challenge_mode": "heavy"
   },
+  "design_system": {
+    "path": null,
+    "implementation_path": null,
+    "detected": false
+  },
   "phases": {
     "discovery": {
       "enabled": true,

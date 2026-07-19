@@ -110,6 +110,7 @@ Reviews only find the next layer of problems when each pass looks from a genuine
 7. Seams between components — two components disagreeing about a prop shape, callback contract, or shared token
 8. Over-engineering — helpers with one caller, defensive guards on props the parent already validates, generic machinery for a single use case
 9. Discoverability — will this code make sense to a developer six months from now?
+10. Design-contract token compliance — when `design_system.path` is set in config, spot-check that values resolve to the contract's tokens; for the full three-persona pass, hand off to `/dp:design_check` rather than duplicating it here
 
 An angle that repeats a prior pass under a different name doesn't count ("accessibility" then "WCAG compliance" is the same lens). If a repeat pass finds nothing AND its reasoning reads similar to the prior pass, that's a rubber stamp — pick a genuinely different angle and go again before reporting.
 

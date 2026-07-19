@@ -84,8 +84,23 @@ Ask the user these questions to populate the project files:
 
 7. "Is this B2B/enterprise? (affects UI patterns)"
 
+**Design system (detect first, ask second):**
+
+8. Before asking anything, glob the repo for a design contract at the conventional locations:
+
+```bash
+ls DESIGN.md design.md docs/DESIGN.md design-system.md docs/design-system.md 2>/dev/null
+ls IMPLEMENTATION.md docs/IMPLEMENTATION.md 2>/dev/null
+```
+
+   - **Exactly one contract found** → confirm, don't interrogate: "Found `DESIGN.md` — I'll treat it as your design contract: UI and color phases will apply its tokens instead of inventing new ones. Sound right?"
+   - **Several found** → ask which one is canonical.
+   - **None found** → ask once: "Do you have a design system file (a DESIGN.md — tokens, principles, component rules)? If yes, give me the path; if no, the UI phase will create tokens from scratch and you can adopt them as your DESIGN.md later."
+
+   Record the contract path and the implementation adapter path (if any) — they populate `design_system` in config.json.
+
 **Optional phases:**
-8. "The core flow is always Discovery → UX → UI → Review. Do you want any optional phases enabled now? (you can add them later too)
+9. "The core flow is always Discovery → UX → UI → Review. Do you want any optional phases enabled now? (you can add them later too)
    - **PRD** (1.5a) — a formal product spec
    - **Journey map** (1.5b) — a multi-step or omnichannel experience
    - **Roadmap** (1.5c) — theme-based Now/Next/Future planning
@@ -94,7 +109,7 @@ Ask the user these questions to populate the project files:
    - **Storytelling** — stakeholder presentations
    Pick any, all, or none."
 
-Record which optional phases the user selected — they drive the `enabled` flags in Step 5.
+Record which optional phases the user selected — they drive the `enabled` flags in Step 5. (If a design contract was found in #8 and the user wants a color system, note that `/dp:color` will audit/extend the contract's palette rather than invent one.)
 
 ### Step 4: Create Directory Structure
 
@@ -118,7 +133,8 @@ Create the `.design/` directory with all files:
 - Set `created` to current timestamp
 - Set `settings.depth` based on answer #6
 - Set `phases.ui.include_b2b` based on answer #7
-- For each optional phase the user selected in answer #8, set `optional_phases.<phase>.enabled` to `true` (leave the rest `false`)
+- Set `design_system.path` and `design_system.implementation_path` from answer #8 (leave `null` if none), and `design_system.detected` to `true` when the file was found by globbing rather than user-supplied
+- For each optional phase the user selected in answer #9, set `optional_phases.<phase>.enabled` to `true` (leave the rest `false`)
 - Set `workflow.current_phase` to 1
 - Set `workflow.workflow_status` to "ready"
 
@@ -161,6 +177,7 @@ Current Position:
   Progress: [░░░░░░░░░░] 0%
 
 Optional phases enabled: [list, or "none"]
+Design contract: [path, or "none — UI phase will create tokens from scratch"]
 
 Next Steps:
   1. /dp:discuss — Capture any known context before discovery
@@ -202,6 +219,11 @@ Use these inline templates as the base for each file, replacing placeholders wit
   "settings": {
     "depth": "standard",
     "challenge_mode": "heavy"
+  },
+  "design_system": {
+    "path": null,
+    "implementation_path": null,
+    "detected": false
   },
   "phases": {
     "discovery": {
@@ -565,6 +587,7 @@ After writing `config.json`, verify it by reading it back and checking:
    - `workflow.phases_completed` (array)
    - `workflow.workflow_status` (one of: `not_started`, `ready`, `in_progress`, `blocked`, `complete`, `gaps`, `verified`)
    - `phases.discovery`, `phases.ux`, `phases.ui`, `phases.review` (objects with `enabled` boolean)
+   - `design_system` (object with `path`, `implementation_path`, `detected` — `path` may be `null`)
 3. **Values are consistent:**
    - A fresh project has `current_phase: 1` and `workflow_status: "ready"` (Step 5 sets these — the raw template defaults of `0`/`not_started` must be overridden)
    - `phases_completed` is empty for a fresh project

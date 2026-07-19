@@ -49,6 +49,7 @@ if (uiComplete) {
 
 **For Polished mode, also load:**
 - `.design/phases/UI-SPEC.md` — Design tokens, visual specs, Tailwind classes
+- The design contract (`design_system.path` in config.json), if set — generated code must consume ITS token names through the project's established mechanism (CSS variables, Tailwind theme), never re-hardcode the underlying values. A token UI-SPEC.md proposed but the contract doesn't define yet gets used under its proposed name AND logged as a deviation (Step 6.5) so the proposal isn't silently forgotten.
 
 ### Step 3: Extract Component Specifications
 
@@ -516,6 +517,8 @@ NEXT STEPS
 {If polished}
 → Run `{devCommand}` and visit http://localhost:{devPort}/preview/{feature-name}
 → Verify visual design matches UI-SPEC.md
+{If design_system.path is set}
+→ Run /dp:design_check to verify design-contract token coverage
 → When satisfied, run /dp:eng_review for code review
 → Then /dp:verify to complete workflow
 

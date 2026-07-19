@@ -30,10 +30,12 @@ At the start of any `/dp:ui` invocation:
    - Load `.design/phases/DISCOVERY.md` for problem context
    - Load `.design/phases/UX-DECISIONS.md` for interaction patterns
    - Load `.design/REQUIREMENTS.md` for visual requirements
+   - Check `design_system.path` — if set, load that file too and switch to **apply mode** (see "Design Contract Mode" below)
    - Check for `03-CONTEXT.md` if `/dp:discuss` was run first
    - Announce: "Loading context from discovery and UX phases..."
    - Display: "Components to design: [list from UX-DECISIONS.md]"
 3. **If not found** (standalone mode):
+   - Glob for a design contract at conventional locations (`DESIGN.md`, `design.md`, `docs/DESIGN.md`, `design-system.md`) before inventing anything; if one exists, confirm it and switch to apply mode
    - Run with default behavior
    - Ask: "What would you like me to help design visually?"
 
@@ -138,6 +140,20 @@ Establish clear importance through:
 
 ---
 
+## Design Contract Mode (apply, don't invent)
+
+When a design contract exists (`design_system.path` in config, or detected in the repo), the job of this phase changes: **apply the existing system; never mint a parallel one.**
+
+- **Tokens in UI-SPEC.md reference the contract's tokens by name** — `bg-brand-primary`, not a fresh hex value. The token tables become a mapping (component/state → contract token), not new definitions.
+- **Honor the contract's stated principles** (elevation policy, typeface discipline, semantic vs. decorative color) over this skill's generic defaults wherever they conflict. The contract wins; note the conflict in one line.
+- **Gaps become proposals, not inventions.** When the design genuinely needs a token the contract lacks (a state color, a spacing step), add it to a **"Proposed token additions"** section in UI-SPEC.md — name, value, rationale, and where the contract should define it. Never silently use the raw value as if it were a token; that's how parallel systems are born.
+- **Grid and spacing derive from the contract's scale** — the 8px default below applies only when the contract doesn't define its own.
+- After polished implementation, hand off to `/dp:design_check` to verify the code actually resolves to the contract's tokens.
+
+Without a contract, this skill's normal behavior (create the tokens) applies unchanged — and the resulting UI-SPEC.md token tables are a reasonable seed for a future DESIGN.md.
+
+---
+
 ## Output Structure (Workflow Mode)
 
 When in workflow mode, produce structured output:
@@ -205,6 +221,7 @@ Summary:
 • Visual direction: [style]
 • Grid system: 8px base, [N]-column layout
 • Design tokens: [M] colors, [P] typography scales, [Q] spacing tokens
+  [Contract mode: "[M] mapped to [contract path], [K] proposed additions"]
 • Components specified: [list]
 • All [N] UX states have visual specs
 
@@ -262,6 +279,11 @@ Before finalizing any UI:
 Respects these settings from `.design/config.json`:
 ```json
 {
+  "design_system": {
+    "path": "DESIGN.md",
+    "implementation_path": "IMPLEMENTATION.md",
+    "detected": true
+  },
   "phases": {
     "ui": {
       "enabled": true,
@@ -275,6 +297,7 @@ Respects these settings from `.design/config.json`:
 
 When `includeB2B: true`, automatically apply B2B/enterprise patterns.
 When `includeDataViz: true`, include data visualization guidance.
+When `design_system.path` is set, run in Design Contract Mode (apply, don't invent).
 
 ---
 

@@ -262,7 +262,7 @@ Examples:
   npx design-protocol -g -u        # Uninstall from global
 
 ${c.bright}What Gets Installed:${c.reset}
-  ~/.claude/skills/      10 design skills (dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell)
+  ~/.claude/skills/      11 design skills (dp-discovery, dp-prd, dp-journey, dp-roadmap, dp-ux, dp-color, dp-ui, dp-eng_review, dp-research, dp-storytell, dp-design_check)
   ~/.claude/commands/    12 workflow commands (dp:start, dp:execute, dp:prd, dp:journey, dp:roadmap, dp:color, dp:storytell, etc.)
   ~/.claude/agents/      2 specialized agents
 
@@ -341,7 +341,7 @@ async function runUninstall(location, dirs) {
 
   let removed = 0;
 
-  const skillNames = ['dp-discovery', 'dp-prd', 'dp-journey', 'dp-roadmap', 'dp-ux', 'dp-color', 'dp-ui', 'dp-eng_review', 'dp-research', 'dp-storytell'];
+  const skillNames = ['dp-discovery', 'dp-prd', 'dp-journey', 'dp-roadmap', 'dp-ux', 'dp-color', 'dp-ui', 'dp-eng_review', 'dp-research', 'dp-storytell', 'dp-design_check'];
   for (const name of skillNames) {
     const skillPath = path.join(dirs.skillsDir, name);
     if (fs.existsSync(skillPath)) {
